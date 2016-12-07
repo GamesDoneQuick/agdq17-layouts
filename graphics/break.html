@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Break</title>
+	<link rel="stylesheet" href="style/layout.css">
+	<!-- TODO: change this to bower_components route, less confusing -->
+	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
+
+	<link rel="import" href="components/gdq-nowplaying/gdq-nowplaying.html">
+	<link rel="import" href="components/gdq-prizes/gdq-prizes.html">
+	<link rel="import" href="components/gdq-twitter/gdq-twitter.html">
+	<style is="custom-style">
+		gdq-nowplaying {
+			top: 154px;
+			left: 0;
+		}
+
+		gdq-prizes {
+			width: 365px;
+			height: 321px;
+			right: 6px;
+			bottom: 7px;
+		}
+
+		gdq-twitter {
+			bottom: 7px;
+			left: 0;
+			width: 903px;
+			height: 125px;
+			background: url("img/break-twitter-bg.png");
+
+			--gdq-twitter-body: {
+				font-size: 23px;
+				padding: 5px 25px 0 25px;
+			};
+			--gdq-twitter-namebar: {
+				width: 340px;
+				height: 54px;
+				margin-bottom: -12px;
+				padding-bottom: 12px;
+				padding-left: 6px;
+				font-size: 21px;
+			};
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<gdq-nowplaying></gdq-nowplaying>
+		<gdq-prizes></gdq-prizes>
+		<gdq-twitter></gdq-twitter>
+		<img id="foreground" src="img/backgrounds/break_fg.png">
+	</div>
+
+	<script>
+		window.addEventListener('DOMContentLoaded', () => {
+			TweenLite.to(document.body, 0.333, {
+				opacity: 1,
+				ease: Power1.easeOut
+			});
+		});
+	</script>
+</body>
+</html>

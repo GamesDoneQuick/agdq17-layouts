@@ -1,0 +1,22 @@
+{
+	"extends": "xo/esnext",
+	"rules": {
+		"new-cap": [2, {
+			"capIsNewExceptions": [
+				"Polymer",
+				"nodecg.Replicant"
+			]
+		}],
+		"require-jsdoc": ["error", {
+			"require": {
+				"FunctionDeclaration": true,
+				"MethodDefinition": true,
+				"ClassDeclaration": true
+			}
+		}],
+		"valid-jsdoc": ["error"]
+	},
+	"plugins": [
+		"html"
+	]
+}

@@ -1,0 +1,132 @@
+<!-- TODO: change this to bower_components route, less confusing -->
+<link rel="import" href="../../components/polymer/polymer.html">
+
+<dom-module id="gdq-lowerthird">
+	<template>
+		<style>
+			:host {
+				position: absolute;
+				height: 0;
+				bottom: -3px;
+				left: 0;
+				width: 100%;
+				font-size: 31px;
+				background-image: url("img/lowerfill.png");
+				background-position: bottom left;
+			}
+
+			#top,
+			#bottom {
+				display: flex;
+				justify-content: space-around;
+				align-items: baseline;
+				background: url("img/border-tile.png") repeat-x;
+				height: 9px;
+				z-index: 2;
+				position: relative;
+			}
+
+			#top {
+				transform: scaleY(-1);
+			}
+
+			#bottom {
+				-webkit-filter: drop-shadow(0 5px 0 rgba(0,0,0,0.25));
+			}
+
+			#names {
+				display: flex;
+				background-color: #0b2833;
+				height: 0;
+				font-weight: 400;
+				align-items: center;
+				z-index: 1;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.name:last-child img {
+				display: none;
+			}
+
+			.name-container {
+				display: flex;
+				justify-content: center;
+				flex-grow: 1;
+				flex-basis: 1px;
+				min-width: 1px;
+			}
+
+			.name {
+				text-transform: uppercase;
+				text-align: center;
+				transform-origin: center;
+			}
+
+			#dropdownContainer {
+				position: absolute;
+				top: 0;
+				left: 455px;
+				width: 371px;
+				height: 100%;
+				z-index: 0;
+				overflow: hidden;
+			}
+
+			#dropdown {
+				line-height: 91px;
+				text-align: center;
+				width: 371px;
+				height: 81px;
+				background: url("img/dropdown.png") no-repeat;
+				-webkit-filter: drop-shadow(0 5px 0 rgba(0,0,0,0.25));
+				font-size: 22px;
+				transform: translateY(-100%);
+			}
+
+			#dropdown span {
+				color: #6fcff5!important;
+			}
+
+			/* state */
+			:host[num-names="4"] #names {
+				font-size: 20px;
+			}
+
+			:host[num-names="3"] #names {
+				font-size: 26px;
+			}
+		</style>
+
+		<div id="dropdownContainer">
+			<div id="dropdown">
+				<span class="shadow">
+					#SGDQ2016
+				</span>
+			</div>
+		</div>
+
+		<div id="top">
+			<template is="dom-repeat" items="[[greebles]]">
+				<img src="img/border-deco.png">
+			</template>
+		</div>
+
+		<div id="names">
+			<template is="dom-repeat" items="[[names]]" as="name">
+				<div class="name-container">
+					<div class="name shadow">[[name]]</div>
+				</div>
+				<img src="img/divider.png">
+			</template>
+		</div>
+
+		<div id="bottom">
+			<template is="dom-repeat" items="[[greebles]]">
+				<img src="img/border-deco.png">
+			</template>
+		</div>
+	</template>
+
+	<script src="gdq-lowerthird.js"></script>
+</dom-module>

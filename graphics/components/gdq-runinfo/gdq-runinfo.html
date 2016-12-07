@@ -1,0 +1,74 @@
+<!-- TODO: change this to bower_components route, less confusing -->
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../imports/textFit.html">
+
+<dom-module id="gdq-runinfo">
+	<template>
+		<style>
+			:host {
+				position: absolute;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				white-space: nowrap;
+			}
+
+			#category,
+			#name {
+				padding: 0 16px;
+			}
+
+			#name {
+				line-height: 0.9;
+				text-transform: uppercase;
+				text-align: center;
+				flex-grow: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-weight: 700;
+			}
+
+			#category {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 35px;
+				background: url("img/category-bg.png");
+				white-space: nowrap;
+				flex-shrink: 0;
+			}
+
+			#misc {
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+				flex-shrink: 0;
+				height: var(--gdq-runinfo-misc-height);
+			}
+
+			#misc > * {
+				position: relative;
+				top: -2px;
+				flex: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+		</style>
+
+		<span id="name" class="shadow">&nbsp;</span>
+		<div id="category">
+			<span class="shadow">[[category]]</span>
+		</div>
+		<div id="misc">
+			<span class="shadow">[[console]][[calcReleaseYearDisplay(releaseYear)]]</span>
+			<div>
+				<img src="img/clock.png" style="position: relative; top: 2px;">
+				&nbsp;<span class="shadow">[[estimate]]</span>
+			</div>
+		</div>
+	</template>
+
+	<script src="gdq-runinfo.js"></script>
+</dom-module>

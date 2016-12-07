@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Omnibar</title>
+	<link rel="stylesheet" href="style/base.css">
+	<!-- TODO: change this to bower_components route, less confusing -->
+	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
+
+	<link rel="import" href="components/gdq-omnibar/gdq-omnibar.html">
+	<style>
+		#container {
+			width: 1280px;
+			height: 55px;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<gdq-omnibar></gdq-omnibar>
+	</div>
+
+	<script>
+		window.addEventListener('DOMContentLoaded', () => {
+			TweenLite.to(document.body, 0.333, {
+				opacity: 1,
+				ease: Power1.easeOut
+			});
+		});
+	</script>
+</body>
+</html>

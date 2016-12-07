@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DS, 1 Player</title>
+	<link rel="stylesheet" href="style/layout.css">
+	<!-- TODO: change this to bower_components route, less confusing -->
+	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
+
+	<link rel="import" href="components/gdq-nameplate/gdq-nameplate.html">
+	<link rel="import" href="components/gdq-runinfo/gdq-runinfo.html">
+	<link rel="import" href="components/gdq-timer/gdq-timer.html">
+	<link rel="import" href="components/gdq-twitter/gdq-twitter.html">
+	<link rel="import" href="components/gdq-sponsors/gdq-sponsors.html">
+	<style is="custom-style">
+		gdq-nameplate {
+			top: 407px;
+			left: 42px;
+			z-index: 11;
+			--gdq-nameplate-width: 256px;
+		}
+
+		gdq-runinfo {
+			left: 0;
+			top: 287px;
+			width: 398px;
+			height: 122px;
+			--gdq-runinfo-misc-height: 33px;
+		}
+
+		gdq-timer {
+			left: 0;
+			bottom: 0;
+			height: 52px;
+			width: 398px;
+			font-size: 42px;
+			border-bottom: 1px solid #000000;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<img id="background" src="img/backgrounds/ds_bg.png">
+		<gdq-runinfo></gdq-runinfo>
+		<gdq-timer></gdq-timer>
+		<img id="foreground" src="img/backgrounds/ds_fg.png">
+		<gdq-nameplate index="0"></gdq-nameplate>
+	</div>
+
+	<script>
+		window.addEventListener('DOMContentLoaded', () => {
+			TweenLite.to(document.body, 0.333, {
+				opacity: 1,
+				ease: Power1.easeOut
+			});
+		});
+	</script>
+</body>
+</html>

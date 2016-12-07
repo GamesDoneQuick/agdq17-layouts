@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="import" href="../components/paper-button/paper-button.html">
+	<link rel="import" href="../components/paper-input/paper-input.html">
+</head>
+<body>
+	<paper-input id="input" label="Donation Total" type="number"></paper-input>
+
+	<script>
+		const input = document.getElementById('input');
+		document.addEventListener('dialog-confirmed', () => {
+			nodecg.sendMessage('setTotal', parseFloat(input.value));
+		});
+	</script>
+</body>
+</html>

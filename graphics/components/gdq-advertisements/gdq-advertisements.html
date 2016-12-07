@@ -1,0 +1,50 @@
+<!-- TODO: change this to bower_components route, less confusing -->
+<link rel="import" href="../../components/polymer/polymer.html">
+
+<dom-module id="gdq-advertisements">
+	<template>
+		<style>
+			:host {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: block;
+				width: 1280px;
+				height: 720px;
+			}
+
+			img {
+				position: absolute;
+				top: 0;
+				left: 0;
+				opacity: 0;
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+			video {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 1280px;
+				height: 720px;
+				z-index: 1;
+			}
+
+			#black {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 1280px;
+				height: 720px;
+				background-color: black;
+				opacity: 0;
+			}
+		</style>
+
+		<div id="black"></div>
+		<div id="imageContainer"></div>
+	</template>
+
+	<script src="gdq-advertisements.js"></script>
+</dom-module>

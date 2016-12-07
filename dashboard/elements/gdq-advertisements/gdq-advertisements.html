@@ -1,0 +1,189 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/iron-icons/av-icons.html">
+<link rel="import" href="../../components/iron-icons/image-icons.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-menu/paper-menu.html">
+<link rel="import" href="../../components/paper-progress/paper-progress.html">
+<link rel="import" href="../../components/paper-styles/shadow.html">
+
+<dom-module id="gdq-advertisements">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+
+			#container {
+				@apply(--layout-horizontal);
+			}
+
+			#container > * {
+				@apply(--layout-flex);
+				margin: 0 5px;
+				background-color: white;
+				width: 1px;
+			}
+
+			#container > :first-child {
+				margin-left: 0;
+			}
+
+			#container > :last-child {
+				margin-right: 0;
+			}
+
+			.ad {
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				margin-bottom: 9px;
+				padding: 6px;
+				position: relative;
+			}
+
+			.ad-icon {
+				background-color: #707070;
+				border-radius: 3px;
+				width: 30px;
+				height: 30px;
+				padding: 4px;
+				color: white;
+				box-sizing: border-box;
+				margin-right: 5px;
+				opacity: 0.7;
+				transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+				flex-shrink: 0;
+				@apply(--shadow-none);
+			}
+
+			.ad-filename {
+				font-size: 17px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.ad-loadprogress {
+				position: absolute;
+				left: 41px;
+				bottom: 6px;
+				width: 185px;
+			}
+
+			.ad.iron-selected .ad-icon {
+				background-color: var(--nodecg-success-color);
+				opacity: 1;
+				@apply(--shadow-elevation-3dp);
+			}
+
+			#playbackControls {
+				margin-top: 16px;
+				@apply(--layout-horizontal);
+			}
+
+			#playbackControls paper-button {
+				@apply(--layout-flex);
+			}
+
+			#preview {
+				padding: 18px;
+				@apply(--layout-vertical);
+				@apply(--layout-center);
+			}
+
+			#previewImage,
+			#previewVideo {
+				width: 100%;
+				margin-bottom: 8px;
+			}
+
+			#statusArea {
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+				height: 50px;
+			}
+
+			paper-item {
+				--paper-item: {
+					cursor: pointer;
+				};
+			}
+
+			paper-menu {
+				height: 300px;
+				overflow-y: auto;
+				--paper-menu-selected-item: {
+					font-weight: 500;
+				}
+			}
+
+			paper-button {
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+			}
+
+			paper-progress:not([value="100"]) {
+				--paper-progress-active-color: #ccc54e;
+			}
+
+			::-webkit-scrollbar {
+				width: 6px;
+			}
+
+			::-webkit-scrollbar-track {
+				-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+				-webkit-border-radius: 10px;
+				border-radius: 10px;
+			}
+
+			::-webkit-scrollbar-thumb {
+				border-radius: 5px;
+				background: #757575;
+				-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+			}
+
+			::-webkit-scrollbar-thumb:window-inactive {
+				background: #b9b9b9;;
+			}
+		</style>
+
+		<div id="container">
+			<div> <!-- This wrapper div makes the width behave as expected. -->
+				<paper-menu selected="{{selectedBase}}" attr-for-selected="data-base">
+					<template is="dom-repeat" items="[[advertisements]]" as="advertisement" sort="adSort">
+						<div class="ad" data-base$="[[advertisement.base]]">
+							<iron-icon class="ad-icon" icon="[[calcAdIcon(advertisement.ext)]]"></iron-icon>
+							<div title="[[advertisement.base]]" class="ad-filename">[[advertisement.base]]</div>
+							<paper-progress class="ad-loadprogress"></paper-progress>
+						</div>
+					</template>
+				</paper-menu>
+			</div>
+
+			<div> <!-- This wrapper div makes the width behave as expected. -->
+				<div id="preview">
+					<span id="status">[[calcStatus(adState)]]</span>
+					<img id="previewImage" src="" hidden>
+					<video id="previewVideo" controls muted hidden></video>
+					<span>[[selectedAd.base]]</span>
+					<span>[[calcAdTypeDisplay(selectedAd.ext)]]</span>
+				</div>
+			</div>
+		</div>
+
+		<div id="playbackControls">
+			<paper-button id="play" class="nodecg-success" raised on-tap="play"
+						  disabled="[[calcPlayButtonDisabled(_playTimeout, selectedAd)]]">
+				<iron-icon icon="av:play-arrow"></iron-icon>
+				<span>Play Selected Ad</span>
+			</paper-button>
+			<paper-button class="nodecg-danger" raised on-tap="stop"
+						  disabled="[[!playing]]">
+				<iron-icon icon="av:stop"></iron-icon>
+				Stop
+			</paper-button>
+		</div>
+	</template>
+
+	<script src="gdq-advertisements.js"></script>
+</dom-module>

@@ -1,0 +1,87 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+
+	"properties": {
+		"useMockData": {
+			"type": "boolean",
+			"description": "Whether or not to use mock data instead of the real tracker API. If true, pulls from Lange's Dropbox.",
+			"default": false
+		},
+		"displayDuration": {
+			"type": "number",
+			"description": "How long (in seconds) most things show on-screen for.",
+			"default": 10
+		},
+		"osc": {
+			"type": "object",
+			"properties": {
+				"address": {
+					"type": "string",
+					"description": "The IP address or hostname of a Behringer X32 digital mixer."
+				},
+				"gameAudioChannels": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"sd": {
+								"type": ["integer", "null"]
+							},
+							"hd": {
+								"type": ["integer", "null"]
+							}
+						}
+					},
+					"minItems": 4,
+					"maxItems": 4
+				}
+			},
+			"required": ["address", "gameAudioChannels"]
+		},
+		"twitter": {
+			"type": "object",
+			"properties": {
+				"userId": {
+					"type": "string",
+					"description": "The numeric userid of the Twitter account that owns these API keys. http://mytwitterid.com/"
+				},
+				"consumerKey": {
+					"type": "string"
+				},
+				"consumerSecret": {
+					"type": "string"
+				},
+				"accessTokenKey": {
+					"type": "string"
+				},
+				"accessTokenSecret": {
+					"type": "string"
+				}
+			},
+			"required": ["userId", "consumerKey", "consumerSecret", "accessTokenKey", "accessTokenSecret"]
+		},
+		"serialCOMName": {
+			"type": "string",
+			"description": "The COMName of the serial port to communicate timekeeping info with. Used with TestRunner's timerbox."
+		},
+		"streamTitle": {
+			"type": "string",
+			"description": "The template used to set the title of the stream whenever the current run changes."
+		},
+		"tracker": {
+			"type": "object",
+			"properties": {
+				"username": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				}
+			},
+			"description": "Login information for the private areas of the tracker API.",
+			"required": ["username", "password"]
+		}
+	},
+	"required": ["tracker"]
+}

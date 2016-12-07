@@ -1,0 +1,231 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+<link rel="import" href="../../components/iron-icons/editor-icons.html">
+<link rel="import" href="../../components/iron-icons/av-icons.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../components/paper-input/paper-input.html">
+
+<dom-module id="gdq-timekeeper">
+	<template>
+		<style>
+			:host {
+				@apply(--layout-vertical);
+				width: 914px;
+				font-family: 'roboto';
+				white-space: nowrap;
+				height: 100%;
+				position: absolute;
+			}
+
+			.green {
+				--bg-color: #43ac6a;
+			}
+
+			.yellow {
+				--bg-color: #e99002;
+			}
+
+			.purple {
+				--bg-color: #a50074;
+			}
+
+			.gray {
+				--bg-color: #555555;
+			}
+
+			:host[checklist-incomplete] #timer {
+				background-color: #ff6d6b;
+				color: white;
+			}
+
+			#timer {
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				@apply(--layout-around-justified);
+				font-weight: 700;
+			}
+
+			#timer .timer-wing {
+				font-size: 20px;
+				color: black;
+			}
+
+			#timer-time {
+				font-size: 90px;
+			}
+
+			#timerButtons {
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				height: 95px;
+				border-bottom: 2px solid black;
+				padding: 0 16px;
+			}
+
+			#timerButtons paper-button {
+				@apply(--layout-flex);
+				height: 55px;
+			}
+
+			.runner {
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				@apply(--layout-justified);
+				flex-basis: 130px;
+				padding-left: 26px;
+				padding-right: 8px;
+				flex-grow: 1;
+				flex-shrink: 1;
+			}
+
+			.runner:nth-child(even) {
+				background-color: #dedede;
+			}
+
+			.runner-info {
+				@apply(--layout-vertical);
+				line-height: 1;
+			}
+
+			.runner-info-name {
+				font-size: 30px;
+				font-weight: 500;
+			}
+
+			.runner-info-status {
+				font-size: 48px;
+				color: #adadad;
+				font-weight: 700;
+			}
+
+			.runner-info-status.finished {
+				color: #43ac6a;
+			}
+
+			.runner-buttons {
+				@apply(--layout-horizontal);
+			}
+
+			.runner-buttons paper-button {
+				width: 150px;
+				height: 73px;
+			}
+
+			.runner-empty {
+				font-size: 48px;
+				color: #adadad;
+			}
+
+			iron-icon {
+				--iron-icon-height: 42px;
+				--iron-icon-width: 42px;
+			}
+
+			#timerButtons paper-button,
+			.runner paper-button {
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+				--paper-button: {
+					color: white;
+					padding: 0;
+					font-size: 21px;
+					background-color: var(--bg-color);
+				}
+			}
+		</style>
+
+		<div id="timer">
+			<span class="timer-wing">[[calcWingText(checklistIncomplete, coop)]]</span>
+			<span id="timer-time">[[time]]</span>
+			<span class="timer-wing">[[calcWingText(checklistIncomplete, coop)]]</span>
+		</div>
+
+		<div id="timerButtons">
+			<paper-button raised class="green" on-tap="startTimer" disabled="[[calcStartDisabled(checklistIncomplete, state)]]">
+				<iron-icon icon="av:play-arrow" title="Start/Resume All"></iron-icon>
+				&nbsp;Start
+			</paper-button>
+
+			<paper-button raised class="yellow" on-tap="stopTimer" disabled="[[calcPauseDisabled(state)]]">
+				<iron-icon icon="av:pause" title="Pause Timer"></iron-icon>
+				&nbsp;Pause
+			</paper-button>
+
+			<paper-button raised class="purple" on-tap="confirmReset">
+				<iron-icon icon="refresh" title="Reset"></iron-icon>
+				&nbsp;Reset
+			</paper-button>
+
+			<paper-button raised class="purple" on-tap="editMasterTime" disabled="[[checklistIncomplete]]">
+				<iron-icon icon="editor:mode-edit" title="Edit"></iron-icon>
+				&nbsp;Edit
+			</paper-button>
+		</div>
+
+		<paper-dialog id="resetDialog" with-backdrop>
+			<p>
+				Are you sure you want to reset the timer and each runner's final time? This cannot be undone!
+			</p>
+			<div class="buttons">
+				<paper-button dialog-confirm on-tap="resetTimer">Yes, reset</paper-button>
+				<paper-button dialog-dismiss autofocus>No, do not reset</paper-button>
+			</div>
+		</paper-dialog>
+
+		<paper-dialog id="editDialog" with-backdrop>
+			<p id="editDialog-text"></p>
+			<paper-input id="editDialog-input" label="Final Time" placeholder="00:00:00" auto-validate
+						 prevent-invalid-input allowed-pattern="[0-9:]"></paper-input>
+			<div class="buttons">
+				<paper-button dialog-confirm on-tap="saveEditedTime">Save</paper-button>
+				<paper-button dialog-dismiss autofocus>Cancel</paper-button>
+			</div>
+		</paper-dialog>
+
+		<template is="dom-repeat" items="[[runners]]" as="runner">
+			<div class="runner" data-index$="[[index]]" data-name$="[[runner.name]]">
+				<template is="dom-if" if="[[runner]]">
+					<div class="runner-info">
+						<div class="runner-info-name">[[runner.name]]</div>
+						<div class$="runner-info-status [[calcRunnerStatusClass(results, index)]]">
+							[[calcRunnerStatus(results, index)]]
+						</div>
+					</div>
+
+					<div class="runner-buttons">
+						<paper-button raised class="green" on-tap="finishRunner"
+									  hidden="[[calcFinishHidden(results, index)]]">
+							<iron-icon src="img/flag-checkered.svg"></iron-icon>
+							&nbsp;Finish
+						</paper-button>
+
+						<paper-button raised class="yellow" on-tap="resumeRunner"
+									  hidden="[[calcResumeHidden(results, index)]]">
+							<iron-icon icon="undo"></iron-icon>
+							&nbsp;Resume
+						</paper-button>
+
+						<paper-button raised class="gray" on-tap="forfeitRunner"
+									  hidden="[[calcForfeitHidden(results, index)]]">
+							<iron-icon icon="cancel"></iron-icon>
+							&nbsp;Forfeit
+						</paper-button>
+
+						<paper-button raised class="purple" on-tap="editRunnerTime"
+									  disabled="[[calcEditDisabled(results, index)]]">
+							<iron-icon icon="editor:mode-edit"></iron-icon>
+							&nbsp;Edit
+						</paper-button>
+					</div>
+				</template>
+
+				<template is="dom-if" if="[[!runner]]">
+					<div class="runner-empty">- EMPTY SLOT -</div>
+				</template>
+			</div>
+		</template>
+	</template>
+
+	<script src="gdq-timekeeper.js"></script>
+</dom-module>

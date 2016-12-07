@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Interview</title>
+	<link rel="stylesheet" href="style/layout.css">
+	<!-- TODO: change this to bower_components route, less confusing -->
+	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
+
+	<link rel="import" href="components/gdq-lowerthird/gdq-lowerthird.html">
+</head>
+<body>
+	<div id="container">
+		<gdq-lowerthird num-names="4"></gdq-lowerthird>
+	</div>
+
+	<script>
+		window.addEventListener('DOMContentLoaded', () => {
+			TweenLite.to(document.body, 0.333, {
+				opacity: 1,
+				ease: Power1.easeOut
+			});
+		});
+	</script>
+</body>
+</html>

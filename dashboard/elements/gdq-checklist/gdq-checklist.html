@@ -1,0 +1,106 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/paper-checkbox/paper-checkbox.html">
+
+<dom-module id="gdq-checklist">
+	<template>
+		<style>
+			:host {
+				@apply(--layout-vertical);
+			}
+
+			.header {
+				font-size: 13px;
+				font-weight: 500;
+				border-bottom: 1px solid black;
+				margin-bottom: 5px;
+			}
+
+			.group {
+				@apply(--layout-horizontal);
+				padding: 0 15px;
+			}
+
+			.group.horizontal {
+				@apply(--layout-justified);
+			}
+
+			.columns {
+				@apply(--layout-horizontal);
+			}
+
+			.columns > * {
+				@apply(--layout-flex);
+				margin: 0 7px;
+			}
+
+			.columns > :first-child {
+				margin-left: 0;
+			}
+
+			.columns > :first-child .group {
+				padding-left: 15px;
+			}
+
+			.columns > :last-child {
+				margin-right: 0;
+			}
+
+			.columns > :last-child .group {
+				padding-right: 15px;
+			}
+
+			.columns .group {
+				@apply(--layout-vertical);
+				padding: 0 8px;
+			}
+
+			paper-checkbox {
+				border: 1px solid black;
+				height: 39px;
+				display: flex;
+				align-items: center;
+				border-radius: 3px;
+				padding: 0 12px;
+				margin-top: 5px;
+				width: 209px; /* hardcoded! */
+				--paper-checkbox-checked-color: #169b14;
+			}
+
+			paper-checkbox[checked] {
+				border: 1px solid transparent;
+				background-color: #9bd470;
+			}
+		</style>
+
+		<section style="margin-bottom: 11px;">
+			<div class="header">Extra Content</div>
+			<div class="group horizontal">
+				<template is="dom-repeat" items="[[extraContent]]">
+					<paper-checkbox category="extraContent" checked="{{item.complete}}">[[item.name]]</paper-checkbox>
+				</template>
+			</div>
+		</section>
+
+		<div class="columns">
+			<section>
+				<div class="header">Tech Station Duties</div>
+				<div class="group">
+					<template is="dom-repeat" items="[[techStationDuties]]">
+						<paper-checkbox category="techStationDuties" checked="{{item.complete}}">[[item.name]]</paper-checkbox>
+					</template>
+				</div>
+			</section>
+
+			<section>
+				<div class="header">Other Duties</div>
+				<div class="group">
+					<template is="dom-repeat" items="[[otherDuties]]">
+						<paper-checkbox category="otherDuties" checked="{{item.complete}}">[[item.name]]</paper-checkbox>
+					</template>
+				</div>
+			</section>
+		</div>
+	</template>
+
+	<script src="gdq-checklist.js"></script>
+</dom-module>

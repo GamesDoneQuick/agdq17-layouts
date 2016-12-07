@@ -1,0 +1,260 @@
+<!-- TODO: change this to bower_components route, less confusing -->
+<link rel="import" href="../../components/polymer/polymer.html">
+
+<dom-module id="gdq-omnibar">
+	<template>
+		<style>
+			:host {
+				display: flex;
+				width: 1280px;
+				height: 55px;
+				background: url("img/background.png");
+				color: white;
+			}
+
+			#gdqLogo {
+				width: 119px;
+				height: 100%;
+				z-index: 3;
+				overflow:hidden;
+				background: url("img/logo-gdq.png") no-repeat;
+				flex-shrink: 0;
+			}
+
+			#gdqLogo.animate {
+				animation: shine 767ms steps(46);
+			}
+
+			@keyframes shine {
+				from { background-position: 0; }
+				to { background-position: -5474px; } /* <-- width of spritesheet */
+			}
+
+			#body {
+				display: flex;
+				flex-grow: 1;
+				height: 100%;
+				overflow: hidden;
+				position: relative;
+			}
+
+			#topBorder {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 1px;
+				width: 100%;
+				background: black;
+				z-index: 4;
+			}
+
+			#labelShadow {
+				position: absolute;
+				left: 20px;
+				transform: translateX(-115%) rotate(0.01deg);
+			}
+
+			#label {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				height: 100%;
+				width: 145px;
+				z-index: 2;
+				margin-right: 31px;
+				flex-shrink: 0;
+				margin-top: 1px;
+			}
+
+			#labelRibbon1 {
+				width: 171px;
+			}
+
+			#labelRibbon2 {
+				width: 176px;
+			}
+
+			#labelRibbon3 {
+				width: 181px;
+			}
+
+			#labelRibbon2:before,
+			#labelRibbon2:after {
+				background-color: #523663;
+			}
+
+			.label-ribbon {
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				margin-left: -20px;
+				transform: translateX(-115%) rotate(0.01deg);
+			}
+
+			.label-ribbon:before,
+			.label-ribbon:after {
+				content: '';
+				width: 100%;
+				height: 50%;
+				background-color: #80397d;
+			}
+
+			.label-ribbon:before {
+				transform: skewX(24deg);
+			}
+
+			.label-ribbon:after {
+				transform: skewX(-24deg);
+			}
+
+			#labelText {
+				position: relative;
+				top: -3px;
+				left: 3px;
+				font-size: 28px;
+				font-weight: 900;
+				line-height: 1;
+				text-align: center;
+				opacity: 0;
+			}
+
+			#main {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: flex-start;
+				line-height: 1;
+				white-space: nowrap;
+				z-index: 1;
+				min-width: 1px; /* needed for fitMainText method */
+			}
+
+			#mainLine1 {
+				font-weight: 600;
+				font-size: 16px;
+				transform-origin: left;
+				transform: rotate(0.01deg);
+			}
+
+			#mainLine2 {
+				font-weight: 700;
+				font-size: 31px;
+				transform-origin: left;
+				transform: rotate(0.01deg);
+			}
+
+			#cta {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: 100%;
+				height: calc(100% - 1px);
+				margin-top: 1px;
+				font-size: 31px;
+				transform: translateY(100%);
+			}
+
+			#cta > div {
+				line-height: 54px;
+				flex-shrink: 0;
+			}
+
+			#total {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				height: 100%;
+				margin-left: 34px;
+			}
+
+			#total-ribbon1 {
+				background-color: #80397d;
+			}
+
+			#total-ribbon2 {
+				padding-left: 5px;
+				background-color: #523663;
+			}
+
+			#total-ribbon3 {
+				padding-left: 10px;
+				-webkit-filter: drop-shadow(-11px 0px 27px black);
+				background-color: #80397d;
+			}
+
+			.total-ribbon {
+				position: absolute;
+				top: 0;
+				right: 0;
+				height: 100%;
+				width: calc(100% + 22px);
+				margin-right: -13px;
+			}
+
+			#totalText {
+				display: flex;
+				position: relative;
+				top: -3px;
+				font-size: 30px;
+				font-weight: 700;
+				font-variant-numeric: tabular-nums;
+				font-feature-settings: "tnum";
+				align-items: baseline;
+			}
+
+			#totalTextDollars {
+				position: relative;
+				bottom: 3px;
+				font-size: 18px;
+			}
+
+			#charityLogo {
+				z-index: 1;
+			}
+
+			.highlight {
+				color: #00d8ff;
+			}
+		</style>
+
+		<div id="gdqLogo"></div>
+		<div id="body">
+			<img id="labelShadow" src="img/label-shadow.png">
+			<div id="label">
+				<div id="labelRibbon3" class="label-ribbon"></div>
+				<div id="labelRibbon2" class="label-ribbon"></div>
+				<div id="labelRibbon1" class="label-ribbon"></div>
+				<div id="labelText" class="shadow"></div>
+			</div>
+			<div id="main">
+				<div id="mainLine1" class="shadow"></div>
+				<div id="mainLine2" class="shadow"></div>
+			</div>
+			<div id="cta">
+				<div class="shadow"><span class="highlight">#HASHTAG</span> benefits CHARITY NAME</div>
+				<div class="shadow">Make your donation at <span class="highlight">WEBSITE.COM</span></div>
+			</div>
+		</div>
+		<div id="total">
+			<div id="total-ribbon3" class="total-ribbon"></div>
+			<div id="total-ribbon2" class="total-ribbon"></div>
+			<div id="total-ribbon1" class="total-ribbon"></div>
+			<div id="totalText" class="shadow">
+				<div id="totalTextDollars">$</div>
+				<div id="totalTextAmount"></div>
+			</div>
+		</div>
+		<img id="charityLogo" src="img/logo-charity.png">
+		<div id="topBorder"></div>
+	</template>
+
+	<script src="gdq-omnibar.js"></script>
+</dom-module>
