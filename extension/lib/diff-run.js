@@ -123,7 +123,11 @@ function mergeChangesFromTracker(run, unmodifiedRun) {
 				break;
 			case 'N':
 				if (typeof difference.rhs === 'object') {
-					merge(run, difference.rhs);
+					if (difference.path) {
+						merge(objectPath.get(run, pathBase)[pathTip], difference.rhs);
+					} else {
+						merge(run, difference.rhs);
+					}
 				} else {
 					objectPath.set(run, difference.path, difference.rhs);
 				}
