@@ -161,8 +161,8 @@ module.exports = function (nodecg) {
 		// Parse emoji.
 		tweet.text = twemoji.parse(tweet.text);
 
-		// Highlight the #SGDQ2016 hashtag.
-		tweet.text = tweet.text.replace(/#sgdq2016/ig, '<span class="hashtag">#SGDQ2016</span>');
+		// Highlight the #AGDQ2017 hashtag.
+		tweet.text = tweet.text.replace(/#agdq2017/ig, '<span class="hashtag">#AGDQ2017</span>');
 
 		// Add the tweet to the list
 		tweets.value.push(tweet);
