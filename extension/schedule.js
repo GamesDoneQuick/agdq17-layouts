@@ -35,6 +35,7 @@ module.exports = function (nodecg) {
 					lastLongName = newVal.longName;
 					twitchApi.put('/channels/{{username}}', {
 						channel: {
+							// eslint-disable-next-line no-template-curly-in-string
 							status: nodecg.bundleConfig.streamTitle.replace('${gameName}', newVal.longName),
 							game: newVal.longName
 						}

@@ -2,7 +2,7 @@
 	'use strict';
 
 	const TRANSITION_DURATION = 1.2;
-	const DESCRIPTION_TRANSITION_DURATON = TRANSITION_DURATION / 2 - 0.1;
+	const DESCRIPTION_TRANSITION_DURATON = (TRANSITION_DURATION / 2) - 0.1;
 	const currentPrizes = nodecg.Replicant('currentPrizes');
 	const displayDuration = nodecg.bundleConfig.displayDuration;
 

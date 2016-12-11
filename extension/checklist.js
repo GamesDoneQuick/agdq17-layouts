@@ -38,7 +38,7 @@ module.exports = function (nodecg) {
 		const mergedChecklist = clone(checklistDefault);
 
 		for (const category in checklistDefault) {
-			if (!checklistDefault.hasOwnProperty(category)) {
+			if (!{}.hasOwnProperty.call(checklistDefault, category)) {
 				continue;
 			}
 
@@ -62,7 +62,7 @@ module.exports = function (nodecg) {
 		let foundIncompleteTask = false;
 
 		for (const category in newVal) {
-			if (!newVal.hasOwnProperty(category)) {
+			if (!{}.hasOwnProperty.call(newVal, category)) {
 				continue;
 			}
 
@@ -79,7 +79,7 @@ module.exports = function (nodecg) {
 	return {
 		reset() {
 			for (const category in checklist.value) {
-				if (!checklist.value.hasOwnProperty(category)) {
+				if (!{}.hasOwnProperty.call(checklist.value, category)) {
 					continue;
 				}
 

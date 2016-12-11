@@ -91,7 +91,6 @@ module.exports = function (nodecg) {
 				return;
 			}
 
-
 			// The response from the tracker is flat. This is okay for donation incentives, but it requires
 			// us to do some extra work to figure out what the options are for donation wars that have multiple
 			// options.
@@ -153,7 +152,7 @@ module.exports = function (nodecg) {
 			// While we're at it, map all the parent bids back onto an array.
 			const bidsArray = [];
 			for (const id in parentBidsById) {
-				if (!parentBidsById.hasOwnProperty(id)) {
+				if (!{}.hasOwnProperty.call(parentBidsById, id)) {
 					continue;
 				}
 

@@ -135,7 +135,7 @@ function mergeChangesFromTracker(run, unmodifiedRun) {
 				} else {
 					for (const key in difference.lhs) {
 						/* istanbul ignore if */
-						if (!difference.lhs.hasOwnProperty(key)) {
+						if (!{}.hasOwnProperty.call(difference.lhs, key)) {
 							continue;
 						}
 
