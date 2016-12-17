@@ -179,8 +179,16 @@
 			const aMapIndex = this._sortMapVal.indexOf(a.id_str);
 			const bMapIndex = this._sortMapVal.indexOf(b.id_str);
 
+			if (aMapIndex >= 0 && bMapIndex < 0) {
+				return -1;
+			}
+
+			if (aMapIndex < 0 && bMapIndex >= 0) {
+				return 1;
+			}
+
 			// If neither of these replies are in the sort map, just leave them where they are.
-			if (aMapIndex === 0 && bMapIndex === 0) {
+			if (aMapIndex < 0 && bMapIndex < 0) {
 				return 0;
 			}
 

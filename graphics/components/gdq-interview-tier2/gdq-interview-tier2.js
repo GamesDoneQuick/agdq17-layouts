@@ -34,25 +34,33 @@
 
 			questions.on('change', newVal => {
 				this.replies = newVal.slice(0);
+				this.$.repeat.render();
 			});
 
 			questionSortMap.on('change', (newVal, oldVal, operations) => {
 				// If the new sortMap is equal to the currently rendered sort order, do nothing.
-				if (JSON.stringify(newVal) === JSON.stringify(this._sortableListOrder)) {
+				if (JSON.stringify(newVal.slice(1)) === JSON.stringify(this._sortableListOrder)) {
 					return;
 				}
 
 				this._sortMapVal = newVal.slice(0);
-
 				this.$.repeat.render();
 
 				if (this.$.list.items) {
 					this.$.list.items.sort((a, b) => {
-						const aMapIndex = newVal.indexOf(a.tweetId);
-						const bMapIndex = newVal.indexOf(b.tweetId);
+						const aMapIndex = newVal.indexOf(a.id_str);
+						const bMapIndex = newVal.indexOf(b.id_str);
+
+						if (aMapIndex >= 0 && bMapIndex < 0) {
+							return -1;
+						}
+
+						if (aMapIndex < 0 && bMapIndex >= 0) {
+							return 1;
+						}
 
 						// If neither of these replies are in the sort map, just leave them where they are.
-						if (aMapIndex === 0 && bMapIndex === 0) {
+						if (aMapIndex < 0 && bMapIndex < 0) {
 							return 0;
 						}
 
@@ -62,6 +70,10 @@
 
 				if (newVal.length > 0) {
 					this._flashBgIfAppropriate(operations);
+				}
+
+				if (!this._sortableListOrder) {
+					this._sortableListOrder = newVal.slice(0);
 				}
 			});
 
@@ -97,6 +109,16 @@
 			});
 		},
 
+		calcListReplies(replies, _sortMapVal) {
+			if (!_sortMapVal) {
+				return [];
+			}
+
+			return replies.filter(reply => {
+				return _sortMapVal.indexOf(reply.id_str) !== 0;
+			});
+		},
+
 		onScreenTweetChanged(newVal, oldVal) {
 			if (newVal && oldVal && newVal.id_str === oldVal.id_str) {
 				return;
@@ -126,60 +148,82 @@
 			nodecg.sendMessage('interview:markQuestionAsDone', this.onScreenTweet.id_str);
 		},
 
-		calcPromoteDisabled(tweet, _sortMapVal) {
-			const sortIndex = _sortMapVal.indexOf(tweet.id_str);
-			if (sortIndex === -1) {
-				return false;
-			}
-
-			return sortIndex === 0;
-		},
-
-		calcDemoteDisabled(tweet, _sortMapVal) {
-			const sortIndex = _sortMapVal.indexOf(tweet.id_str);
-			if (sortIndex === -1) {
-				return false;
-			}
-
-			return sortIndex >= _sortMapVal.length - 1;
-		},
-
 		_handleSortList() {
-			let newSortOrder = this.$.list.items.map(item => item.tweetId);
-			newSortOrder = questionSortMap.value.slice(0, 1).concat(newSortOrder);
+			const newSortOrder = this.$.list.items.map(item => item.tweetId);
 			this._sortableListOrder = newSortOrder;
-			questionSortMap.value = newSortOrder;
+			this.$.repeat._instances.sort((a, b) => {
+				const aMapIndex = newSortOrder.indexOf(a.__data__.reply.id_str);
+				const bMapIndex = newSortOrder.indexOf(b.__data__.reply.id_str);
+
+				if (aMapIndex >= 0 && bMapIndex < 0) {
+					return -1;
+				}
+
+				if (aMapIndex < 0 && bMapIndex >= 0) {
+					return 1;
+				}
+
+				// If neither of these replies are in the sort map, just leave them where they are.
+				if (aMapIndex < 0 && bMapIndex < 0) {
+					return 0;
+				}
+
+				return aMapIndex - bMapIndex;
+			});
+			questionSortMap.value = questionSortMap.value.slice(0, 1).concat(newSortOrder);
 		},
 
 		mapSort(a, b) {
+			if (!this._sortMapVal) {
+				return 0;
+			}
+
 			const aMapIndex = this._sortMapVal.indexOf(a.id_str);
 			const bMapIndex = this._sortMapVal.indexOf(b.id_str);
 
+			if (aMapIndex >= 0 && bMapIndex < 0) {
+				return -1;
+			}
+
+			if (aMapIndex < 0 && bMapIndex >= 0) {
+				return 1;
+			}
+
 			// If neither of these replies are in the sort map, just leave them where they are.
-			if (aMapIndex === 0 && bMapIndex === 0) {
+			if (aMapIndex < 0 && bMapIndex < 0) {
 				return 0;
 			}
 
 			return aMapIndex - bMapIndex;
 		},
 
-		excludeFirstQuestion(questionTweet) {
-			if (!this._sortMapVal) {
+		/* Disabled for now. Can't get drag sort and button sort to work simultaneously.
+		calcPromoteDisabled(tweet, _sortableListOrder) {
+			const sortIndex = _sortableListOrder.indexOf(tweet.id_str);
+			if (sortIndex === -1) {
 				return false;
 			}
 
-			return this._sortMapVal.indexOf(questionTweet.id_str) !== 0;
+			return sortIndex <= 1;
+		},
+
+		calcDemoteDisabled(tweet, _sortableListOrder) {
+			const sortIndex = _sortableListOrder.indexOf(tweet.id_str);
+			if (sortIndex === -1) {
+				return false;
+			}
+
+			return sortIndex >= _sortableListOrder.length - 1;
+		},
+
+		promote(e) {
+			nodecg.sendMessage('promoteQuestion', e.model.reply.id_str);
+		},
+
+		demote(e) {
+			nodecg.sendMessage('demoteQuestion', e.model.reply.id_str);
 		}
-
-		/* Disabled for now. Can't get drag sort and button sort to work simultaneously.
-		 promote(e) {
-		 nodecg.sendMessage('promoteQuestion', e.model.reply.id_str);
-		 },
-
-		 demote(e) {
-		 nodecg.sendMessage('demoteQuestion', e.model.reply.id_str);
-		 },
-		 */
+		*/
 	});
 
 	/**

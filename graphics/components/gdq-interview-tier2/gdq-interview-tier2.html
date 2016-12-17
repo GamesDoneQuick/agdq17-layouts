@@ -3,7 +3,7 @@
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../components/paper-material/paper-material.html">
-<link rel="import" href="../../components/sortable-list/sortable-list.html">
+<link rel="import" href="../sortable-list/sortable-list.html">
 <link rel="import" href="../gdq-tweet/gdq-tweet.html">
 
 <dom-module id="gdq-interview-tier2">
@@ -165,12 +165,12 @@
 
 		<div class="header">APPROVED QUESTIONS</div>
 		<sortable-list id="list" sortable=".tweet" on-sort-list="_handleSortList">
-			<template id="repeat" is="dom-repeat" items="[[replies]]" as="reply" filter="excludeFirstQuestion" sort="mapSort">
+			<template id="repeat" is="dom-repeat" items="[[calcListReplies(replies, _sortMapVal)]]" as="reply" sort="mapSort">
 				<div class="tweet" tweet-id="[[reply.id_str]]">
 					<paper-material class="tweet-material bg-color-transition" elevation="1">
 						<gdq-tweet class="tweet-content" tweet="[[reply]]"></gdq-tweet>
 
-						<div class="tweet-buttons">
+						<!--<div class="tweet-buttons">
 							<paper-button
 								raised
 								on-tap="promote"
@@ -186,7 +186,7 @@
 								disabled="[[calcDemoteDisabled(reply, _sortMapVal)]]">
 								<iron-icon icon="arrow-drop-down"></iron-icon>
 							</paper-button>
-						</div>
+						</div>-->
 					</paper-material>
 				</div>
 			</template>
