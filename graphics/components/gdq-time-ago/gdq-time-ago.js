@@ -19,7 +19,7 @@
 	});
 
 	Polymer({
-		is: 'time-ago',
+		is: 'gdq-time-ago',
 
 		properties: {
 			timeago: {

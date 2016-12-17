@@ -3,7 +3,7 @@
 <link rel="import" href="../components/iron-icons/iron-icons.html">
 <link rel="import" href="../components/iron-image/iron-image.html">
 <link rel="import" href="../components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="time-ago.html">
+<link rel="import" href="/graphics/agdq17-layouts/components/gdq-time-ago/gdq-time-ago.html">
 
 <dom-module id="tweet-item">
 	<template>
@@ -127,7 +127,7 @@
 			<div id="tweet">
 				<header>
 					<a id="tweetLink" href="[[tweetUrl]]" target="_blank">
-						<time-ago id="timeAgo" datetime="[[value.created_at]]"></time-ago>
+						<gdq-time-ago id="timeAgo" datetime="[[value.created_at]]"></gdq-time-ago>
 					</a>
 
 					<a id="profileLink" href="[[profileUrl]]" target="_blank">

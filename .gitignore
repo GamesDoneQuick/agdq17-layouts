@@ -15,4 +15,6 @@ coverage
 /.idea/workspace.xml
 /.idea/shelf/
 
+firebase-credentials.json
+
 npm-debug.log

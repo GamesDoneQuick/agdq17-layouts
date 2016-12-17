@@ -1,0 +1,207 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../components/paper-material/paper-material.html">
+<link rel="import" href="../../components/sortable-list/sortable-list.html">
+<link rel="import" href="../gdq-tweet/gdq-tweet.html">
+
+<dom-module id="gdq-interview-tier2">
+	<template>
+		<style>
+			:host {
+				display: block;
+				padding: 0 6px;
+			}
+
+			/* sortable-list sets "position: fixed;" on things being dragged, so we must set a max-width
+			   on the tweets as well. */
+			:host,
+			.tweet {
+				width: 100%;
+				max-width: 756px;
+			}
+
+			#onScreen {
+				background-color: #ccffd2;
+				padding-left: 0;
+				padding-right: 10px;
+				padding-top: 5px;
+				padding-bottom: 7px;
+
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				@apply(--layout-flex);
+			}
+
+			#onScreen-tweet {
+				align-self: flex-start;
+				font-size: larger;
+				@apply(--layout-flex);
+			}
+
+			#buttons {
+				margin-top: 20px;
+				margin-bottom: 24px;
+				@apply(--layout-horizontal);
+				@apply(--layout-justified);
+			}
+
+			#buttons paper-button {
+				width: 325px;
+			}
+
+			#hideQuestion,
+			#endInterview {
+				--paper-button: {
+					background-color: #9e0b0f;
+				};
+			}
+
+			#showNext,
+			#showQuestion {
+				--paper-button: {
+					background-color: #137400;
+				};
+			}
+
+			#list {
+				@apply(--layout-vertical);
+			}
+
+			.header {
+				display: block;
+				width: 100%;
+				border-bottom: 1px solid black;
+				margin-bottom: 6px;
+				color: black;
+				font-size: 17px;
+				font-weight: 400;
+				line-height: 21px;
+				text-transform: uppercase;
+				padding-left: 4px;
+				box-sizing: border-box;
+			}
+
+			.tweet {
+				margin: 4px 0;
+			}
+
+			.tweet-material {
+				padding-left: 0;
+				padding-right: 6px;
+				padding-top: 5px;
+				padding-bottom: 7px;
+				background-color: #9966cc;
+				box-sizing: border-box;
+				@apply(--layout-horizontal);
+			}
+
+			.tweet-content {
+				@apply(--layout-flex);
+			}
+
+			.tweet-buttons {
+				width: 106px;
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+
+				/*  Disabled for now. Can't get drag sort and button sort to work simultaneously. */
+				display: none;
+			}
+
+			.tweet-buttons paper-button {
+				width: 46px;
+				height: 46px;
+				min-width: 46px;
+
+				--paper-button: {
+					background-color: #137400;
+				};
+
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+			}
+
+			.bg-color-transition {
+				transition: background-color 1600ms cubic-bezier(0.455, 0.03, 0.515, 0.955);;
+			}
+
+			iron-icon {
+				position: absolute;
+				--iron-icon-height: 60px;
+				--iron-icon-width: 60px;
+			}
+
+			paper-button {
+				height: 38px;
+				border-radius: 5px;
+				font-size: 18px;
+				color: white;
+			}
+		</style>
+
+		<div class="header">ON SCREEN</div>
+		<div>
+			<div id="placeholder" hidden="[[onScreenTweet]]">
+				There are no Twitter questions currently approved for use.
+			</div>
+
+			<paper-material id="onScreen" hidden="[[!onScreenTweet]]">
+				<gdq-tweet id="onScreen-tweet" tweet="[[onScreenTweet]]"></gdq-tweet>
+				<paper-button id="showQuestion" raised on-tap="showQuestion" hidden="[[_questionShowingVal]]">
+					Show
+				</paper-button>
+				<paper-button id="hideQuestion" raised on-tap="hideQuestion" hidden="[[!_questionShowingVal]]">
+					Hide
+				</paper-button>
+			</paper-material>
+
+			<div id="buttons">
+				<paper-button id="endInterview" raised on-tap="openEndInterviewDialog">End Interview</paper-button>
+				<paper-button id="showNext" raised on-tap="showNextQuestion">Show Next</paper-button>
+			</div>
+		</div>
+
+		<div class="header">APPROVED QUESTIONS</div>
+		<sortable-list id="list" sortable=".tweet" on-sort-list="_handleSortList">
+			<template id="repeat" is="dom-repeat" items="[[replies]]" as="reply" filter="excludeFirstQuestion" sort="mapSort">
+				<div class="tweet" tweet-id="[[reply.id_str]]">
+					<paper-material class="tweet-material bg-color-transition" elevation="1">
+						<gdq-tweet class="tweet-content" tweet="[[reply]]"></gdq-tweet>
+
+						<div class="tweet-buttons">
+							<paper-button
+								raised
+								on-tap="promote"
+								alt="Promote"
+								disabled="[[calcPromoteDisabled(reply, _sortMapVal)]]">
+								<iron-icon icon="arrow-drop-up"></iron-icon>
+							</paper-button>
+
+							<paper-button
+								raised
+								on-tap="demote"
+								alt="Demote"
+								disabled="[[calcDemoteDisabled(reply, _sortMapVal)]]">
+								<iron-icon icon="arrow-drop-down"></iron-icon>
+							</paper-button>
+						</div>
+					</paper-material>
+				</div>
+			</template>
+		</sortable-list>
+
+		<paper-dialog id="endInterviewDialog" with-backdrop>
+			<h2>End Interview</h2>
+			<p>Are you sure you wish to end this interview?</p>
+			<p>This will clear the current "prompt" tweet and prepare the interface for the next set of questions.</p>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-tap="endInterview">Accept</paper-button>
+			</div>
+		</paper-dialog>
+	</template>
+
+	<script src="gdq-interview-tier2.js"></script>
+</dom-module>

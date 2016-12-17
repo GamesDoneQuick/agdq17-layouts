@@ -12,6 +12,7 @@
     "clone": "^1.0.2",
     "deep-diff": "^0.3.4",
     "deep-equal": "^1.0.1",
+    "firebase-admin": "^4.0.4",
     "lodash.assign": "^4.0.9",
     "lodash.debounce": "^4.0.6",
     "lodash.merge": "^4.4.0",
@@ -115,6 +116,16 @@
     "graphics": [
       {
         "file": "timekeeping.html",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "file": "interview_monitor.html",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "file": "interview_moderate.html",
         "width": 1280,
         "height": 720
       },

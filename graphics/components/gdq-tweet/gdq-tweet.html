@@ -1,0 +1,103 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/iron-image/iron-image.html">
+<link rel="import" href="../gdq-time-ago/gdq-time-ago.html">
+
+<dom-module id="gdq-tweet">
+	<template>
+		<style>
+			:host {
+				position: relative;
+				padding-left: 64px;
+				padding-right: 10px;
+				min-height: 50px;
+
+				@apply(--layout-vertical);
+			}
+
+			#avatar {
+				position: absolute;
+				top: 3px;
+				left: 8px;
+				width: 48px;
+				height: 48px;
+				border-radius: 10%;
+			}
+
+			#profileLink {
+				word-break: break-word;
+				word-wrap: break-word;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			#profileLink:hover {
+				text-decoration: none;
+			}
+
+			#profileLink:hover #name {
+				color: #2b7bb9;
+				text-decoration: underline;
+			}
+
+			#name {
+				color: black;
+				font-weight: bold;
+				font-size: 16px;
+			}
+
+			#screenName,
+			#timeAgo {
+				color: #888;
+				font-size: 14px;
+			}
+
+			#tweetLink {
+				padding-left: 5px;
+				float: right;
+			}
+
+			#tweetLink:hover #timeAgo {
+				color: #2b7bb9;
+				text-decoration: underline;
+			}
+
+			a {
+				text-transform: none;
+				text-decoration: none;
+			}
+
+			img.emoji {
+				height: 1em;
+				width: 1em;
+				margin: 0 .05em 0 .1em;
+				vertical-align: -0.1em;
+			}
+
+			.hashtag {
+				color: #2f5b80;
+			}
+		</style>
+
+		<header>
+			<a id="tweetLink" href="[[tweetUrl]]" target="_blank">
+				<gdq-time-ago id="timeAgo" datetime="[[tweet.created_at]]"></gdq-time-ago>
+			</a>
+
+			<a id="profileLink" href="[[profileUrl]]" target="_blank">
+				<iron-image
+					id="avatar"
+					src="[[tweet.user.profile_image_url_https]]"
+					sizing="contain"
+					fade>
+				</iron-image>
+				<span id="name">[[tweet.user.name]]</span>
+				<span id="screenName">@[[tweet.user.screen_name]]</span>
+			</a>
+		</header>
+
+		<div id="body"></div>
+	</template>
+
+	<script src="gdq-tweet.js"></script>
+</dom-module>
