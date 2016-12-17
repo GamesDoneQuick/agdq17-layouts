@@ -124,6 +124,10 @@ module.exports = function (nodecg) {
 		});
 	});
 
+	/**
+	 * Fixes up the sort map by adding and new IDs and removing deleted IDs.
+	 * @returns {undefined}
+	 */
 	function updateQuestionSortMap() {
 		// To the sort map, add the IDs of any new question tweets.
 		questionTweetsRep.value.forEach(tweet => {
