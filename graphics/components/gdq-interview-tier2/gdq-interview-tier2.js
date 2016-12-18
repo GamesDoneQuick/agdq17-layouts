@@ -143,6 +143,10 @@
 			this.$.endInterviewDialog.open();
 		},
 
+		endInterview() {
+			nodecg.sendMessage('interview:end');
+		},
+
 		showNextQuestion() {
 			this.hideQuestion();
 			nodecg.sendMessage('interview:markQuestionAsDone', this.onScreenTweet.id_str);

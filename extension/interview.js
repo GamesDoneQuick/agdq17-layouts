@@ -124,6 +124,10 @@ module.exports = function (nodecg) {
 		});
 	});
 
+	nodecg.listenFor('interview:end', () => {
+		database.ref('/active_tweet_id').set(0);
+	});
+
 	/**
 	 * Fixes up the sort map by adding and new IDs and removing deleted IDs.
 	 * @returns {undefined}
