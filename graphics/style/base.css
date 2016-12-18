@@ -1,7 +1,7 @@
 @import 'font/montserrat.css';
 
 body {
-	font-family: 'montserrat';
+	font-family: montserrat, sans-serif;
 	margin: 0;
 	opacity: 0;
 }
@@ -23,11 +23,4 @@ body {
 #container {
 	position: absolute;
 	overflow: hidden;
-}
-
-img.emoji {
-	height: 1em;
-	width: 1em;
-	margin: 0 .05em 0 .1em;
-	vertical-align: -0.1em;
 }

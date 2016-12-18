@@ -27,17 +27,11 @@
 	z-index: 11;
 }
 
-#sponsorsAndTwitter {
-    position: absolute;
-    overflow: hidden;
-}
-
-.fullscreen {
-    position: absolute;
-    width: 1280px;
-    height: 665px;
-    top: 0;
-    left: 0;
+img.emoji {
+	height: 1em;
+	width: 1em;
+	margin: 0 .05em 0 .1em;
+	vertical-align: -0.1em;
 }
 
 .hashtag {

@@ -10,69 +10,167 @@
 	<link rel="import" href="elements/gdq-timer/gdq-timer.html">
 	<link rel="import" href="elements/gdq-twitter/gdq-twitter.html">
 	<link rel="import" href="elements/gdq-sponsors/gdq-sponsors.html">
-	<style is="custom-style">
-		gdq-nameplate {
-			top: 393px;
-			left: 11px;
-			--gdq-nameplate-width: 320px;
-		}
-
-		gdq-runinfo {
-			left: 0;
-			top: 0;
-			width: 397px;
-			height: 161px;
-			--gdq-runinfo-misc-height: 35px;
-		}
-
-		gdq-timer {
-			left: 0;
-			top: 420px;
-			height: 57px;
-			width: 397px;
-			font-size: 42px;
-			border-bottom: 1px solid #000000;
-			padding-top: 8px;
-			padding-bottom: 5px;
-		}
-
-		gdq-twitter {
-			bottom: 6px;
-			left: 0;
-			width: 398px;
-			height: 182px;
-
-			--gdq-twitter-body: {
-				font-size: 25px;
-				padding-top: 5px;
-			};
-			--gdq-twitter-namebar: {
-				width: 344px;
-				height: 50px;
-				margin-bottom: -12px;
-				padding-bottom: 12px;
-				font-size: 21px;
-			};
-		}
-
-		gdq-sponsors {
-			bottom: 6px;
-			left: 0;
-			width: 398px;
-			height: 182px;
-		}
-	</style>
 </head>
 <body>
 	<div id="container">
 		<img id="background" src="img/backgrounds/standard_1_bg.png">
-		<gdq-runinfo max-name-size="38"></gdq-runinfo>
-		<gdq-timer></gdq-timer>
-		<gdq-sponsors></gdq-sponsors>
-		<gdq-twitter></gdq-twitter>
-		<gdq-nameplate index="0"></gdq-nameplate>
+		<layout-app></layout-app>
 		<img id="foreground" src="img/backgrounds/standard_1_fg.png">
 	</div>
+
+	<dom-module id="layout-app">
+		<template>
+			<style is="custom-style">
+				gdq-runinfo {
+					left: 0;
+					top: 0;
+					width: 397px;
+					height: 161px;
+					--gdq-runinfo-misc-height: 35px;
+				}
+
+				#bottomLeft {
+					display: flex;
+					flex-direction: column;
+					position: absolute;
+					left: 7px;
+					top: 385px;
+					width: 383px;
+					height: 273px;
+				}
+
+				#runners {
+					display: flex;
+					flex-direction: column;
+					align-items: flex-start;
+					position: relative;
+					padding-left: 5px;
+					margin-bottom: -18px;
+				}
+
+				gdq-nameplate {
+					position: relative;
+					margin-bottom: 9px;
+					--gdq-nameplate-width: 320px;
+				}
+
+				gdq-timer {
+					position: relative;
+					height: 57px;
+					width: 100%;
+					font-size: 42px;
+					border-bottom: 1px solid #000000;
+					padding-top: 8px;
+					padding-bottom: 5px;
+				}
+
+				#sponsorsAndTwitter {
+					position: relative;
+					width: 100%;
+					flex-grow: 1;
+				}
+
+				gdq-twitter {
+					--gdq-twitter-body: {
+						font-size: 25px;
+						padding-top: 5px;
+					};
+					--gdq-twitter-namebar: {
+						width: 344px;
+						height: 50px;
+						margin-bottom: -12px;
+						padding-bottom: 12px;
+						font-size: 21px;
+					};
+				}
+
+				gdq-twitter,
+				gdq-sponsors {
+					width: 100%;
+					height: 100%;
+					top: 0;
+					left: 0;
+				}
+
+				/* One runner */
+				:host[num-runners="1"] #runners {
+					margin-top: 9px;
+				}
+
+				:host[num-runners="1"] gdq-nameplate:not([index="0"]) {
+					display: none;
+				}
+
+				/* Two runners */
+				:host[num-runners="2"] #runners {
+					margin-top: 11px;
+				}
+
+				:host[num-runners="2"] gdq-nameplate[index="2"],
+				:host[num-runners="2"] gdq-nameplate[index="3"] {
+					display: none;
+				}
+
+				/* Four runners */
+				:host[num-runners="4"] #runners {
+					margin-top: 18px;
+					margin-bottom: 0;
+				}
+
+				:host[num-runners="4"] #sponsorsAndTwitter {
+					display: none;
+				}
+
+				:host[num-runners="4"] gdq-timer {
+					padding-top: 0;
+				}
+			</style>
+
+
+			<gdq-runinfo max-name-size="38"></gdq-runinfo>
+			<div id="bottomLeft">
+				<div id="runners">
+					<gdq-nameplate index="0"></gdq-nameplate>
+					<gdq-nameplate index="1"></gdq-nameplate>
+					<gdq-nameplate index="2"></gdq-nameplate>
+					<gdq-nameplate index="3"></gdq-nameplate>
+				</div>
+				<gdq-timer></gdq-timer>
+				<div id="sponsorsAndTwitter">
+					<gdq-sponsors></gdq-sponsors>
+					<gdq-twitter></gdq-twitter>
+				</div>
+			</div>
+		</template>
+
+		<script>
+			const currentRun = nodecg.Replicant('currentRun');
+
+			Polymer({
+				is: 'layout-app',
+
+				properties: {
+					numRunners: {
+						type: Number,
+						reflectToAttribute: true,
+						value: 1
+					}
+				},
+
+				ready() {
+					currentRun.on('change', newVal => {
+						if (!newVal) {
+							return;
+						}
+
+						if (newVal.runners.length !== 3) {
+							this.numRunners = newVal.runners.length;
+						}
+					});
+				}
+			});
+		</script>
+	</dom-module>
 
 	<script>
 		window.addEventListener('DOMContentLoaded', () => {
