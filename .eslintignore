@@ -1,4 +1,4 @@
 node_modules
 bower_components
 coverage
-/graphics/components/sortable-list
+/graphics/elements/sortable-list

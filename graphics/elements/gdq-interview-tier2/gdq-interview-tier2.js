@@ -199,7 +199,7 @@
 			}
 
 			return aMapIndex - bMapIndex;
-		},
+		}
 
 		/* Disabled for now. Can't get drag sort and button sort to work simultaneously.
 		calcPromoteDisabled(tweet, _sortableListOrder) {
