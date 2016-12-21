@@ -21,22 +21,7 @@ Audio indicator comes out from side opposide placement indicator
 				height: 35px;
 				font-size: 25px;
 				text-transform: uppercase;
-				background: url("img/center.png");
 				z-index: 1;
-			}
-
-			:host:before {
-				content: '';
-				height: 100%;
-				width: 10px;
-				background: url("img/left.png");
-			}
-
-			:host:after {
-				content: '';
-				height: 100%;
-				width: 10px;
-				background: url("img/right.png");
 			}
 
 			#audio {
@@ -58,15 +43,39 @@ Audio indicator comes out from side opposide placement indicator
 				height: 33px;
 			}
 
+			#main {
+				width: var(--gdq-nameplate-width);
+				height: 100%;
+				@apply(--layout-horizontal);
+			}
+
+			#leftCap {
+				height: 100%;
+				width: 14px;
+				background: url("img/left.png");
+			}
+
+			#rightCap {
+				height: 100%;
+				width: 14px;
+				background: url("img/right.png");
+			}
+
+			#body {
+				height: 100%;
+				background: url("img/center.png");
+				flex: 1;
+				min-width: 1px; /* needed to prevent overflow */
+			}
+
 			#names {
 				position: relative;
 				top: 2px;
 				display: flex;
 				justify-content: center;
-				flex-grow: 1;
+				flex: 1;
 				white-space: nowrap;
 				padding: 0 16px;
-				width: var(--gdq-nameplate-width);
 				font-weight: 600;
 				opacity: 0;
 			}
@@ -74,15 +83,6 @@ Audio indicator comes out from side opposide placement indicator
 			#namesTwitch span {
 				display: inline-block;
 				transform-origin: left;
-			}
-
-			#boxShadow {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: -2;
 			}
 
 			#timeClip {
@@ -170,35 +170,12 @@ Audio indicator comes out from side opposide placement indicator
 			}
 
 			/* attachment styles */
-			:host[attach-left]:before {
-				content: none;
-			}
-
-			:host[attach-right]:after {
-				content: none;
-			}
-
-			:host[attach-left]:after {
-				order: 2;
-			}
-
-			:host[attach-left] #boxShadow {
-				position: absolute;
-				left: -4px;
-				width: calc(100% + 4px);
-			}
-
-			:host[attach-left] #names {
-				order: 1;
-			}
-
 			:host[attach-left] #timeClip,
 			:host[attach-right] #timeClip {
 				display: block;
 			}
 
 			:host[attach-left] #timeClip {
-				order: 0;
 				left: -150px;
 				-webkit-clip-path: polygon(100% 0, 100% 0%, 100% 100%, calc(100% + 15px) 100%);
 			}
@@ -223,6 +200,10 @@ Audio indicator comes out from side opposide placement indicator
 				transform: skewX(22deg);
 				left: 0;
 				right: auto;
+			}
+
+			:host[attach-right] #timeClip {
+				right: -150px;
 			}
 
 			:host[attach-left] #medal {
@@ -268,19 +249,25 @@ Audio indicator comes out from side opposide placement indicator
 			}
 		</style>
 
-		<div id="audio">
-			<div id="audioIcon" class="box-shadow"></div>
+		<div id="audio" class="filter-shadow">
+			<div id="audioIcon"></div>
 		</div>
 
-		<div id="names">
-			<div id="namesName" class="shadow">[[name]]</div>
-			<div id="namesTwitch">
-				<img src="img/twitch.png" style="position: relative; top: 2px;">
-				<span class="shadow">[[twitch]]</span>
+		<div id="main" class="filter-shadow">
+			<img id="leftCap" src="img/left.png" hidden="[[attachLeft]]">
+
+			<div id="body">
+				<div id="names">
+					<div id="namesName" class="shadow">[[name]]</div>
+					<div id="namesTwitch">
+						<img src="img/twitch.png" style="position: relative; top: 2px;">
+						<span class="shadow">[[twitch]]</span>
+					</div>
+				</div>
 			</div>
-		</div>
 
-		<div id="boxShadow" class="box-shadow"></div>
+			<img id="rightCap" src="img/right.png" hidden="[[attachRight]]">
+		</div>
 
 		<div id="timeClip">
 			<div id="time" class="box-shadow">

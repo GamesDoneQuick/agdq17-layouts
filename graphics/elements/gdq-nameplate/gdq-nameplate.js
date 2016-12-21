@@ -115,13 +115,13 @@
 			switch (newVal) {
 				case 1:
 					this.showTime();
-					return 'components/gdq-nameplate/img/medal-gold.png';
+					return 'elements/gdq-nameplate/img/medal-gold.png';
 				case 2:
 					this.showTime();
-					return 'components/gdq-nameplate/img/medal-silver.png';
+					return 'elements/gdq-nameplate/img/medal-silver.png';
 				case 3:
 					this.showTime();
-					return 'components/gdq-nameplate/img/medal-bronze.png';
+					return 'elements/gdq-nameplate/img/medal-bronze.png';
 				case 4:
 					this.showTime();
 					return '';

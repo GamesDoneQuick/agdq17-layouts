@@ -16,8 +16,12 @@ body {
 	-webkit-filter: drop-shadow(0 2px 0 black);
 }
 
+.filter-shadow {
+	-webkit-filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.33));
+}
+
 .box-shadow {
-	box-shadow: 4px 4px 0 0 rgba(0,0,0,0.33);
+	box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.33);
 }
 
 #container {

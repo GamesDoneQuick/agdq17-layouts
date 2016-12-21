@@ -3,6 +3,8 @@ The on-stream graphics used during Awesome Games Done Quick 2017.
 
 This is a [NodeCG](http://github.com/nodecg/nodecg) 0.8 bundle. You will need to have NodeCG 0.8 installed to run it.
 
+TODO: Elaborate on race results component being broken in Chrome, but fine in obs-browser.
+
 ## Installation
 - Install to `nodecg/bundles/agdq17-layouts`.
 - Install `bower` if you have not already (`npm install -g bower`)
