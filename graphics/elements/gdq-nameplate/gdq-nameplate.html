@@ -1,4 +1,5 @@
 <link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../imports/easeljs.html">
 
 <!--
 Attached left, right, or none
@@ -24,41 +25,27 @@ Audio indicator comes out from side opposide placement indicator
 				z-index: 1;
 			}
 
-			#audio {
-				position: absolute;
-				width: 39px;
-				height: 37px;
-				top: 1px;
-				left: -34px;
-				overflow: hidden;
-				z-index: -1;
-				visibility: hidden;
-			}
-
-			#audioIcon {
-				background-image: url("img/audio.png");
-				transition: transform 333ms ease-in-out;
-				transform: translateX(39px);
-				width: 34px;
-				height: 33px;
-			}
-
 			#main {
-				width: var(--gdq-nameplate-width);
+				width: calc(var(--gdq-nameplate-width));
 				height: 100%;
+				align-items: flex-start;
 				@apply(--layout-horizontal);
 			}
 
-			#leftCap {
-				height: 100%;
-				width: 14px;
-				background: url("img/left.png");
+			#leftCapContainer,
+			#rightCapContainer {
+				display: flex;
+				flex-direction: column;
 			}
 
-			#rightCap {
-				height: 100%;
+			#leftCapContainer {
 				width: 14px;
-				background: url("img/right.png");
+				align-items: flex-end;
+			}
+
+			#rightCapContainer {
+				width: 18px;
+				align-items: flex-start;
 			}
 
 			#body {
@@ -66,6 +53,7 @@ Audio indicator comes out from side opposide placement indicator
 				background: url("img/center.png");
 				flex: 1;
 				min-width: 1px; /* needed to prevent overflow */
+				box-shadow: 0 4px rgba(0,0,0,0.33);
 			}
 
 			#names {
@@ -240,7 +228,11 @@ Audio indicator comes out from side opposide placement indicator
 				background: url("img/time-right-forfeit.png");
 			}
 
-			:host[audio] #audioIcon {
+			:host[audio][attach-left] #rightCap-img {
+				transform: translateX(-6px);
+			}
+
+			:host[audio][attach-right] #leftCap-img {
 				transform: translateX(0);
 			}
 
@@ -249,12 +241,10 @@ Audio indicator comes out from side opposide placement indicator
 			}
 		</style>
 
-		<div id="audio" class="filter-shadow">
-			<div id="audioIcon"></div>
-		</div>
-
-		<div id="main" class="filter-shadow">
-			<img id="leftCap" src="img/left.png" hidden="[[attachLeft]]">
+		<div id="main">
+			<div id="leftCapContainer" hidden="[[attachLeft]]">
+				<canvas id="leftCap" width="46" height="39"></canvas>
+			</div>
 
 			<div id="body">
 				<div id="names">
@@ -266,7 +256,9 @@ Audio indicator comes out from side opposide placement indicator
 				</div>
 			</div>
 
-			<img id="rightCap" src="img/right.png" hidden="[[attachRight]]">
+			<div id="rightCapContainer" hidden="[[attachRight]]">
+				<canvas id="rightCap" width="46" height="39"></canvas>
+			</div>
 		</div>
 
 		<div id="timeClip">
