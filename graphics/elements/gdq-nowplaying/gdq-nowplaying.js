@@ -21,7 +21,6 @@
 			const nowPlaying = nodecg.Replicant('nowPlaying');
 
 			nodecg.Replicant('nowPlayingPulsing').on('change', newVal => {
-				console.log('nowPlayingPulsing', newVal);
 				if (newVal) {
 					tl.call(() => {
 						this.title = nowPlaying.value.title;
