@@ -135,7 +135,10 @@ module.exports = function (nodecg) {
 	}, 90 * 60 * 1000);
 
 	nodecg.listenFor('acceptTweet', tweet => {
-		removeTweetById(tweet.id_str);
+		if (!nodecg.bundleConfig.twitter.debug) {
+			removeTweetById(tweet.id_str);
+		}
+
 		nodecg.sendMessage('showTweet', tweet);
 	});
 

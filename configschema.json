@@ -57,6 +57,10 @@
 				},
 				"accessTokenSecret": {
 					"type": "string"
+				},
+				"debug": {
+					"type": "boolean",
+					"default": false
 				}
 			},
 			"required": ["userId", "consumerKey", "consumerSecret", "accessTokenKey", "accessTokenSecret"]
