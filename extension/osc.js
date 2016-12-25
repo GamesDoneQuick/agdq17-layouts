@@ -59,8 +59,8 @@ module.exports = function (nodecg) {
 		let replicantObject;
 
 		if (str.indexOf('/chMutes') === 0) {
-			// For this particular message, we know that the values start at byte 21 and stop 3 bytes from the end.
-			valueBytes = buf.slice(21, -3);
+			// For this particular message, we know that the values start at byte 22 and stop 2 bytes from the end.
+			valueBytes = buf.slice(22, -2);
 
 			for (let i = 0; i < valueBytes.length; i += 4) {
 				const muted = !valueBytes.readFloatBE(i);
