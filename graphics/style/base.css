@@ -24,6 +24,13 @@ body {
 	box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.33);
 }
 
+.tabular-nums {
+	font-variant-numeric: tabular-nums;
+	-moz-font-feature-settings: "tnum";
+	-webkit-font-feature-settings: "tnum";
+	font-feature-settings: "tnum";
+}
+
 #container {
 	position: absolute;
 	overflow: hidden;

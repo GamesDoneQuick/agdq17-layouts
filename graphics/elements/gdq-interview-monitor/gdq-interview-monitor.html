@@ -28,11 +28,6 @@
 				font-size: 95px;
 				font-weight: 700;
 
-				font-variant-numeric: tabular-nums;
-				-moz-font-feature-settings: "tnum";
-				-webkit-font-feature-settings: "tnum";
-				font-feature-settings: "tnum";
-
 				@apply(--layout-horizontal);
 				@apply(--layout-center-center);
 			}
@@ -109,7 +104,7 @@
 		</firebase-document>
 
 		<paper-material id="infoColumn">
-			<div id="total">
+			<div id="total" class="tabular-nums">
 				$<span id="total-amount"></span>
 			</div>
 
