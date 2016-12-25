@@ -384,7 +384,7 @@
 				onCompleteParams: [bid.description]
 			});
 
-			// If this is a donation war, up to three options for it.
+			// If this is a donation war, show up to three options for it.
 			// Else, it must be a normal incentive, so show its total amount raised and its goal.
 			if (bid.options) {
 				// If there are no options yet, display a message.
