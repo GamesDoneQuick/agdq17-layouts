@@ -231,12 +231,12 @@
 			const leftCapStage = new createjs.Stage(this.$.leftCap);
 			const rightCapStage = new createjs.Stage(this.$.rightCap);
 			createjs.Ticker.setFPS(60);
-			createjs.Ticker.on('tick', event => {
-				if (!this.attachLeft) {
+			createjs.Ticker.on('tick', () => {
+				if (!this.attachLeft && this.attachRight) {
 					leftCapStage.update();
 				}
 
-				if (!this.attachRight) {
+				if (!this.attachRight && this.attachLeft) {
 					rightCapStage.update();
 				}
 			});
