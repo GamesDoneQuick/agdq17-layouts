@@ -63,6 +63,11 @@
 		},
 
 		audioChanged(newVal) {
+			// I have no idea why, but sometimes an empty string makes its way into this function??
+			if (typeof newVal !== 'boolean') {
+				return;
+			}
+
 			if (newVal) {
 				if (this.attachRight) {
 					this.audioTL.to({}, 0.633, {
