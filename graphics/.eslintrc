@@ -8,6 +8,7 @@
 		"TimelineMax": true,
 		"TimelineLite": true,
 		"TweenLite": true,
+		"Linear": true,
 		"Power1": true,
 		"Power2": true,
 		"Power3": true,

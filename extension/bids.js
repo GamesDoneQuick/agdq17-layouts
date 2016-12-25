@@ -108,9 +108,9 @@ module.exports = function (nodecg) {
 						name: bid.fields.name,
 						description: bid.fields.shortdescription || `No shortdescription for bid #${bid.pk}`,
 						total: numeral(bid.fields.total).format('$0,0[.]00'),
+						rawTotal: parseFloat(bid.fields.total),
 						state: bid.fields.state,
-						speedrun: bid.fields.speedrun__name,
-						type: 'bid'
+						speedrun: bid.fields.speedrun__name
 					};
 
 					// If this parent bid is not a target, that means it is a donation war that has options.
@@ -121,6 +121,7 @@ module.exports = function (nodecg) {
 						formattedParentBid.options = [];
 					} else {
 						formattedParentBid.goal = numeral(bid.fields.goal).format('$0,0[.]00');
+						formattedParentBid.rawGoal = parseFloat(bid.fields.goal);
 						formattedParentBid.goalMet = bid.fields.total >= bid.fields.goal;
 					}
 
@@ -136,7 +137,8 @@ module.exports = function (nodecg) {
 					parent: bid.fields.parent,
 					name: bid.fields.name,
 					description: bid.fields.shortdescription,
-					total: numeral(bid.fields.total).format('$0,0[.]00')
+					total: numeral(bid.fields.total).format('$0,0[.]00'),
+					rawTotal: parseFloat(bid.fields.total)
 				};
 
 				const parent = parentBidsById[bid.fields.parent];
@@ -149,7 +151,7 @@ module.exports = function (nodecg) {
 			});
 
 			// Ah, but now we have to sort all these child bids by how much they have raised so far!
-			// While we're at it, map all the parent bids back onto an array.
+			// While we're at it, map all the parent bids back onto an array and set their "type".
 			const bidsArray = [];
 			for (const id in parentBidsById) {
 				if (!{}.hasOwnProperty.call(parentBidsById, id)) {
@@ -157,7 +159,20 @@ module.exports = function (nodecg) {
 				}
 
 				const bid = parentBidsById[id];
+				bid.type = (function () {
+					if (bid.options) {
+						if (bid.options.length === 2) {
+							return 'choice-binary';
+						}
+
+						return 'choice-many';
+					}
+
+					return 'challenge';
+				})();
+
 				bidsArray.push(bid);
+
 				if (!bid.options) {
 					continue;
 				}
