@@ -381,7 +381,7 @@
 			// GSAP is dumb with `call` sometimes. Putting this in a near-zero duration tween seems to be more reliable.
 			this.tl.to({}, 0.01, {
 				onComplete: this.showMainLine1.bind(this),
-				onCompleteParams: [bid.description]
+				onCompleteParams: [bid.description.replace('||', ' -- ')]
 			});
 
 			// If this is a donation war, show up to three options for it.
