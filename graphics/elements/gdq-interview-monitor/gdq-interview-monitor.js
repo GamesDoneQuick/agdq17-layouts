@@ -167,7 +167,8 @@
 					this.$['total-amount'].textContent = this.$['total-amount'].rawValue.toLocaleString('en-US', {
 						maximumFractionDigits: 0
 					});
-				}.bind(this)
+				},
+				onUpdateScope: this
 			});
 		},
 
