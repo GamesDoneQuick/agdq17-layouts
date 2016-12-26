@@ -147,13 +147,13 @@
 					this.$['challenge-goal'].innerHTML = bid.goal;
 				});
 			} else if (bid.type === 'choice-binary') {
+				this.tl.set(this.$['tug-bar-left'], {clearProps: 'width'});
 				this.tl.call(() => {
 					this.$['tug-bar-center-label'].style.borderColor = 'white';
 					this.$$('#tug-left .tug-option-total').innerHTML = bid.options[0].total;
 					this.$$('#tug-right .tug-option-total').innerHTML = bid.options[1].total;
 					this.$$('#tug-left .tug-option-desc').innerHTML = bid.options[0].description;
 					this.$$('#tug-right .tug-option-desc').innerHTML = bid.options[1].description;
-					this.$['tug-bar-left'].style.width = '50%';
 					this.$['tug-bar-center-label-leftarrow'].style.display = 'none';
 					this.$['tug-bar-center-label-rightarrow'].style.display = 'none';
 					this.$['tug-bar-center-label-delta'].innerHTML = '$0';
