@@ -224,6 +224,11 @@
         "file": "omnibar.html",
         "width": 1280,
         "height": 55
+      },
+      {
+        "file": "test_break.html",
+        "width": 1280,
+        "height": 720
       }
     ],
     "assetCategories": [

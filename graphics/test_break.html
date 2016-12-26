@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<title>Test Break</title>
+	<link rel="stylesheet" href="style/layout.css">
+	<link rel="stylesheet" href="style/font/SF Pixelate.css">
+	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
+	<link rel="import" href="components/vaadin-combo-box/vaadin-combo-box.html">
+	<link rel="import" href="elements/gdq-break-bids/gdq-break-bids.html">
+	<style>
+		body {
+			margin: 16px;
+			opacity: 1;
+		}
+
+		test-app {
+			display: inline-block;
+			width: 532px;
+		}
+
+		gdq-break-bids {
+			background: url("img/break/screen_static.png");
+			width: 532px!important;
+			height: 305px;
+		}
+	</style>
+</head>
+<body>
+	<gdq-break-bids></gdq-break-bids>
+	<test-app></test-app>
+
+	<dom-module id="test-app">
+		<template>
+			<vaadin-combo-box
+				label="All Bids"
+				items="[[bids]]"
+				item-label-path="public"
+				on-selected-item-changed="_selectedBidChanged">
+			</vaadin-combo-box>
+		</template>
+
+		<script>
+			const bidDisplay = document.querySelector('gdq-break-bids');
+			const allBids = nodecg.Replicant('allBids');
+
+			Polymer({
+				is: 'test-app',
+
+				ready() {
+					allBids.on('change', newVal => {
+						this.bids = newVal.slice(0);
+					});
+				},
+
+				_selectedBidChanged(e) {
+					const bid = e.detail.value;
+					this.debounce('showBid', () => {
+						this.showBid(bid);
+					}, 10);
+				},
+
+				showBid(bid) {
+					if (!bid) {
+						return;
+					}
+
+					const bidsArr = [bid];
+					bidDisplay.showBid(bid, 0, bidsArr);
+				}
+			});
+		</script>
+	</dom-module>
+</body>
+</html>
