@@ -23,9 +23,16 @@
 				background-color: rgba(91, 137, 255, 0.42);
 				font-size: 19px;
 				text-align: center;
+				padding: 0 16px;
 
 				@apply(--layout-horizontal);
 				@apply(--layout-center-center);
+			}
+
+			#runName-content {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 
 			#bidDescription {
@@ -34,9 +41,18 @@
 				font-size: 28px;
 				line-height: 31px;
 				text-align: center;
+				padding: 0 16px;
 
 				@apply(--layout-horizontal);
 				@apply(--layout-center-center);
+			}
+
+			:host:not([bid-type="challenge"]) #bidDescription-content .line:nth-child(n+2) {
+				display: none!important;
+			}
+
+			:host[bid-type="challenge"] #bidDescription-content .line:nth-child(n+3) {
+				display: none!important;
 			}
 
 			#body {
@@ -56,20 +72,6 @@
 				font-size: 48px;
 				font-weight: 700;
 				margin: 0 17px;
-			}
-
-			#challenge-goal .character {
-				background-image: linear-gradient(
-					180deg,
-					#e8c8a0 0%,
-					#e0e0e0 16%,
-					#e8c8a0 33%,
-					#f8c850 55%,
-					#f87018 76%,
-					#e05010 91%,
-					#e05010 100%
-				);
-				-webkit-background-clip: text;
 			}
 
 			#challenge-bar {
@@ -134,7 +136,10 @@
 				font-size: 24px;
 				font-weight: 700;
 				line-height: 32px;
+				height: 32px;
+				overflow: hidden;
 				color: transparent;
+				max-width: 450px;
 			}
 
 			.tug-option-total {
@@ -193,6 +198,77 @@
 			#tug-bar-center-label-rightarrow {
 				margin-left: 2px;
 				transform: scaleX(-1);
+			}
+
+			#choice {
+				flex-grow: 1;
+				@apply(--layout-vertical);
+				@apply(--layout-center-justified);
+			}
+
+			.choice-row {
+				height: 57px;
+				padding-left: 27px;
+				padding-right: 23px;
+				align-items: flex-end;
+				justify-content: space-between;
+				@apply(--layout-horizontal);
+			}
+
+			.choice-row-label {
+				color: transparent;
+				font-size: 28px;
+				font-weight: 700;
+				line-height: 32px;
+			}
+
+			.choice-row-label .character {
+				color: white;
+			}
+
+			.choice-row-meter {
+				width: 216px;
+				height: 18px;
+				border: 1px solid #ffffff;
+				border-radius: 1px;
+				box-sizing: border-box;
+			}
+
+			.choice-row-meter-fill {
+				height: 16px;
+				background-image: url("img/meter_pip.png");
+			}
+
+			.choice-row-amount {
+				color: transparent;
+				font-size: 36px;
+				font-weight: 400;
+				line-height: 0.9;
+			}
+
+			.choice-row-amount .character {
+				color: #b0f080;
+			}
+
+			.choice-row:first-of-type .choice-row-amount {
+				font-size: 48px;
+				font-weight: 700;
+			}
+
+			#challenge-goal .character,
+			.choice-row:first-of-type .choice-row-amount .character {
+				background-image: linear-gradient(
+					180deg,
+					#e8c8a0 0%,
+					#e0e0e0 16%,
+					#e8c8a0 33%,
+					#f8c850 55%,
+					#f87018 76%,
+					#e05010 91%,
+					#e05010 100%
+				);
+				-webkit-background-clip: text;
+				color: transparent;
 			}
 
 			.mirrored {
@@ -260,7 +336,40 @@
 				</div>
 			</div>
 
-			<div data-bid-type="choice-multiple"></div>
+			<div id="choice" data-bid-type="choice-many">
+				<div class="choice-row">
+					<div class="layout vertical">
+						<div class="choice-row-label"></div>
+						<div class="choice-row-meter">
+							<div class="choice-row-meter-fill"></div>
+						</div>
+					</div>
+
+					<div class="choice-row-amount"></div>
+				</div>
+
+				<div class="choice-row">
+					<div class="layout vertical">
+						<div class="choice-row-label"></div>
+						<div class="choice-row-meter">
+							<div class="choice-row-meter-fill"></div>
+						</div>
+					</div>
+
+					<div class="choice-row-amount"></div>
+				</div>
+
+				<div class="choice-row">
+					<div class="layout vertical">
+						<div class="choice-row-label"></div>
+						<div class="choice-row-meter">
+							<div class="choice-row-meter-fill"></div>
+						</div>
+					</div>
+
+					<div class="choice-row-amount"></div>
+				</div>
+			</div>
 		</iron-pages>
 	</template>
 

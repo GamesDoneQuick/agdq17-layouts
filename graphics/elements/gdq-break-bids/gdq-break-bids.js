@@ -4,27 +4,20 @@
 
 	const displayDuration = nodecg.bundleConfig.displayDuration;
 	const currentBids = nodecg.Replicant('currentBids');
-	const currentPrizes = nodecg.Replicant('currentPrizes');
 	const TYPE_INTERVAL = 0.03;
+	const CHALLENGE_BAR_WIDTH = 372;
 	const CHALLENGE_PIP_INTERVAL = 0.03;
 	const TUG_PIP_INTERVAL = 0.04;
-	const EMPTY_OBJ = {};
+	const CHOICE_BAR_WIDTH = 214;
+	const CHOICE_PIP_INTERVAL = 0.03;
 	const BIG_PIP_WIDTH = 6;
 	const SMALL_PIP_WIDTH = 4;
-	const CHALLENGE_BAR_WIDTH = 372;
+	const EMPTY_OBJ = {};
 
 	Polymer({
 		is: 'gdq-break-bids',
 
 		properties: {
-			runName: {
-				type: String,
-				observer: '_runNameChanged'
-			},
-			bidDescription: {
-				type: String,
-				observer: '_bidDescriptionChanged'
-			},
 			bidType: {
 				type: String,
 				reflectToAttribute: true
@@ -38,16 +31,6 @@
 			}
 		},
 
-		_runNameChanged(newVal) {
-			this.$['runName-content'].innerHTML = this.formatRunName(newVal);
-			this._typeAnim(this.$['runName-content']);
-		},
-
-		_bidDescriptionChanged(newVal) {
-			this.$['bidDescription-content'].innerHTML = newVal;
-			this._typeAnim(this.$['bidDescription-content'], {splitType: 'chars,words,lines'});
-		},
-
 		ready() {
 			return;
 
@@ -59,8 +42,10 @@
 			const tl = new TimelineLite();
 			const split = new SplitText($el, {
 				type: splitType,
-				charsClass: 'character style-scope gdq-break-bids'
+				charsClass: 'character style-scope gdq-break-bids',
+				linesClass: 'line style-scope gdq-break-bids'
 			});
+			$el.split = split;
 
 			switch (splitType) {
 				case 'chars':
@@ -86,14 +71,42 @@
 			return tl;
 		},
 
+		_untypeAnim($el) {
+			return new Promise(resolve => {
+				if (!$el.split) {
+					return setTimeout(resolve, 0);
+				}
+
+				const tl = new TimelineLite({
+					onComplete: resolve
+				});
+
+				const split = $el.split;
+
+				if (split.words) {
+					split.words.forEach(word => {
+						tl.staggerTo(word.children, 0.001, {
+							visibility: 'hidden'
+						}, TYPE_INTERVAL);
+
+						tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
+					});
+				} else {
+					tl.staggerFrom(split.chars, 0.001, {
+						visibility: 'hidden'
+					}, TYPE_INTERVAL);
+				}
+
+				return tl;
+			});
+		},
+
 		/**
 		 * Adds an animation to the global timeline for showing all current bids.
 		 * @returns {undefined}
 		 */
 		showCurrentBids() {
 			if (currentBids.value.length > 0) {
-				let showedLabel = false;
-
 				// Figure out what bids to display in this batch
 				const bidsToDisplay = [];
 
@@ -101,15 +114,6 @@
 					// Don't show closed bids in the automatic rotation.
 					if (bid.state.toLowerCase() === 'closed') {
 						return;
-					}
-
-					// We have at least one bid to show, so show the label
-					if (!showedLabel) {
-						showedLabel = true;
-						this.tl.to({}, 0.3, {
-							onStart: this.showLabel.bind(this),
-							onStartParams: ['DONATION INCENTIVES', '21px']
-						});
 					}
 
 					// If we have already have our three bids determined, we still need to check
@@ -125,8 +129,6 @@
 				// Loop over each bid and queue it up on the timeline
 				bidsToDisplay.forEach(this.showBid, this);
 			}
-
-			this.tl.call(this.showCurrentPrizes, [], this, '+=0.1');
 		},
 
 		/**
@@ -138,9 +140,9 @@
 		 * @returns {undefined}
 		 */
 		showBid(bid, index, bidsArray) {
-			this.tl.set(this.$['challenge-bar-fill'], {width: 0});
-
+			// Prep elements for animation
 			if (bid.type === 'challenge') {
+				this.tl.set(this.$['challenge-bar-fill'], {width: 0});
 				this.tl.call(() => {
 					this.$['challenge-goal'].innerHTML = bid.goal;
 				});
@@ -156,23 +158,77 @@
 					this.$['tug-bar-center-label-rightarrow'].style.display = 'none';
 					this.$['tug-bar-center-label-delta'].innerHTML = '$0';
 				});
+			} else if (bid.type === 'choice-many') {
+				this.tl.call(() => {
+					const pd = Polymer.dom(this.$.choice);
+					const qsa = Polymer.dom(this.$.choice).querySelectorAll.bind(pd);
+					qsa('.choice-row-meter-fill').forEach(el => {
+						el.style.width = 0;
+					});
+					qsa('.choice-row-label').forEach((el, index) => {
+						el.innerHTML = bid.options[index].name;
+					});
+					qsa('.choice-row-amount').forEach((el, index) => {
+						el.innerHTML = bid.options[index].total;
+					});
+				});
 			}
 
+			const newRunName = this.formatRunName(bid.speedrun);
+			this.tl.call(() => {
+				if (!this.$['runName-content'].textContent && !this.$['bidDescription-content'].textContent) {
+					return;
+				}
+
+				this.tl.pause();
+
+				let changingRunName = false;
+				if (this.$['runName-content'].textContent !== newRunName && this.$['runName-content'].split) {
+					changingRunName = true;
+					this._untypeAnim(this.$['runName-content']).then(checkDone.bind(this));
+				}
+
+				if (this.$['bidDescription-content'].split) {
+					this._untypeAnim(this.$['bidDescription-content']).then(checkDone.bind(this));
+				}
+
+				let counter = 0;
+				function checkDone() {
+					counter++;
+					if (!changingRunName || counter >= 2) {
+						this.tl.resume();
+					}
+				}
+			});
+
 			// Tween the height of the description area, if appropriate.
-			if (index === 0 || bidsArray[index - 1].type !== bid.type) {
+			const bidDescriptionHeight = bid.type === 'challenge' ? 80 : 45;
+			if (index === 0) {
+				this.tl.set(this.$.bidDescription, {
+					height: bidDescriptionHeight
+				});
+			} else if (bidsArray[index - 1].type !== bid.type) {
 				this.tl.to(this.$.bidDescription, 0.333, {
-					height: bid.type === 'challenge' ? 80 : 45,
+					height: bidDescriptionHeight,
 					ease: Power2.easeInOut
 				});
 			}
 
 			this.tl.call(() => {
+				this.$['runName-content'].innerHTML = newRunName;
+				this._typeAnim(this.$['runName-content']);
 				this.bidType = bid.type;
-				this.runName = bid.speedrun;
 			}, null, null, '+=0.1');
 
 			this.tl.call(() => {
-				this.bidDescription = bid.description;
+				let newDescription = bid.description;
+				const parts = newDescription.split('||');
+				if (parts.length >= 2) {
+					newDescription = parts[1];
+				}
+
+				this.$['bidDescription-content'].innerHTML = newDescription;
+				this._typeAnim(this.$['bidDescription-content'], {splitType: 'chars,words,lines'});
 			}, null, null, `+=${TYPE_INTERVAL}`);
 
 			this.tl.fromTo(this.$.body, 0.333, {
@@ -246,14 +302,37 @@
 				}
 
 				case 'choice-many': {
-					bid.options.forEach((option, index) => {
-						if (index > 2) {
-							return;
-						}
+					const rows = Polymer.dom(this.$.choice).querySelectorAll('.choice-row');
 
-						// this.tl.call(this.showMainLine2, [
-						// 	`${index + 1}. ${option.description || option.name} - ${option.total}`
-						// ], this, `+=${0.08 + (index * 4)}`);
+					rows.forEach(row => {
+						this.tl.call(() => {
+							this._typeAnim(row.querySelector('.choice-row-label'));
+						}, null, null, `+=${TYPE_INTERVAL}`);
+
+						this.tl.call(() => {
+							this._typeAnim(row.querySelector('.choice-row-amount'), {splitType: 'chars'});
+						}, null, null, `+=${TYPE_INTERVAL}`);
+					});
+
+					const maxPips = CHOICE_BAR_WIDTH / SMALL_PIP_WIDTH;
+					this.tl.add('barFills', '+=0.3');
+					rows.forEach((row, index) => {
+						const option = bid.options[index];
+						let numPips = Math.floor(maxPips * (option.rawTotal / bid.options[0].rawTotal));
+						numPips = Math.min(numPips, maxPips);
+						const barFillDuration = numPips * CHOICE_PIP_INTERVAL;
+
+						this.tl.to(row.querySelector('.choice-row-meter-fill'), barFillDuration, {
+							width: numPips * SMALL_PIP_WIDTH,
+							modifiers: {
+								width(width) {
+									// Only increase width in increments of 4px.
+									width = parseInt(width, 10);
+									return `${width - (width % SMALL_PIP_WIDTH)}px`;
+								}
+							},
+							ease: Linear.easeNone
+						}, index === 0 ? 'barFills' : `barFills+=${CHOICE_PIP_INTERVAL * 2 * index}`);
 					});
 
 					break;
@@ -274,9 +353,9 @@
 						width: numPips * BIG_PIP_WIDTH,
 						modifiers: {
 							width(width) {
-								// Only increase width in increments of 6.
+								// Only increase width in increments of 6px.
 								width = parseInt(width, 10);
-								return `${width - (width % 6)}px`;
+								return `${width - (width % BIG_PIP_WIDTH)}px`;
 							}
 						},
 						ease: Linear.easeNone
@@ -320,92 +399,12 @@
 			});
 		},
 
-		/**
-		 * Adds an animation to the global timeline for showing the current prizes
-		 * @returns {undefined}
-		 */
-		showCurrentPrizes() {
-			const currentGrandPrizes = currentPrizes.value.filter(prize => prize.grand);
-			const currentNormalPrizes = currentPrizes.value.filter(prize => !prize.grand);
-
-			if (currentGrandPrizes.length > 0 || currentNormalPrizes.length > 0) {
-				const prizesToDisplay = currentNormalPrizes.slice(0);
-				this.tl.to({}, 0.3, {
-					onStart: this.showLabel.bind(this),
-					onStartParams: ['RAFFLE PRIZES', '21px']
-				});
-
-				if (currentGrandPrizes.length) {
-					// Figure out what grand prize to show in this batch.
-					const lastShownGrandPrizeIdx = currentGrandPrizes.indexOf(this.lastShownGrandPrize);
-					const nextGrandPrizeIdx = lastShownGrandPrizeIdx >= currentGrandPrizes.length - 1 ?
-						0 : lastShownGrandPrizeIdx + 1;
-					const nextGrandPrize = currentGrandPrizes[nextGrandPrizeIdx];
-
-					if (nextGrandPrize) {
-						prizesToDisplay.unshift(nextGrandPrize);
-						this.lastShownGrandPrize = nextGrandPrize;
-					}
-				}
-
-				// Loop over each prize and queue it up on the timeline
-				const showPrize = this.showPrize.bind(this);
-				prizesToDisplay.forEach(showPrize);
-			}
-
-			this.tl.call(this.showCurrentBids, [], this, '+=0.1');
-		},
-
-		/**
-		 * Adds an animation to the global timeline for showing a specific prize.
-		 * @param {Object} prize - The prize to display.
-		 * @returns {undefined}
-		 */
-		showPrize(prize) {
-			// GSAP is dumb with `call` sometimes. Putting this in a near-zero duration tween seems to be more reliable.
-			this.tl.to({}, 0.01, {
-				onComplete: function () {
-					this.showMainLine1(`Provided by ${prize.provided}`);
-
-					if (prize.grand) {
-						this.showMainLine2(`Grand Prize: ${prize.description}`);
-					} else {
-						this.showMainLine2(prize.description);
-					}
-				}.bind(this)
-			});
-
-			// Give the prize some time to show
-			this.tl.to({}, displayDuration, {});
-		},
-
 		formatRunName(runName) {
 			if (!runName || typeof runName !== 'string') {
 				return '?';
 			}
 
-			return runName.replace('\\n', '<br/>');
-		},
-
-		concatRunners(runners) {
-			if (!runners || !Array.isArray(runners)) {
-				return '?';
-			}
-
-			let concatenatedRunners;
-			if (runners.length === 1) {
-				concatenatedRunners = runners[0].name;
-			} else {
-				concatenatedRunners = runners.slice(1).reduce((prev, curr, index, array) => {
-					if (index === array.length - 1) {
-						return `${prev} & ${curr.name}`;
-					}
-
-					return `${prev}, ${curr.name}`;
-				}, runners[0].name);
-			}
-
-			return concatenatedRunners;
+			return runName.replace('\\n', ' ');
 		}
 	});
 })();
