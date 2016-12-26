@@ -110,7 +110,8 @@ module.exports = function (nodecg) {
 						total: numeral(bid.fields.total).format('$0,0[.]00'),
 						rawTotal: parseFloat(bid.fields.total),
 						state: bid.fields.state,
-						speedrun: bid.fields.speedrun__name
+						speedrun: bid.fields.speedrun__name,
+						public: bid.fields.public
 					};
 
 					// If this parent bid is not a target, that means it is a donation war that has options.
