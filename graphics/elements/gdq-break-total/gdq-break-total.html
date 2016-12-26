@@ -1,0 +1,35 @@
+<dom-module id="gdq-break-total">
+	<template>
+		<style>
+			:host {
+				position: absolute;
+				display: block;
+				width: 518px;
+			}
+
+			#total {
+				display: flex;
+				align-items: baseline;
+				justify-content: center;
+				color: #fffefe;
+				font-family: Montserrat;
+				font-weight: 700;
+			}
+
+			#total-currency {
+				font-size: 42px;
+			}
+
+			#total-amount {
+				font-size: 65px;
+			}
+		</style>
+
+		<div id="total" class="shadow">
+			<div id="total-currency">$</div>
+			<div id="total-amount" class="tabular-nums"></div>
+		</div>
+	</template>
+
+	<script src="gdq-break-total.js"></script>
+</dom-module>

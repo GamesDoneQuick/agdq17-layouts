@@ -7,11 +7,12 @@
 	<link rel="stylesheet" href="style/font/SF Pixelate.css">
 	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
 	<link rel="import" href="components/iron-flex-layout/iron-flex-layout.html">
+	<link rel="import" href="elements/gdq-break-bids/gdq-break-bids.html">
+	<link rel="import" href="elements/gdq-break-schedule/gdq-break-schedule.html">
+	<link rel="import" href="elements/gdq-break-total/gdq-break-total.html">
 	<link rel="import" href="elements/gdq-nowplaying/gdq-nowplaying.html">
 	<link rel="import" href="elements/gdq-prizes/gdq-prizes.html">
 	<link rel="import" href="elements/gdq-twitter/gdq-twitter.html">
-	<link rel="import" href="elements/gdq-break-schedule/gdq-break-schedule.html">
-	<link rel="import" href="elements/gdq-break-bids/gdq-break-bids.html">
 	<style is="custom-style">
 		#container {
 			height: 720px;
@@ -125,6 +126,11 @@
 			};
 		}
 
+		gdq-break-total {
+			left: 25px;
+			bottom: 4px;
+		}
+
 		gdq-break-schedule {
 			top: 38px;
 			right: 92px;
@@ -149,10 +155,6 @@
 			font-size: 19px;
 			font-weight: 400;
 			font-family: "SF Pixelate";
-		}
-
-		gdq-break-bids {
-
 		}
 
 		#screenHeader {
@@ -184,6 +186,7 @@
 		<gdq-nowplaying></gdq-nowplaying>
 		<gdq-prizes></gdq-prizes>
 		<gdq-twitter></gdq-twitter>
+		<gdq-break-total></gdq-break-total>
 		<gdq-break-schedule></gdq-break-schedule>
 
 		<div id="screen">
