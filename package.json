@@ -38,7 +38,7 @@
   "homepage": "http://gamesdonequick.com/",
   "license": "Apache-2.0",
   "nodecg": {
-    "compatibleRange": "~0.8.0",
+    "compatibleRange": "~0.8.5",
     "dashboardPanels": [
       {
         "name": "schedule",
