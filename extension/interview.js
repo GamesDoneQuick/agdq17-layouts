@@ -1,15 +1,27 @@
 'use strict';
 
-const firebase = require('firebase-admin');
-const serviceAccount = require('../firebase-credentials.json');
-firebase.initializeApp({
-	credential: firebase.credential.cert(serviceAccount),
-	databaseURL: 'https://lightning-round.firebaseio.com'
-});
-
-const database = firebase.database();
+const fs = require('fs');
 
 module.exports = function (nodecg) {
+	if (Object.keys(nodecg.bundleConfig.twitter).length === 0) {
+		return;
+	}
+
+	if (!fs.existsSync('../firebase-credentials.json')) {
+		nodecg.log.error('"firebase-credentials.json" was not found at nodecg/bundles/agdq17-layouts! ' +
+			'The interview question system will be disabled.');
+		return;
+	}
+
+	const firebase = require('firebase-admin');
+	const serviceAccount = require('../firebase-credentials.json');
+	firebase.initializeApp({
+		credential: firebase.credential.cert(serviceAccount),
+		databaseURL: 'https://lightning-round.firebaseio.com'
+	});
+
+	const database = firebase.database();
+
 	const lowerthirdShowing = nodecg.Replicant('interviewLowerthirdShowing', {defaultValue: false, persistent: false});
 	const lowerthirdPulsing = nodecg.Replicant('interviewLowerthirdPulsing', {defaultValue: false, persistent: false});
 	const lowerthirdPulseTimeRemaining = nodecg.Replicant('interviewLowerthirdTimeRemaining', {
