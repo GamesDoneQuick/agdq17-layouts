@@ -1,6 +1,7 @@
 (function () {
 	'use strict';
 
+	const $screenHeaderText = document.querySelector('#screenHeader .shadow');
 	const $screenTransition = document.getElementById('screen-transition');
 	const $bids = document.querySelector('gdq-break-bids');
 	const $prizes = document.querySelector('gdq-break-prizes');
@@ -52,6 +53,7 @@
 		$prizes.setAttribute('hidden', 'true');
 		$screenTransition.style.opacity = 0;
 		$bids.showCurrentBids().then(() => {
+			setScreenHeader('COMMUNITY PRIZES');
 			$screenTransition.style.opacity = 1;
 			return new Promise(resolve => {
 				setTimeout(() => {
@@ -62,8 +64,29 @@
 				}, 667);
 			});
 		}).then(() => {
+			setScreenHeader('DONATION INCENTIVES');
 			$screenTransition.style.opacity = 1;
 			setTimeout(loop, 667);
 		});
+	}
+
+	/**
+	 * Changes the text content of the header above the main screen, where bids and prizes are shown.
+	 * Fades the text out, changes it, then fades it back in.
+	 * @param {string} newText - The text to put in the header.
+	 * @returns {TweenLite} - A TweenLite animation.
+	 */
+	function setScreenHeader(newText) {
+		return TweenLite.to($screenHeaderText, 0.333, {
+			opacity: 0,
+			ease: Power1.easeIn,
+			onComplete() {
+				$screenHeaderText.innerText = newText;
+				TweenLite.to($screenHeaderText, 0.333, {
+					opacity: 1,
+					ease: Power1.easeOut
+				});
+			}
+		})
 	}
 })();
