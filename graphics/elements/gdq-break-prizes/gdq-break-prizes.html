@@ -110,8 +110,18 @@
 
 		<div id="prize">
 			<div id="prize-image">
-				<iron-image id="prize-image-current" sizing="cover"></iron-image>
-				<iron-image id="prize-image-next" sizing="cover"></iron-image>
+				<iron-image
+					id="prize-image-current"
+					sizing="cover"
+					preload
+					placeholder="elements/gdq-break-prizes/img/fallback.png">
+				</iron-image>
+				<iron-image
+					id="prize-image-next"
+					sizing="cover"
+					preload
+					placeholder="elements/gdq-break-prizes/img/fallback.png">
+				</iron-image>
 			</div>
 			<div class="layout vertical shadow" style="margin-left: 21px; margin-top: 6px; align-self: flex-start;">
 				<div id="prize-name"></div>

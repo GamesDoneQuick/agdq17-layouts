@@ -7,6 +7,52 @@
 	const displayDuration = nodecg.bundleConfig.displayDuration;
 	const currentPrizes = nodecg.Replicant('currentPrizes');
 
+	/**
+	 * Loads a new src into an iron-image.
+	 * @param {iron-image} target - The iron-image element to load the new src into.
+	 * @param {string} src - The URL of the new image to load.
+	 * @returns {Promise} - A promise that is resolved if the load succeeds, and rejected it the load fails.
+	 */
+	function loadImage(target, src) {
+		return new Promise((resolve, reject) => {
+			if (target.constructor.name !== 'iron-image') {
+				reject(new Error(`Must provide an iron-image element, you provided a "${target.constructor.name}".`));
+				return;
+			}
+
+			target.src = src;
+			if (target.loaded) {
+				resolve();
+			} else {
+				const listeners = {
+					loaded: null,
+					error: null
+				};
+
+				listeners.loaded = function (event) {
+					event.target.removeEventListener('loaded-changed', listeners.error);
+					event.target.removeEventListener('loaded-changed', listeners.loaded);
+					if (event.detail.value) {
+						resolve();
+					} else {
+						reject(new Error('Image failed to load.'));
+					}
+				};
+
+				listeners.error = function (event) {
+					if (event.detail.value) {
+						event.target.removeEventListener('error-changed', listeners.error);
+						event.target.removeEventListener('error-changed', listeners.loaded);
+						reject(new Error('Image failed to load.'));
+					}
+				};
+
+				target.addEventListener('loaded-changed', listeners.loaded);
+				target.addEventListener('error-changed', listeners.error);
+			}
+		});
+	}
+
 	Polymer({
 		is: 'gdq-break-prizes',
 
@@ -76,7 +122,18 @@
 		 */
 		showPrize(prize) {
 			this.tl.call(() => {
-				this.$['prize-image-next'].src = prize.image;
+				this.tl.pause();
+				loadImage(this.$['prize-image-next'], prize.image).then(() => {
+					this.tl.resume();
+				}).catch(error => {
+					if (window.Rollbar) {
+						window.Rollbar.error(error);
+					}
+
+					nodecg.log.error(error);
+					this.$['prize-image-next'].src = '';
+					this.tl.resume();
+				});
 			}, null, null, '+=0.1');
 
 			let changingProvider = true;
@@ -146,7 +203,9 @@
 
 			this.tl.to({}, 0.1, {
 				onComplete() {
-					this.$['prize-image-current'].src = prize.image;
+					// This will adopt either the known-good URL of a prize image, or an empty
+					// string which will cause the fallback to show.
+					this.$['prize-image-current'].src = this.$['prize-image-next'].src;
 				},
 				onCompleteScope: this
 			}, '+=0.1');
