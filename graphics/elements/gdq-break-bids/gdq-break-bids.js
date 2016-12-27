@@ -31,82 +31,29 @@
 			}
 		},
 
-		ready() {
-			return;
-
-			// CTA is the first thing we show, so we use this to start our loop
-			this.showCurrentBids();
-		},
-
-		_typeAnim($el, {splitType = 'chars,words'} = {}) {
-			const tl = new TimelineLite();
-			const split = new SplitText($el, {
-				type: splitType,
-				charsClass: 'character style-scope gdq-break-bids',
-				linesClass: 'line style-scope gdq-break-bids'
-			});
-			$el.split = split;
-
-			switch (splitType) {
-				case 'chars':
-					tl.staggerFrom(split.chars, 0.001, {
-						visibility: 'hidden'
-					}, TYPE_INTERVAL);
-
-					break;
-				case 'chars,words':
-				case 'chars,words,lines':
-					split.words.forEach(word => {
-						tl.staggerFrom(word.children, 0.001, {
-							visibility: 'hidden'
-						}, TYPE_INTERVAL);
-
-						tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
-					});
-					break;
-				default:
-					throw new Error(`Unexpected splitType "${splitType}"`);
-			}
-
-			return tl;
-		},
-
-		_untypeAnim($el) {
-			return new Promise(resolve => {
-				if (!$el.split) {
-					return setTimeout(resolve, 0);
-				}
-
-				const tl = new TimelineLite({
-					onComplete: resolve
-				});
-
-				const split = $el.split;
-
-				if (split.words) {
-					split.words.forEach(word => {
-						tl.staggerTo(word.children, 0.001, {
-							visibility: 'hidden'
-						}, TYPE_INTERVAL);
-
-						tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
-					});
-				} else {
-					tl.staggerFrom(split.chars, 0.001, {
-						visibility: 'hidden'
-					}, TYPE_INTERVAL);
-				}
-
-				return tl;
-			});
-		},
-
 		/**
 		 * Adds an animation to the global timeline for showing all current bids.
 		 * @returns {undefined}
 		 */
 		showCurrentBids() {
-			if (currentBids.value.length > 0) {
+			return new Promise(resolve => {
+				if (currentBids.value) {
+					this._doShowCurrentBids().then(resolve);
+				} else {
+					currentBids.once('change', () => {
+						this._doShowCurrentBids().then(resolve);
+					});
+				}
+			});
+		},
+
+		_doShowCurrentBids() {
+			return new Promise(resolve => {
+				if (currentBids.value.length <= 0) {
+					setTimeout(resolve, 0);
+					return;
+				}
+
 				// Figure out what bids to display in this batch
 				const bidsToDisplay = [];
 
@@ -128,7 +75,8 @@
 
 				// Loop over each bid and queue it up on the timeline
 				bidsToDisplay.forEach(this.showBid, this);
-			}
+				this.tl.call(resolve);
+			});
 		},
 
 		/**
@@ -176,14 +124,14 @@
 
 			const newRunName = this.formatRunName(bid.speedrun);
 			this.tl.call(() => {
-				if (!this.$['runName-content'].textContent && !this.$['bidDescription-content'].textContent) {
+				if (!this.$['runName-content'].innerText && !this.$['bidDescription-content'].innerText) {
 					return;
 				}
 
 				this.tl.pause();
 
 				let changingRunName = false;
-				if (this.$['runName-content'].textContent !== newRunName && this.$['runName-content'].split) {
+				if (this.$['runName-content'].innerText !== newRunName && this.$['runName-content'].split) {
 					changingRunName = true;
 					this._untypeAnim(this.$['runName-content']).then(checkDone.bind(this));
 				}
@@ -193,6 +141,11 @@
 				}
 
 				let counter = 0;
+
+				/**
+				 * Resolves the promise once all the untype anims have finished.
+				 * @returns {undefined}
+				 */
 				function checkDone() {
 					counter++;
 					if (!changingRunName || counter >= 2) {
@@ -288,7 +241,7 @@
 						delta: Math.abs(bid.options[0].rawTotal - bid.options[1].rawTotal),
 						ease: Linear.easeNone,
 						onUpdate() {
-							this.$['tug-bar-center-label-delta'].textContent =
+							this.$['tug-bar-center-label-delta'].innerText =
 								deltaTweenProxy.delta.toLocaleString('en-US', {
 									maximumFractionDigits: 2,
 									style: 'currency',
@@ -366,7 +319,7 @@
 						rawTotal: bid.rawTotal,
 						ease: Linear.easeNone,
 						onUpdate() {
-							this.$['challenge-bar-fill-label-text'].textContent =
+							this.$['challenge-bar-fill-label-text'].innerText =
 								rawTotalTweenProxy.rawTotal.toLocaleString('en-US', {
 									maximumFractionDigits: 0,
 									style: 'currency',
@@ -405,6 +358,69 @@
 			}
 
 			return runName.replace('\\n', ' ');
-		}
+		},
+
+		_typeAnim($el, {splitType = 'chars,words'} = {}) {
+			const tl = new TimelineLite();
+			const split = new SplitText($el, {
+				type: splitType,
+				charsClass: 'character style-scope gdq-break-bids',
+				linesClass: 'line style-scope gdq-break-bids'
+			});
+			$el.split = split;
+
+			switch (splitType) {
+				case 'chars':
+					tl.staggerFrom(split.chars, 0.001, {
+						visibility: 'hidden'
+					}, TYPE_INTERVAL);
+
+					break;
+				case 'chars,words':
+				case 'chars,words,lines':
+					split.words.forEach(word => {
+						tl.staggerFrom(word.children, 0.001, {
+							visibility: 'hidden'
+						}, TYPE_INTERVAL);
+
+						tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
+					});
+					break;
+				default:
+					throw new Error(`Unexpected splitType "${splitType}"`);
+			}
+
+			return tl;
+		},
+
+		_untypeAnim($el) {
+			return new Promise(resolve => {
+				if (!$el.split) {
+					return setTimeout(resolve, 0);
+				}
+
+				const tl = new TimelineLite({
+					onComplete: resolve
+				});
+
+				const split = $el.split;
+
+				if (split.words) {
+					split.words.forEach(word => {
+						tl.staggerTo(word.children, 0.001, {
+							visibility: 'hidden'
+						}, TYPE_INTERVAL);
+
+						tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
+					});
+				} else {
+					tl.staggerFrom(split.chars, 0.001, {
+						visibility: 'hidden'
+					}, TYPE_INTERVAL);
+				}
+
+				return tl;
+			});
+		},
 	});
 })();
