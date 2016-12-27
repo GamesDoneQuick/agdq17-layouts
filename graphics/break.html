@@ -18,6 +18,13 @@
 			height: 720px;
 		}
 
+		#labLoop {
+			position: absolute;
+			z-index: -11;
+			left: 46px;
+			top: 470px;
+		}
+
 		#greenStatic,
 		#redStatic {
 			position: absolute;
@@ -180,7 +187,7 @@
 			width: 100%;
 			height: 100%;
 			background: url("img/break/screen_transition.png");
-			animation: screenTransition 1s steps(6) infinite;
+			animation: screenTransition 500ms steps(6) infinite;
 			transition: opacity 333ms ease-in-out;
 		}
 
@@ -202,6 +209,11 @@
 		<div id="greenStatic"></div>
 		<div id="redStatic"></div>
 		<div id="screenStatic"></div>
+		<div id="labLoop">
+			<video width="476" height="156" autoplay loop>
+				<source src="img/break/break_labloop.webm" type="video/webm">
+			</video>
+		</div>
 		<img id="background" src="img/backgrounds/break_bg.png">
 		<div id="sparks"></div>
 		<img id="gdqLogo" src="img/break/gdq-logo.png">
