@@ -32,8 +32,19 @@
 		},
 
 		ready() {
-			stopwatch.on('change', newVal => {
+			stopwatch.on('change', (newVal, oldVal) => {
 				this.time = newVal.formatted;
+
+				if (oldVal) {
+					if (newVal.state === 'running' && oldVal.state !== 'running') {
+						const timerTL = new TimelineLite();
+						timerTL.from(this.$.startFlash, 1, {
+							opacity: 1,
+							ease: Power2.easeIn
+						});
+						console.log('FLASH');
+					}
+				}
 
 				if (newVal.state === 'stopped' && newVal.raw !== 0) {
 					this.paused = true;

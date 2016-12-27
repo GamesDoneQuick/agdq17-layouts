@@ -28,8 +28,19 @@
 				background: url("img/bg.png") center repeat-y,
 							linear-gradient(to right, #012006 0%,#013705 13.5%,#2ab641 50%,#013705 86.5%,#012006 100%);
 			}
-		</style>
 
+			#startFlash {
+				position: absolute;
+				display: flex;
+				background-color: #a5ffa9;
+				width: 100%;
+				height: 100%;
+				bottom: 0;
+				mix-blend-mode: color-dodge;
+				opacity: 0;
+			}
+		</style>
+		<div id="startFlash"></div>
 		<span class="shadow">[[time]]</span>
 	</template>
 
