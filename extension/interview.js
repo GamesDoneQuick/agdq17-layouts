@@ -3,11 +3,7 @@
 const fs = require('fs');
 
 module.exports = function (nodecg) {
-	if (Object.keys(nodecg.bundleConfig.twitter).length === 0) {
-		return;
-	}
-
-	if (!fs.existsSync('../firebase-credentials.json')) {
+	if (!fs.existsSync('bundles/agdq17-layouts/firebase-credentials.json')) {
 		nodecg.log.error('"firebase-credentials.json" was not found at nodecg/bundles/agdq17-layouts! ' +
 			'The interview question system will be disabled.');
 		return;

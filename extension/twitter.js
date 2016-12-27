@@ -1,9 +1,6 @@
 /* eslint-disable camelcase */
 'use strict';
 
-const TwitterStream = require('twitter-stream-api');
-const twemoji = require('twemoji');
-
 module.exports = function (nodecg) {
 	if (Object.keys(nodecg.bundleConfig.twitter).length === 0) {
 		nodecg.log.error('"twitter" is not defined in cfg/agdq17-layouts.json! ' +
@@ -11,6 +8,8 @@ module.exports = function (nodecg) {
 		return;
 	}
 
+	const TwitterStream = require('twitter-stream-api');
+	const twemoji = require('twemoji');
 	const TARGET_USER_ID = nodecg.bundleConfig.twitter.userId;
 	const tweets = nodecg.Replicant('tweets', {defaultValue: []});
 
