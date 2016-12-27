@@ -155,23 +155,28 @@
 			});
 
 			// Tween the height of the description area, if appropriate.
+			// Otherwise, just hard set it or don't do anything, to minimize dead time between bids.
 			const bidDescriptionHeight = bid.type === 'challenge' ? 80 : 45;
 			if (index === 0) {
 				this.tl.set(this.$.bidDescription, {
 					height: bidDescriptionHeight
 				});
-			} else if (bidsArray[index - 1].type !== bid.type) {
-				this.tl.to(this.$.bidDescription, 0.333, {
-					height: bidDescriptionHeight,
-					ease: Power2.easeInOut
-				});
+			} else {
+				const previousBidDescriptionHeight = bidsArray[index - 1].type === 'challenge' ? 80 : 45;
+				if (previousBidDescriptionHeight !== bidDescriptionHeight) {
+					console.log('have to tween height for index:', index);
+					this.tl.to(this.$.bidDescription, 0.333, {
+						height: bidDescriptionHeight,
+						ease: Power2.easeInOut
+					});
+				}
 			}
 
 			this.tl.call(() => {
 				this.$['runName-content'].innerHTML = newRunName;
 				this._typeAnim(this.$['runName-content']);
 				this.bidType = bid.type;
-			}, null, null, '+=0.1');
+			}, null, null, '+=0.01'); // need this little delay to avoid intermittent times where the run name isn't typed
 
 			this.tl.call(() => {
 				let newDescription = bid.description;
