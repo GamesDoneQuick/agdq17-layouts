@@ -6,7 +6,7 @@
 	Polymer({
 		is: 'gdq-twitter',
 
-		ready() {
+		attached() {
 			this.tl = new TimelineLite({
 				autoRemoveChilren: true,
 				onComplete: function () {
