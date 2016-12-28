@@ -122,7 +122,7 @@ module.exports = function (nodecg) {
 	function formatPrize(prize) {
 		return {
 			name: prize.fields.name,
-			provided: prize.fields.provider,
+			provided: prize.fields.provider || prize.fields.provided, // new field is "provider", but it used to be called "provided"
 			description: prize.fields.shortdescription || prize.fields.name,
 			image: prize.fields.altimage,
 			minimumbid: numeral(prize.fields.minimumbid).format('$0,0[.]00'),
