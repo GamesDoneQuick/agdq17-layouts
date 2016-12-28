@@ -62,6 +62,7 @@
 				lastShown = $bids;
 				$bids.showContent().then(() => {
 					if ($prizes.hasContent()) {
+						$prizes.preloadFirstImage();
 						return promiseStatic().then(() => {
 							setScreenHeader($prizes.screenHeader);
 							$bids.setAttribute('hidden', 'true');
@@ -86,6 +87,7 @@
 					lastShown = $el;
 					$el.showContent().then(loop);
 				} else {
+					$prizes.preloadFirstImage();
 					promiseStatic().then(() => {
 						setScreenHeader($el.screenHeader);
 						$el.removeAttribute('hidden');

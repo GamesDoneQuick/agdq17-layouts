@@ -230,6 +230,14 @@
 			});
 		},
 
+		preloadFirstImage() {
+			if (!currentPrizes.value || currentPrizes.value.length <= 0) {
+				return;
+			}
+
+			this.$['prize-image-current'].src = currentPrizes.value[0].image;
+		},
+
 		_calcPrizesToDisplay(prizesArray) {
 			const currentGrandPrizes = prizesArray.filter(prize => prize.grand);
 			const currentNormalPrizes = prizesArray.filter(prize => !prize.grand);
