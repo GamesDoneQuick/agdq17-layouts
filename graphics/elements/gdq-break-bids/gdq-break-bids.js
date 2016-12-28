@@ -84,6 +84,7 @@
 				this.tl.set(this.$['challenge-bar-fill'], {width: 0});
 				this.tl.call(() => {
 					this.$['challenge-goal'].innerHTML = bid.goal;
+					this.$['challenge-bar-fill-label-text'].innerText = '$0';
 				});
 			} else if (bid.type === 'choice-binary') {
 				this.tl.set(this.$['tug-bar-left'], {clearProps: 'width'});
