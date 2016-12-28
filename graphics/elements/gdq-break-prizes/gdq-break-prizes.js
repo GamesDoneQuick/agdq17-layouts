@@ -57,6 +57,11 @@
 		is: 'gdq-break-prizes',
 
 		properties: {
+			hidden: {
+				type: Boolean,
+				reflectToAttribute: true,
+				observer: '_hiddenChanged'
+			},
 			tl: {
 				type: TimelineLite,
 				value() {
@@ -68,6 +73,13 @@
 				type: String,
 				value: 'COMMUNITY PRIZES',
 				readOnly: true
+			}
+		},
+
+		_hiddenChanged(newVal) {
+			if (newVal) {
+				this.$['provider-wrap'].innerText = '';
+				this.$['prize-name'].innerText = '';
 			}
 		},
 

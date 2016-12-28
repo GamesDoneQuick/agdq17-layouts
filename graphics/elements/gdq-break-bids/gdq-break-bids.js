@@ -18,6 +18,11 @@
 		is: 'gdq-break-bids',
 
 		properties: {
+			hidden: {
+				type: Boolean,
+				reflectToAttribute: true,
+				observer: '_hiddenChanged'
+			},
 			bidType: {
 				type: String,
 				reflectToAttribute: true
@@ -33,6 +38,13 @@
 				type: String,
 				value: 'DONATION INCENTIVES',
 				readOnly: true
+			}
+		},
+
+		_hiddenChanged(newVal) {
+			if (newVal) {
+				this.$['runName-content'].innerText = '';
+				this.$['bidDescription-content'].innerText = '';
 			}
 		},
 
