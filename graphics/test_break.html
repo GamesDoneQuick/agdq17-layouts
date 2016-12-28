@@ -6,8 +6,10 @@
 	<link rel="stylesheet" href="style/layout.css">
 	<link rel="stylesheet" href="style/font/SF Pixelate.css">
 	<script src="components/gsap/src/minified/TweenMax.min.js"></script>
-	<link rel="import" href="components/iron-flex-layout/iron-flex-layout.html">
 	<link rel="import" href="components/iron-flex-layout/iron-flex-layout-classes.html">
+	<link rel="import" href="components/iron-flex-layout/iron-flex-layout.html">
+	<link rel="import" href="components/iron-icons/iron-icons.html">
+	<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 	<link rel="import" href="components/vaadin-combo-box/vaadin-combo-box.html">
 	<link rel="import" href="elements/gdq-break-bids/gdq-break-bids.html">
 	<link rel="import" href="elements/gdq-break-prizes/gdq-break-prizes.html">
@@ -29,6 +31,21 @@
 
 				.section {
 					margin: 8px;
+					@apply(--layout-vertical);
+				}
+
+				.section-controls {
+					@apply(--layout-horizontal);
+				}
+
+				.section-controls vaadin-combo-box {
+					@apply(--layout-flex);
+				}
+
+				.section-controls paper-icon-button {
+					margin-left: 1em;
+					align-self: flex-end;
+					@apply(--layout-flex-none);
 				}
 
 				gdq-break-bids,
@@ -39,24 +56,48 @@
 				}
 			</style>
 
-			<div class="section layout vertical">
+			<div class="section">
 				<gdq-break-bids id="bids"></gdq-break-bids>
-				<vaadin-combo-box
-					label="All Bids"
-					items="[[bids]]"
-					item-label-path="public"
-					on-selected-item-changed="_selectedBidChanged">
-				</vaadin-combo-box>
+
+				<div class="section-controls">
+					<vaadin-combo-box
+						label="All Bids"
+						items="[[bids]]"
+						item-label-path="public"
+						item-value-path="id"
+						on-selected-item-changed="_selectedBidChanged"
+						selected-item="{{selectedBid}}">
+					</vaadin-combo-box>
+					<paper-icon-button
+						disabled="[[!selectedBid]]"
+						icon="refresh"
+						alt="Replay selected bid"
+						on-tap="replaySelectedBid">
+					</paper-icon-button>
+				</div>
+
 			</div>
 
-			<div class="section layout vertical">
+			<div class="section">
 				<gdq-break-prizes id="prizes"></gdq-break-prizes>
-				<vaadin-combo-box
-					label="All Prizes"
-					items="[[prizes]]"
-					item-label-path="name"
-					on-selected-item-changed="_selectedPrizeChanged">
-				</vaadin-combo-box>
+
+				<div class="section-controls">
+					<vaadin-combo-box
+						label="All Prizes"
+						items="[[prizes]]"
+						item-label-path="name"
+						item-value-path="id"
+						on-selected-item-changed="_selectedPrizeChanged"
+						selected-item="{{selectedPrize}}">
+					</vaadin-combo-box>
+					<paper-icon-button
+						disabled="[[!selectedPrize]]"
+						icon="refresh"
+						alt="Replay selected prize"
+						on-tap="replaySelectedPrize">
+					</paper-icon-button>
+				</div>
+
 			</div>
 		</template>
 
@@ -67,6 +108,17 @@
 			Polymer({
 				is: 'test-app',
 
+				properties: {
+					selectedBid: {
+						type: Object,
+						value: null
+					},
+					selectedPrize: {
+						type: Object,
+						value: null
+					}
+				},
+
 				ready() {
 					allBids.on('change', newVal => {
 						this.bids = newVal.slice(0);
@@ -75,20 +127,6 @@
 					allPrizes.on('change', newVal => {
 						this.prizes = newVal.slice(0);
 					});
-				},
-
-				_selectedBidChanged(e) {
-					const bid = e.detail.value;
-					this.debounce('showBid', () => {
-						this.showBid(bid);
-					}, 50);
-				},
-
-				_selectedPrizeChanged(e) {
-					const prize = e.detail.value;
-					this.debounce('showPrize', () => {
-						this.showPrize(prize);
-					}, 50);
 				},
 
 				showBid(bid) {
@@ -107,6 +145,28 @@
 
 					const prizesArr = [prize];
 					this.$.prizes.showPrize(prize, 0, prizesArr);
+				},
+
+				replaySelectedBid() {
+					this.showBid(this.selectedBid);
+				},
+
+				replaySelectedPrize() {
+					this.showBid(this.selectedPrize);
+				},
+
+				_selectedBidChanged(e) {
+					const bid = e.detail.value;
+					this.debounce('showBid', () => {
+						this.showBid(bid);
+					}, 50);
+				},
+
+				_selectedPrizeChanged(e) {
+					const prize = e.detail.value;
+					this.debounce('showPrize', () => {
+						this.showPrize(prize);
+					}, 50);
 				}
 			});
 		</script>
