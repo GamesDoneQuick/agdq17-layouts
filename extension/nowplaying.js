@@ -28,7 +28,7 @@ module.exports = function (nodecg) {
 	}, 2000);
 
 	app.use(bodyParser.json());
-	app.post('/agdq17-layouts/song', (req, res, next) => {
+	app.post(`/${nodecg.bundleName}/song`, (req, res, next) => {
 		if (typeof req.body !== 'object') {
 			res.sendStatus(400);
 			return next();

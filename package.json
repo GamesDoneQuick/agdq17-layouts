@@ -111,6 +111,13 @@
         "width": 2,
         "headerColor": "#2d4e8a",
         "file": "interview.html"
+      },
+      {
+        "name": "countdown",
+        "title": "Countdn",
+        "width": 1,
+        "file": "countdown.html",
+        "headerColor": "#2d4e8a"
       }
     ],
     "graphics": [
@@ -134,6 +141,11 @@
         "width": 1280,
         "height": 720,
         "singleInstance": true
+      },
+      {
+        "file": "countdown.html",
+        "width": 1280,
+        "height": 720
       },
       {
         "file": "break.html",

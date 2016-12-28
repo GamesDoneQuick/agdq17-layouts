@@ -1,0 +1,40 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/iron-input/iron-input.html">
+<link rel="import" href="../../components/iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../time-validator/time-validator.html">
+
+<dom-module id="time-input">
+	<template>
+		<style is="custom-style">
+			:host {
+				display: inline-block;
+			}
+
+			input[is="iron-input"] {
+				font: inherit;
+				outline: none;
+				box-shadow: none;
+				border: none;
+				flex-grow: 1;
+				text-align: center;
+				@apply(--time-input-style);
+			}
+
+			.container {
+				@apply(--layout-horizontal);
+				align-items: baseline;
+			}
+		</style>
+
+		<time-validator></time-validator>
+
+		<div class="container">
+			<input is="iron-input" maxlength="2" bind-value="{{_minutes}}" size="2" aria-label="Minutes">
+			<span>:</span>
+			<input is="iron-input" maxlength="2" bind-value="{{_seconds}}" size="2" aria-label="Seconds">
+		</div>
+	</template>
+
+	<script src="time-input.js"></script>
+</dom-module>

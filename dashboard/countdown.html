@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+
+	<!-- This polyfill is needed for the time-input element. It throws an annoying (but harmless) error without it. -->
+	<script src="components/webcomponentsjs/webcomponents-lite.js"></script>
+
+	<link rel="import" href="components/paper-input/paper-input-container.html">
+	<link rel="import" href="components/paper-input/paper-input-error.html">
+	<link rel="import" href="components/paper-button/paper-button.html">
+	<link rel="import" href="components/iron-icons/iron-icons.html">
+	<link rel="import" href="components/iron-icons/av-icons.html">
+	<link rel="import" href="components/iron-flex-layout/iron-flex-layout-classes.html">
+	<link rel="import" href="elements/time-input/time-input.html">
+	<style is="custom-style" include="iron-flex iron-flex-alignment">
+		paper-input-container {
+			padding-top: 0;
+			margin-top: -6px;
+		}
+
+		#start {
+			margin-left: 0;
+		}
+
+		#stop {
+			margin-right: 0;
+		}
+
+		#start,
+		#stop {
+			min-width: 40px;
+		}
+
+		time-input {
+			font-size: 32px!important;
+		}
+	</style>
+</head>
+<body>
+<paper-input-container id="countdownContainer" no-label-float auto-validate attr-for-value="value">
+	<time-input class="paper-input-input"></time-input>
+	<paper-input-error>Invalid time</paper-input-error>
+</paper-input-container>
+
+<div class="layout horizontal" style="margin-top: 10px;">
+	<paper-button class="nodecg-success flex" id="start" raised>
+		<iron-icon icon="av:play-arrow"></iron-icon>
+	</paper-button>
+
+	<paper-button class="nodecg-danger flex" id="stop" raised>
+		<iron-icon icon="av:stop"></iron-icon>
+	</paper-button>
+</div>
+
+<script src="countdown.js"></script>
+</body>
+</html>
