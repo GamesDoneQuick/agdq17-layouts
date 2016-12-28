@@ -66,18 +66,11 @@
 							setScreenHeader($prizes.screenHeader);
 							$bids.setAttribute('hidden', 'true');
 							$prizes.removeAttribute('hidden');
+							lastShown = $prizes;
 							return $prizes.showContent();
 						});
 					}
-
-					return true;
-				}).then(abortedPrizes => {
-					if (!abortedPrizes) {
-						lastShown = $prizes;
-					}
-
-					loop();
-				});
+				}).then(loop);
 
 				break;
 			}
