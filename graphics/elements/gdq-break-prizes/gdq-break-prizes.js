@@ -110,9 +110,11 @@
 		/**
 		 * Adds an animation to the global timeline for showing a specific prize.
 		 * @param {Object} prize - The prize to display.
+		 * @param {Number} index - The index of this prize in prizesArray.
+		 * @param {Array} prizesArray - The parent array containing all the prizes being shown in this cycle.
 		 * @returns {undefined}
 		 */
-		showPrize(prize) {
+		showPrize(prize, index, prizesArray) {
 			this.tl.call(() => {
 				this.tl.pause();
 				loadImage(this.$['prize-image-next'], prize.image).then(() => {
@@ -204,7 +206,16 @@
 			this.tl.set(this.$['prize-image-next'], {opacity: 0}, '+=0.1');
 
 			// Give the prize some time to show
-			this.tl.to({}, displayDuration, {});
+			this.tl.to(EMPTY_OBJ, displayDuration, {
+				onStart() {
+					if (index === 0) {
+						this.$.disclaimer.style.opacity = 1;
+					} else if (index === prizesArray.length - 1) {
+						this.$.disclaimer.style.opacity = 0;
+					}
+				},
+				onStartScope: this
+			});
 		},
 
 		_calcPrizesToDisplay(prizesArray) {

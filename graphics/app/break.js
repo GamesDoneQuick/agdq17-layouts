@@ -139,6 +139,13 @@
 		});
 	}
 
+	/**
+	 * Shows the static transition, holds it, then hides it.
+	 * @returns {Promise} - A promise that resolves as soon as the static has finished entering,
+	 * so that you can do work while the static hides the jank. The static will begin exiting
+	 * STATIC_HOLD_DURATION milliseconds after the promise is resolved, and the exit itself
+	 * takes STATIC_FADE_DURATION milliseconds.
+	 */
 	function promiseStatic() {
 		return new Promise(resolve => {
 			$screenTransition.style.opacity = 1;
