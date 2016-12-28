@@ -42,7 +42,6 @@
 							opacity: 1,
 							ease: Power2.easeIn
 						});
-						console.log('FLASH');
 					}
 				}
 
