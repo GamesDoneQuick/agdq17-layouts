@@ -43,7 +43,7 @@
 				}
 
 				.section-controls paper-icon-button {
-					margin-left: 1em;
+					margin: 0 0.5em;
 					align-self: flex-end;
 					@apply(--layout-flex-none);
 				}
@@ -71,7 +71,7 @@
 					<paper-icon-button
 						disabled="[[!selectedBid]]"
 						icon="refresh"
-						alt="Replay selected bid"
+						title="Replay selected bid"
 						on-tap="replaySelectedBid">
 					</paper-icon-button>
 				</div>
@@ -93,7 +93,7 @@
 					<paper-icon-button
 						disabled="[[!selectedPrize]]"
 						icon="refresh"
-						alt="Replay selected prize"
+						title="Replay selected prize"
 						on-tap="replaySelectedPrize">
 					</paper-icon-button>
 				</div>
