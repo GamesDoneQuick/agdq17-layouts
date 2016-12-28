@@ -5,13 +5,13 @@
 	const $screenTransition = document.getElementById('screen-transition');
 	const $bids = document.querySelector('gdq-break-bids');
 	const $prizes = document.querySelector('gdq-break-prizes');
-	const displayDuration = nodecg.bundleConfig.displayDuration;
 	const currentPrizes = nodecg.Replicant('currentPrizes');
 	const currentBids = nodecg.Replicant('currentBids');
 	const NUM_TO_DECLARE = 2;
 	const STATIC_HOLD_DURATION = 667;
 	const STATIC_FADE_DURATION = 333;
 	let declaredCounter = 0;
+	let loopStarted = false;
 
 	currentPrizes.once('declared', checkDeclared);
 	currentBids.once('declared', checkDeclared);
@@ -192,7 +192,5 @@
 			opacity: 1,
 			ease: Power1.easeOut
 		});
-
-		setTimeout(loop, 100);
 	});
 })();
