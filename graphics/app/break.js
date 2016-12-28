@@ -21,8 +21,13 @@
 	 * @returns {undefined}
 	 */
 	function checkDeclared() {
+		if (loopStarted) {
+			return;
+		}
+
 		declaredCounter++;
 		if (declaredCounter >= NUM_TO_DECLARE) {
+			loopStarted = true;
 			loop();
 		}
 	}
