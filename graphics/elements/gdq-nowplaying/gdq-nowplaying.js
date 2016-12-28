@@ -63,7 +63,6 @@
 			[this.$.title, this.$.game].forEach(textNode => {
 				textNode.style.width = 'auto';
 				const textWidth = textNode.clientWidth;
-				console.log(textNode, textWidth);
 				if (textWidth > MAX_TEXT_WIDTH) {
 					const scale = MAX_TEXT_WIDTH / textWidth;
 					TweenLite.set(textNode, {scaleX: scale, width: textWidth * scale});
