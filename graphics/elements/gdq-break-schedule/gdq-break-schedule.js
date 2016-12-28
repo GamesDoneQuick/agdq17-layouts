@@ -105,7 +105,7 @@
 				tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
 			};
 
-			$runName.innerHTML = this.formatRunName(run.name);
+			$runName.innerHTML = this._formatRunName(run.name);
 			$runDetails.innerText = `${run.category} - ${this.concatRunners(run.runners)}`;
 
 			const nameSplit = new SplitText($runName, {type: 'chars,words'});
@@ -116,7 +116,7 @@
 			return tl;
 		},
 
-		formatRunName(runName) {
+		_formatRunName(runName) {
 			if (!runName || typeof runName !== 'string') {
 				return '?';
 			}

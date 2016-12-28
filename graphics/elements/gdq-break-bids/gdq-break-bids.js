@@ -28,52 +28,40 @@
 					return new TimelineLite();
 				},
 				readOnly: true
+			},
+			screenHeader: {
+				type: String,
+				value: 'DONATION INCENTIVES',
+				readOnly: true
 			}
 		},
 
 		/**
-		 * Adds an animation to the global timeline for showing all current bids.
-		 * @returns {undefined}
+		 * Returns whether or not there are any bids to show at this time.
+		 * @returns {boolean} - A bool.
 		 */
-		showCurrentBids() {
-			return new Promise(resolve => {
-				if (currentBids.value) {
-					this._doShowCurrentBids().then(resolve);
-				} else {
-					currentBids.once('change', () => {
-						this._doShowCurrentBids().then(resolve);
-					});
-				}
-			});
+		hasContent() {
+			if (window._disableBids) {
+				return false;
+			}
+
+			return this._calcBidsToDisplay(currentBids.value).length > 0;
 		},
 
-		_doShowCurrentBids() {
+		/**
+		 * Adds an animation to the global timeline for showing some current bids.
+		 * @returns {undefined}
+		 */
+		showContent() {
 			return new Promise(resolve => {
-				if (currentBids.value.length <= 0) {
+				if (currentBids.value.length <= 0 || window._disableBids) {
 					setTimeout(resolve, 0);
 					return;
 				}
 
-				// Figure out what bids to display in this batch
-				const bidsToDisplay = [];
-
-				currentBids.value.forEach(bid => {
-					// Don't show closed bids in the automatic rotation.
-					if (bid.state.toLowerCase() === 'closed') {
-						return;
-					}
-
-					// If we have already have our three bids determined, we still need to check
-					// if any of the remaining bids are for the same speedrun as the third bid.
-					// This ensures that we are never displaying a partial list of bids for a given speedrun.
-					if (bidsToDisplay.length < 3) {
-						bidsToDisplay.push(bid);
-					} else if (bid.speedrun === bidsToDisplay[bidsToDisplay.length - 1].speedrun) {
-						bidsToDisplay.push(bid);
-					}
-				});
-
-				// Loop over each bid and queue it up on the timeline
+				// Figure out what bids to display in this batch, then
+				// loop over each bid and queue it up on the timeline
+				const bidsToDisplay = this._calcBidsToDisplay(currentBids.value);
 				bidsToDisplay.forEach(this.showBid, this);
 				this.tl.call(resolve);
 			});
@@ -88,6 +76,9 @@
 		 * @returns {undefined}
 		 */
 		showBid(bid, index, bidsArray) {
+			// Tiny timekiller to fix things breaking. Seriously, do not remove this.
+			this.tl.to({}, 0.03, {});
+
 			// Prep elements for animation
 			if (bid.type === 'challenge') {
 				this.tl.set(this.$['challenge-bar-fill'], {width: 0});
@@ -122,7 +113,7 @@
 				});
 			}
 
-			const newRunName = this.formatRunName(bid.speedrun);
+			const newRunName = this._formatRunName(bid.speedrun);
 			this.tl.call(() => {
 				if (!this.$['runName-content'].innerText && !this.$['bidDescription-content'].innerText) {
 					return;
@@ -164,7 +155,6 @@
 			} else {
 				const previousBidDescriptionHeight = bidsArray[index - 1].type === 'challenge' ? 80 : 45;
 				if (previousBidDescriptionHeight !== bidDescriptionHeight) {
-					console.log('have to tween height for index:', index);
 					this.tl.to(this.$.bidDescription, 0.333, {
 						height: bidDescriptionHeight,
 						ease: Power2.easeInOut
@@ -176,7 +166,7 @@
 				this.$['runName-content'].innerHTML = newRunName;
 				this._typeAnim(this.$['runName-content']);
 				this.bidType = bid.type;
-			}, null, null, '+=0.01'); // need this little delay to avoid intermittent times where the run name isn't typed
+			}, null, null, `+=${TYPE_INTERVAL}`);
 
 			this.tl.call(() => {
 				let newDescription = bid.description;
@@ -357,12 +347,32 @@
 			});
 		},
 
-		formatRunName(runName) {
+		_formatRunName(runName) {
 			if (!runName || typeof runName !== 'string') {
 				return '?';
 			}
 
 			return runName.replace('\\n', ' ');
+		},
+
+		_calcBidsToDisplay(bidsArray) {
+			const bidsToDisplay = [];
+			bidsArray.forEach(bid => {
+				// Don't show closed bids in the automatic rotation.
+				if (bid.state.toLowerCase() === 'closed') {
+					return;
+				}
+
+				// If we have already have our three bids determined, we still need to check
+				// if any of the remaining bids are for the same speedrun as the third bid.
+				// This ensures that we are never displaying a partial list of bids for a given speedrun.
+				if (bidsToDisplay.length < 3) {
+					bidsToDisplay.push(bid);
+				} else if (bid.speedrun === bidsToDisplay[bidsToDisplay.length - 1].speedrun) {
+					bidsToDisplay.push(bid);
+				}
+			});
+			return bidsToDisplay;
 		},
 
 		_typeAnim($el, {splitType = 'chars,words'} = {}) {
@@ -426,6 +436,6 @@
 
 				return tl;
 			});
-		},
+		}
 	});
 })();

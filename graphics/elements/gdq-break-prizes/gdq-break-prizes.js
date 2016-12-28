@@ -63,54 +63,46 @@
 					return new TimelineLite();
 				},
 				readOnly: true
+			},
+			screenHeader: {
+				type: String,
+				value: 'COMMUNITY PRIZES',
+				readOnly: true
 			}
+		},
+
+		/**
+		 * Returns whether or not there are any prizes to show at this time.
+		 * @returns {boolean} - A bool.
+		 */
+		hasContent() {
+			if (window._disablePrizes) {
+				return false;
+			}
+
+			return this._calcPrizesToDisplay(currentPrizes.value).length > 0;
 		},
 
 		/**
 		 * Adds an animation to the global timeline for showing the current prizes
 		 * @returns {undefined}
 		 */
-		showCurrentPrizes() {
+		showContent() {
 			return new Promise(resolve => {
-				if (currentPrizes.value) {
-					this._doShowCurrentPrizes().then(resolve);
-				} else {
-					currentPrizes.once('change', () => {
-						this._doShowCurrentPrizes().then(resolve);
-					});
-				}
-			});
-		},
-
-		_doShowCurrentPrizes() {
-			return new Promise(resolve => {
-				if (currentPrizes.value.length <= 0) {
+				if (currentPrizes.value.length <= 0 || window._disablePrizes) {
 					setTimeout(resolve, 0);
 					return;
 				}
 
-				const currentGrandPrizes = currentPrizes.value.filter(prize => prize.grand);
-				const currentNormalPrizes = currentPrizes.value.filter(prize => !prize.grand);
-
-				if (currentGrandPrizes.length > 0 || currentNormalPrizes.length > 0) {
-					const prizesToDisplay = currentNormalPrizes.slice(0);
-					if (currentGrandPrizes.length) {
-						// Figure out what grand prize to show in this batch.
-						const lastShownGrandPrizeIdx = currentGrandPrizes.indexOf(this.lastShownGrandPrize);
-						const nextGrandPrizeIdx = lastShownGrandPrizeIdx >= currentGrandPrizes.length - 1 ?
-							0 : lastShownGrandPrizeIdx + 1;
-						const nextGrandPrize = currentGrandPrizes[nextGrandPrizeIdx];
-
-						if (nextGrandPrize) {
-							prizesToDisplay.unshift(nextGrandPrize);
-							this.lastShownGrandPrize = nextGrandPrize;
-						}
-					}
-
-					// Loop over each prize and queue it up on the timeline
-					prizesToDisplay.forEach(this.showPrize, this);
+				// Loop over each prize and queue it up on the timeline
+				// Figure out what bids to display in this batch, then
+				// loop over each bid and queue it up on the timeline
+				const prizesToDisplay = this._calcPrizesToDisplay(currentPrizes.value);
+				if (prizesToDisplay[0].grand) {
+					this.lastShownGrandPrize = prizesToDisplay[0];
 				}
 
+				prizesToDisplay.forEach(this.showPrize, this);
 				this.tl.call(resolve);
 			});
 		},
@@ -213,6 +205,25 @@
 
 			// Give the prize some time to show
 			this.tl.to({}, displayDuration, {});
+		},
+
+		_calcPrizesToDisplay(prizesArray) {
+			const currentGrandPrizes = prizesArray.filter(prize => prize.grand);
+			const currentNormalPrizes = prizesArray.filter(prize => !prize.grand);
+			const prizesToDisplay = currentNormalPrizes.slice(0);
+			if (currentGrandPrizes.length) {
+				// Figure out what grand prize to show in this batch.
+				const lastShownGrandPrizeIdx = currentGrandPrizes.indexOf(this.lastShownGrandPrize);
+				const nextGrandPrizeIdx = lastShownGrandPrizeIdx >= currentGrandPrizes.length - 1 ?
+					0 : lastShownGrandPrizeIdx + 1;
+				const nextGrandPrize = currentGrandPrizes[nextGrandPrizeIdx];
+
+				if (nextGrandPrize) {
+					prizesToDisplay.unshift(nextGrandPrize);
+				}
+			}
+
+			return prizesToDisplay;
 		},
 
 		_typeAnim($el, {splitType = 'chars,words'} = {}) {

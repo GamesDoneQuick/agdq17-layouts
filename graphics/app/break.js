@@ -5,6 +5,151 @@
 	const $screenTransition = document.getElementById('screen-transition');
 	const $bids = document.querySelector('gdq-break-bids');
 	const $prizes = document.querySelector('gdq-break-prizes');
+	const displayDuration = nodecg.bundleConfig.displayDuration;
+	const currentPrizes = nodecg.Replicant('currentPrizes');
+	const currentBids = nodecg.Replicant('currentBids');
+	const NUM_TO_DECLARE = 2;
+	const STATIC_HOLD_DURATION = 667;
+	const STATIC_FADE_DURATION = 333;
+	let declaredCounter = 0;
+
+	currentPrizes.once('declared', checkDeclared);
+	currentBids.once('declared', checkDeclared);
+
+	/**
+	 * Starts the loop once NUM_TO_DECLARE replicants have been declared.
+	 * @returns {undefined}
+	 */
+	function checkDeclared() {
+		declaredCounter++;
+		if (declaredCounter >= NUM_TO_DECLARE) {
+			loop();
+		}
+	}
+
+	let lastShown;
+	/**
+	 * The main bids and prizes loop. Only call it once, it will call itself after that.
+	 * @returns {undefined}
+	 */
+	function loop() {
+		let numToShow = 2;
+		if (!$bids.hasContent()) {
+			numToShow--;
+		}
+
+		if (!$prizes.hasContent()) {
+			numToShow--;
+		}
+
+		switch (numToShow) {
+			case 2: {
+				if (lastShown !== $bids) {
+					promiseStatic().then(() => {
+						setScreenHeader($bids.screenHeader);
+						$bids.removeAttribute('hidden');
+						$prizes.setAttribute('hidden', 'true');
+					});
+				} else {
+					$screenTransition.style.opacity = 0;
+				}
+
+				lastShown = $bids;
+				$bids.showContent().then(() => {
+					if ($prizes.hasContent()) {
+						return promiseStatic().then(() => {
+							setScreenHeader($prizes.screenHeader);
+							$bids.setAttribute('hidden', 'true');
+							$prizes.removeAttribute('hidden');
+							return $prizes.showContent();
+						});
+					}
+
+					return true;
+				}).then(abortedPrizes => {
+					if (!abortedPrizes) {
+						lastShown = $prizes;
+					}
+
+					loop();
+				});
+
+				break;
+			}
+
+			case 1: {
+				let $el = $bids;
+				if (!$bids.hasContent()) {
+					$el = $prizes;
+				}
+
+				if (lastShown === $el) {
+					$screenTransition.style.opacity = 0;
+					lastShown = $el;
+					$el.showContent().then(loop);
+				} else {
+					promiseStatic().then(() => {
+						setScreenHeader($el.screenHeader);
+						$el.removeAttribute('hidden');
+
+						if (lastShown) {
+							lastShown.setAttribute('hidden', 'true');
+						}
+
+						lastShown = $el;
+						$el.showContent().then(loop);
+					});
+				}
+
+				break;
+			}
+
+			default: {
+				// If nothing to show, show static.
+				// Then, check if there are any bids or prizes to show once every second.
+				// Once there are, fade out the static and restart the loop.
+				$screenTransition.style.opacity = 1;
+				const interval = setInterval(() => {
+					if ($bids.hasContent() || $prizes.hasContent()) {
+						clearInterval(interval);
+						loop();
+					}
+				}, 1000);
+			}
+		}
+	}
+
+	/**
+	 * Changes the text content of the header above the main screen, where bids and prizes are shown.
+	 * Fades the text out, changes it, then fades it back in.
+	 * @param {string} newText - The text to put in the header.
+	 * @returns {TweenLite} - A TweenLite animation.
+	 */
+	function setScreenHeader(newText) {
+		return TweenLite.to($screenHeaderText, 0.333, {
+			opacity: 0,
+			ease: Power1.easeIn,
+			onComplete() {
+				$screenHeaderText.innerText = newText;
+				TweenLite.to($screenHeaderText, 0.333, {
+					opacity: 1,
+					ease: Power1.easeOut
+				});
+			}
+		});
+	}
+
+	function promiseStatic() {
+		return new Promise(resolve => {
+			$screenTransition.style.opacity = 1;
+
+			setTimeout(resolve, STATIC_FADE_DURATION);
+
+			setTimeout(() => {
+				$screenTransition.style.opacity = 0;
+			}, STATIC_HOLD_DURATION);
+		});
+	}
 
 	// Logo anim
 	const LOGO_FADE_INTERVAL = 20;
@@ -43,50 +188,4 @@
 
 		setTimeout(loop, 100);
 	});
-
-	/**
-	 * The main bids and prizes loop. Only call it once, it will call itself after that.
-	 * @returns {undefined}
-	 */
-	function loop() {
-		$bids.removeAttribute('hidden');
-		$prizes.setAttribute('hidden', 'true');
-		$screenTransition.style.opacity = 0;
-		$bids.showCurrentBids().then(() => {
-			setScreenHeader('COMMUNITY PRIZES');
-			$screenTransition.style.opacity = 1;
-			return new Promise(resolve => {
-				setTimeout(() => {
-					$screenTransition.style.opacity = 0;
-					$bids.setAttribute('hidden', 'true');
-					$prizes.removeAttribute('hidden');
-					return $prizes.showCurrentPrizes().then(resolve);
-				}, 667);
-			});
-		}).then(() => {
-			setScreenHeader('DONATION INCENTIVES');
-			$screenTransition.style.opacity = 1;
-			setTimeout(loop, 667);
-		});
-	}
-
-	/**
-	 * Changes the text content of the header above the main screen, where bids and prizes are shown.
-	 * Fades the text out, changes it, then fades it back in.
-	 * @param {string} newText - The text to put in the header.
-	 * @returns {TweenLite} - A TweenLite animation.
-	 */
-	function setScreenHeader(newText) {
-		return TweenLite.to($screenHeaderText, 0.333, {
-			opacity: 0,
-			ease: Power1.easeIn,
-			onComplete() {
-				$screenHeaderText.innerText = newText;
-				TweenLite.to($screenHeaderText, 0.333, {
-					opacity: 1,
-					ease: Power1.easeOut
-				});
-			}
-		})
-	}
 })();
