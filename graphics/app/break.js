@@ -49,14 +49,14 @@
 
 		switch (numToShow) {
 			case 2: {
-				if (lastShown !== $bids) {
+				if (lastShown === $bids) {
+					$screenTransition.style.opacity = 0;
+				} else {
 					promiseStatic().then(() => {
 						setScreenHeader($bids.screenHeader);
 						$bids.removeAttribute('hidden');
 						$prizes.setAttribute('hidden', 'true');
 					});
-				} else {
-					$screenTransition.style.opacity = 0;
 				}
 
 				lastShown = $bids;
