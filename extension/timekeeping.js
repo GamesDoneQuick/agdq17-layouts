@@ -3,6 +3,7 @@
 const TimeObject = require('./classes/time-object');
 const HEARTBEAT_INTERVAL = 2500;
 let SerialPort;
+let activeSerialPort;
 let interval;
 let heartbeatTimeout;
 let heartbeatInterval;
@@ -23,34 +24,6 @@ module.exports = function (nodecg) {
 		const missedSeconds = Math.round((Date.now() - stopwatch.value.timestamp) / 1000);
 		TimeObject.setSeconds(stopwatch.value, stopwatch.value.raw + missedSeconds);
 		start(true);
-	}
-
-	let activeSerialPort;
-	if (nodecg.bundleConfig.enableTimerSerial) {
-		nodecg.log.info(`[timekeeping] Setting up serial communications`);
-		SerialPort = require('serialport');
-		pollForDesiredSerialPort();
-		setInterval(pollForDesiredSerialPort, 5000);
-
-		let lastState;
-		stopwatch.on('change', newVal => {
-			if (newVal.state !== lastState) {
-				lastState = newVal.state;
-
-				const args = [];
-				switch (newVal.state) {
-					case 'finished':
-						args.push(stopwatch.value.results);
-						break;
-					default:
-					// Do nothing.
-				}
-
-				if (canWriteToSerial()) {
-					activeSerialPort.write(`${JSON.stringify({event: newVal.state, arguments: args})}\n`);
-				}
-			}
-		});
 	}
 
 	nodecg.listenFor('startTimer', start);
@@ -86,6 +59,33 @@ module.exports = function (nodecg) {
 	});
 	nodecg.listenFor('editTime', editTime);
 
+	if (nodecg.bundleConfig.enableTimerSerial) {
+		nodecg.log.info(`[timekeeping] Setting up serial communications`);
+		SerialPort = require('serialport');
+		pollForDesiredSerialPort();
+		setInterval(pollForDesiredSerialPort, 5000);
+
+		let lastState;
+		stopwatch.on('change', newVal => {
+			if (newVal.state !== lastState) {
+				lastState = newVal.state;
+
+				const args = [];
+				switch (newVal.state) {
+					case 'finished':
+						args.push(stopwatch.value.results);
+						break;
+					default:
+					// Do nothing.
+				}
+
+				if (canWriteToSerial()) {
+					writeToSerial(`${JSON.stringify({event: newVal.state, arguments: args})}\n`);
+				}
+			}
+		});
+	}
+
 	/**
 	 * Starts the timer.
 	 * @param {Boolean} [force=false] - Forces the timer to start again, even if already running.
@@ -109,7 +109,7 @@ module.exports = function (nodecg) {
 		TimeObject.increment(stopwatch.value);
 
 		if (canWriteToSerial()) {
-			activeSerialPort.write(`${JSON.stringify({
+			writeToSerial(`${JSON.stringify({
 				event: 'tick',
 				arguments: [stopwatch.value.raw]
 			})}\n`);
@@ -131,7 +131,7 @@ module.exports = function (nodecg) {
 	 */
 	function reset() {
 		if (canWriteToSerial()) {
-			activeSerialPort.write(`${JSON.stringify({event: 'reset'})}\n`);
+			writeToSerial(`${JSON.stringify({event: 'reset'})}\n`);
 		}
 		stop();
 		TimeObject.setSeconds(stopwatch.value, 0);
@@ -151,7 +151,7 @@ module.exports = function (nodecg) {
 
 		stopwatch.value.results[index].forfeit = forfeit;
 		if (!forfeit && canWriteToSerial()) {
-			activeSerialPort.write(`${JSON.stringify({event: 'runnerFinished'})}\n`);
+			writeToSerial(`${JSON.stringify({event: 'runnerFinished'})}\n`);
 		}
 		recalcPlaces();
 	}
@@ -276,14 +276,19 @@ module.exports = function (nodecg) {
 						return nodecg.log.error('Error opening propsective port:\n\t', err.message);
 					}
 
-					port.write('handshake\n');
+					port.write('handshake\n', error => {
+						if (error) {
+							// We have to just discard this error, because an Arduino programmed in Joypad
+							// mode will show up as an available COM, but can't actually be written to.
+						}
+					});
 				});
 
 				const handshakeTimeout = setTimeout(() => {
 					if (port && port.isOpen()) {
 						port.close(error => {
 							if (error) {
-								nodecg.log.error('Error closing port that failed to handshake:\n\t', error);
+								nodecg.log.error('Error closing prospective port that failed to handshake:\n\t', error);
 							}
 						});
 					}
@@ -395,7 +400,7 @@ module.exports = function (nodecg) {
 	 */
 	function sendHeartbeat() {
 		if (canWriteToSerial()) {
-			activeSerialPort.write('heartbeat\n');
+			writeToSerial('heartbeat\n');
 		}
 	}
 
@@ -405,6 +410,19 @@ module.exports = function (nodecg) {
      */
 	function canWriteToSerial() {
 		return activeSerialPort && !activeSerialPort.closing && activeSerialPort.isOpen();
+	}
+
+	/**
+	 * Writes the given data to the activeSerialPort.
+	 * @param {string} data - The string of data to write.
+	 * @returns {undefined}
+	 */
+	function writeToSerial(data) {
+		activeSerialPort.write(data, error => {
+			if (error) {
+				nodecg.log.error('Error writing to activeSerialPort:\n\t', error);
+			}
+		});
 	}
 
 	/**
