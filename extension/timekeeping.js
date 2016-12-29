@@ -2,10 +2,10 @@
 
 const TimeObject = require('./classes/time-object');
 const HEARTBEAT_INTERVAL = 2500;
+let SerialPort;
 let interval;
 let heartbeatTimeout;
 let heartbeatInterval;
-let serialReconnectPending = false;
 
 module.exports = function (nodecg) {
 	const currentRun = nodecg.Replicant('currentRun');
@@ -25,81 +25,12 @@ module.exports = function (nodecg) {
 		start(true);
 	}
 
-	let serialPort;
-	if (nodecg.bundleConfig.serialCOMName) {
-		nodecg.log.info(`[timekeeping] Setting up serial communications via ${nodecg.bundleConfig.serialCOMName}`);
-		const SerialPort = require('serialport').SerialPort;
-		serialPort = new SerialPort(nodecg.bundleConfig.serialCOMName, {
-			parser: require('serialport').parsers.readline('\n'),
-			baudRate: 9600
-		}, err => {
-			if (err) {
-				return nodecg.log.error(err.message);
-			}
-		});
-
-		serialPort.on('data', data => {
-			switch (data) {
-				case 'heartbeat':
-					onHeartbeatReceived();
-					break;
-				case 'startFinish':
-					if (stopwatch.value.state === 'running') {
-						// Finish all runners.
-						currentRun.value.runners.forEach((runner, index) => {
-							if (!runner) {
-								return;
-							}
-
-							completeRunner({index, forfeit: false});
-						});
-					} else {
-						start();
-
-						// Resume all runners.
-						currentRun.value.runners.forEach((runner, index) => {
-							if (!runner) {
-								return;
-							}
-
-							resumeRunner(index);
-						});
-					}
-					break;
-				default:
-					nodecg.log.error('[timekeeping] Unexpected data from serial port:', data);
-			}
-		});
-
-		serialPort.on('open', error => {
-			serialReconnectPending = false;
-
-			if (error) {
-				nodecg.log.info('[timekeeping] Error opening serial port:', error.stack);
-				attemptSerialReconnect();
-				return;
-			}
-
-			nodecg.log.info('Sending response handshake');
-			serialPort.write('handshake\n');
-			sendHeartbeat();
-			heartbeatInterval = setInterval(sendHeartbeat, 2000);
-			onHeartbeatReceived();
-			nodecg.log.info(`[timekeeping] Serial port ${nodecg.bundleConfig.serialCOMName} opened.`);
-		});
-
-		serialPort.on('disconnect', () => {
-			nodecg.log.error('[timekeeping] Serial port disconnected.');
-			clearInterval(heartbeatInterval);
-			attemptSerialReconnect();
-		});
-
-		serialPort.on('error', error => {
-			nodecg.log.error('[timekeeping] Serial port error:', error.stack);
-			clearInterval(heartbeatInterval);
-			serialReconnectPending = false;
-			attemptSerialReconnect();
-		});
+	let activeSerialPort;
+	if (nodecg.bundleConfig.enableTimerSerial) {
+		nodecg.log.info(`[timekeeping] Setting up serial communications`);
+		SerialPort = require('serialport');
+		pollForDesiredSerialPort();
+		setInterval(pollForDesiredSerialPort, 5000);
 
 		let lastState;
 		stopwatch.on('change', newVal => {
@@ -116,7 +47,7 @@ module.exports = function (nodecg) {
 				}
 
 				if (canWriteToSerial()) {
-					serialPort.write(`${JSON.stringify({event: newVal.state, arguments: args})}\n`);
+					activeSerialPort.write(`${JSON.stringify({event: newVal.state, arguments: args})}\n`);
 				}
 			}
 		});
@@ -178,7 +109,7 @@ module.exports = function (nodecg) {
 		TimeObject.increment(stopwatch.value);
 
 		if (canWriteToSerial()) {
-			serialPort.write(`${JSON.stringify({
+			activeSerialPort.write(`${JSON.stringify({
 				event: 'tick',
 				arguments: [stopwatch.value.raw]
 			})}\n`);
@@ -200,7 +131,7 @@ module.exports = function (nodecg) {
 	 */
 	function reset() {
 		if (canWriteToSerial()) {
-			serialPort.write(`${JSON.stringify({event: 'reset'})}\n`);
+			activeSerialPort.write(`${JSON.stringify({event: 'reset'})}\n`);
 		}
 		stop();
 		TimeObject.setSeconds(stopwatch.value, 0);
@@ -220,7 +151,7 @@ module.exports = function (nodecg) {
 
 		stopwatch.value.results[index].forfeit = forfeit;
 		if (!forfeit && canWriteToSerial()) {
-			serialPort.write(`${JSON.stringify({event: 'runnerFinished'})}\n`);
+			activeSerialPort.write(`${JSON.stringify({event: 'runnerFinished'})}\n`);
 		}
 		recalcPlaces();
 	}
@@ -310,56 +241,130 @@ module.exports = function (nodecg) {
 	}
 
 	/**
-	 * Attempts to reconnect to the specified COM port after 5 seconds.
+	 * Does nothing if there's already an activeSerialPort.
+	 * Checks all connected serial COM devices for ones with an Arduino manufacturer string.
+	 * Then, emits a 'handshake' message to each of those devices, and gives them HEARTBEAT_INTERVAL
+	 * milliseconds to respond. If the port responds to the handshake in time, that port is taken as the
+	 * new activeSerialPort.
 	 * @returns {undefined}
 	 */
-	function attemptSerialReconnect() {
-		if (serialReconnectPending) {
+	function pollForDesiredSerialPort() {
+		if (activeSerialPort) {
 			return;
 		}
 
-		clearTimeout(heartbeatTimeout);
-
-		if (serialPort.isOpen()) {
-			serialPort.close();
-		}
-
-		serialReconnectPending = true;
-		nodecg.log.info('[timekeeping] Attempting serial port reconnect in 5 seconds.');
-		setTimeout(() => {
-			if (serialPort.isOpen()) {
+		SerialPort.list((err, availableCOMs) => {
+			if (err) {
+				nodecg.log.error('Error listing serialports:', err);
 				return;
 			}
 
-			require('serialport').list((err, ports) => {
-				if (err) {
-					nodecg.log.error('[timekeeping] Error listing serial ports:', err.stack);
+			if (activeSerialPort) {
+				return;
+			}
 
-					if (serialPort.isOpen()) {
-						serialPort.close();
+			const availableArduinoCOMs = availableCOMs.filter(port => {
+				return port.manufacturer === 'Arduino LLC (www.arduino.cc)';
+			});
+
+			availableArduinoCOMs.forEach(availableArduinoCOM => {
+				const port = new SerialPort(availableArduinoCOM.comName, {
+					parser: require('serialport').parsers.readline('\n'),
+					baudRate: 9600
+				}, err => {
+					if (err) {
+						return nodecg.log.error('Error opening propsective port:\n\t', err.message);
 					}
 
-					serialReconnectPending = false;
-					attemptSerialReconnect();
-					return;
-				}
-
-				const foundPort = ports.some(port => {
-					if (port.comName === nodecg.bundleConfig.serialCOMName) {
-						serialPort.open();
-						return true;
-					}
-
-					return false;
+					port.write('handshake\n');
 				});
 
-				serialReconnectPending = false;
+				const handshakeTimeout = setTimeout(() => {
+					if (port && port.isOpen()) {
+						port.close(error => {
+							if (error) {
+								nodecg.log.error('Error closing port that failed to handshake:\n\t', error);
+							}
+						});
+					}
+				}, HEARTBEAT_INTERVAL);
 
-				if (!foundPort) {
-					attemptSerialReconnect();
-				}
+				port.on('data', data => {
+					switch (data) {
+						case 'handshake':
+							nodecg.log.info('handshake received');
+							clearTimeout(handshakeTimeout);
+							takePort(port);
+							break;
+						default:
+							break;
+					}
+				});
 			});
-		}, 5000);
+		});
+	}
+
+	/**
+	 * Takes one of the prospectively opened ports as the new activeSerialPort.
+	 * This attaches all the event listeners we need and starts emitting and listening for heartbeats.
+	 * @param {SerialPort} port - The port to take as the new activeSerialPort.
+	 * @returns {undefined}
+	 */
+	function takePort(port) {
+		activeSerialPort = port;
+		clearTimeout(heartbeatTimeout);
+		clearInterval(heartbeatInterval);
+		sendHeartbeat();
+		heartbeatInterval = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL - 500);
+		onHeartbeatReceived();
+		nodecg.log.info('[timekeeping] activeSerialPort handshaken, open for data.');
+
+		port.on('data', data => {
+			if (port !== activeSerialPort) {
+				return;
+			}
+
+			switch (data) {
+				case 'handshake':
+					nodecg.log.info('handshake received');
+					break;
+				case 'heartbeat':
+					onHeartbeatReceived();
+					break;
+				default:
+					nodecg.log.error('[timekeeping] Unexpected data from serial port:', data);
+			}
+		});
+
+		port.on('disconnect', () => {
+			if (port !== activeSerialPort) {
+				return;
+			}
+
+			nodecg.log.error('[timekeeping] activeSerialPort disconnected.');
+			clearInterval(heartbeatInterval);
+			destroyActiveSerialPort();
+		});
+
+		port.on('close', () => {
+			if (port !== activeSerialPort) {
+				return;
+			}
+
+			nodecg.log.error('[timekeeping] activeSerialPort closed.');
+			clearInterval(heartbeatInterval);
+			destroyActiveSerialPort();
+		});
+
+		port.on('error', error => {
+			if (port !== activeSerialPort) {
+				return;
+			}
+
+			if (error) {
+				nodecg.log.error('[timekeeping] activeSerialPort error:\n\t', error.stack);
+			}
+		});
 	}
 
 	/**
@@ -367,8 +372,8 @@ module.exports = function (nodecg) {
 	 * @returns {undefined}
 	 */
 	function serialHeartbeatExpired() {
-		nodecg.log.info('Serial heartbeat expired, attempting reconnect');
-		attemptSerialReconnect();
+		nodecg.log.info('Serial heartbeat expired, closing activeSerialPort');
+		destroyActiveSerialPort();
 	}
 
 	/**
@@ -376,6 +381,10 @@ module.exports = function (nodecg) {
 	 * @returns {undefined}
 	 */
 	function onHeartbeatReceived() {
+		if (!activeSerialPort) {
+			return;
+		}
+
 		clearTimeout(heartbeatTimeout);
 		heartbeatTimeout = setTimeout(serialHeartbeatExpired, HEARTBEAT_INTERVAL);
 	}
@@ -386,7 +395,7 @@ module.exports = function (nodecg) {
 	 */
 	function sendHeartbeat() {
 		if (canWriteToSerial()) {
-			serialPort.write('heartbeat\n');
+			activeSerialPort.write('heartbeat\n');
 		}
 	}
 
@@ -395,6 +404,33 @@ module.exports = function (nodecg) {
 	 * @returns {boolean} - Whether or not we can write to the port
      */
 	function canWriteToSerial() {
-		return serialPort && !serialPort.closing && serialPort.isOpen();
+		return activeSerialPort && !activeSerialPort.closing && activeSerialPort.isOpen();
+	}
+
+	/**
+	 * Destroys the current activeSerialPort, removing all listeners and closing the port if still open.
+	 * Also sets `activeSerialPort` to null.
+	 * @returns {undefined}
+	 */
+	function destroyActiveSerialPort() {
+		clearInterval(heartbeatInterval);
+		clearTimeout(heartbeatTimeout);
+		if (!activeSerialPort) {
+			return;
+		}
+
+		activeSerialPort.removeAllListeners('data');
+		activeSerialPort.removeAllListeners('open');
+		activeSerialPort.removeAllListeners('disconnect');
+		activeSerialPort.removeAllListeners('close');
+		activeSerialPort.removeAllListeners('error');
+		if (canWriteToSerial()) {
+			activeSerialPort.close(error => {
+				if (error) {
+					nodecg.log.info('Error closing activeSerialPort:\n\t', error);
+				}
+			});
+		}
+		activeSerialPort = null;
 	}
 };
