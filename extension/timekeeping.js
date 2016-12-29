@@ -86,6 +86,44 @@ module.exports = function (nodecg) {
 		});
 	}
 
+	if (nodecg.bundleConfig.footpedal.enabled) {
+		const gamepad = require('gamepad');
+
+		gamepad.init();
+
+		// Poll for events
+		setInterval(gamepad.processEvents, 16);
+
+		// Listen for buttonId down event from our target gamepad.
+		gamepad.on('down', (id, num) => {
+			if (num !== nodecg.bundleConfig.footpedal.buttonId) {
+				return;
+			}
+
+			if (stopwatch.value.state === 'running') {
+				// Finish all runners.
+				currentRun.value.runners.forEach((runner, index) => {
+					if (!runner) {
+						return;
+					}
+
+					completeRunner({index, forfeit: false});
+				});
+			} else {
+				start();
+
+				// Resume all runners.
+				currentRun.value.runners.forEach((runner, index) => {
+					if (!runner) {
+						return;
+					}
+
+					resumeRunner(index);
+				});
+			}
+		});
+	}
+
 	/**
 	 * Starts the timer.
 	 * @param {Boolean} [force=false] - Forces the timer to start again, even if already running.

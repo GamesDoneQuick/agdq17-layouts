@@ -85,6 +85,19 @@
 			},
 			"description": "Login information for the private areas of the tracker API.",
 			"required": ["username", "password"]
+		},
+		"footpedal": {
+			"type": "object",
+			"properties": {
+				"enabled": {
+					"type": "boolean",
+					"default": true
+				},
+				"buttonId": {
+					"type": "number",
+					"default": 31
+				}
+			}
 		}
 	},
 	"required": ["tracker"]
