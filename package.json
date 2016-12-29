@@ -328,7 +328,6 @@
   },
   "scripts": {
     "static": "eslint ./**/*.js ./**/*.html --ignore-path .eslintignore",
-    "test": "npm run static && istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
-    "list-serial-ports": "node ./scripts/list-serial-ports"
+    "test": "npm run static && istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec"
   }
 }
