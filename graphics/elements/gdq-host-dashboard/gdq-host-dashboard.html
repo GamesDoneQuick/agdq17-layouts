@@ -221,6 +221,10 @@
 				width: 120px;
 			}
 
+			.result:not([display]) {
+				display: none;
+			}
+
 			.result-time {
 				font-size: 24px;
 				font-weight: 400;
@@ -346,7 +350,7 @@
 					<div id="stopwatch-time">[[stopwatchTime]]</div>
 					<div id="stopwatch-results">
 						<template is="dom-repeat" items="[[stopwatchResults]]" as="result">
-							<div class="result" hidden="[[isNull(result)]]">
+							<div class="result" display$="[[!isNull(result)]]">
 								<div class="result-time">[[result.formatted]]</div>
 								<div class="result-name" title="[[calcRunnerName(runners, index)]]">
 									[[calcRunnerName(runners, index)]]

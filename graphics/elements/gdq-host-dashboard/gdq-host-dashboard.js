@@ -35,7 +35,7 @@
 				observer: 'metroidBidChanged'
 			},
 			saveTheAnimalsTotal: {
-				type: Object,
+				type: Object
 			},
 			killTheAnimalsTotal: {
 				type: Object
