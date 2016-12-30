@@ -79,6 +79,9 @@
 			advertisements.on('change', newVal => {
 				this.selectedBase = -1;
 				this.advertisements = newVal.slice(0);
+				setTimeout(() => {
+					nodecg.sendMessage('getLoadedAds');
+				}, 100);
 			});
 
 			nodecg.listenFor('adLoadProgress', data => {
