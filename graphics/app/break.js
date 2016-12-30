@@ -12,9 +12,10 @@
 	const STATIC_FADE_DURATION = 333;
 	let declaredCounter = 0;
 	let loopStarted = false;
+	let lastShown;
 
-	currentPrizes.once('declared', checkDeclared);
-	currentBids.once('declared', checkDeclared);
+	currentPrizes.once('change', checkDeclared);
+	currentBids.once('change', checkDeclared);
 
 	/**
 	 * Starts the loop once NUM_TO_DECLARE replicants have been declared.
@@ -32,7 +33,6 @@
 		}
 	}
 
-	let lastShown;
 	/**
 	 * The main bids and prizes loop. Only call it once, it will call itself after that.
 	 * @returns {undefined}
