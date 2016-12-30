@@ -6,19 +6,27 @@
 	Polymer({
 		is: 'gdq-twitter',
 
+		properties: {
+			tl: {
+				type: TimelineLite,
+				value() {
+					return new TimelineLite({
+						autoRemoveChilren: true,
+						onComplete() {
+							// Remove will-change every time the timeline is emptied
+							this.$.namebar.style.willChange = '';
+							this.$.body.style.willChange = '';
+							this.style.willChange = '';
+						},
+						onCompleteScope: this
+					});
+				},
+				readOnly: true
+			}
+		},
+
 		attached() {
-			this.tl = new TimelineLite({
-				autoRemoveChilren: true,
-				onComplete: function () {
-					// Remove will-change every time the timeline is emptied
-					this.$.namebar.style.willChange = '';
-					this.$.body.style.willChange = '';
-					this.style.willChange = '';
-				}.bind(this)
-			});
-
 			this._sponsors = document.querySelector('gdq-sponsors');
-
 			nodecg.listenFor('showTweet', this.showTweet.bind(this));
 		},
 
