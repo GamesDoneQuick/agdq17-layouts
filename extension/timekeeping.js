@@ -334,10 +334,11 @@ module.exports = function (nodecg) {
 					}
 				}, HEARTBEAT_INTERVAL);
 
-				port.on('data', data => {
+				port.on('data', function handshakeListener(data) {
 					switch (data) {
 						case 'handshake':
 							nodecg.log.info('handshake received');
+							port.removeListener('data', handshakeListener);
 							clearTimeout(handshakeTimeout);
 							takePort(port);
 							break;
