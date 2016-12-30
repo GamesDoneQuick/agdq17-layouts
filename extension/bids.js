@@ -1,8 +1,8 @@
 'use strict';
 
 const POLL_INTERVAL = 60 * 1000;
-let BIDS_URL = 'https://gamesdonequick.com/tracker/search/?type=allbids&event=18';
-let CURRENT_BIDS_URL = 'https://gamesdonequick.com/tracker/search/?type=allbids&feed=current&event=18';
+let BIDS_URL = 'https://gamesdonequick.com/tracker/search/?type=allbids&event=19';
+let CURRENT_BIDS_URL = 'https://gamesdonequick.com/tracker/search/?type=allbids&feed=current&event=19';
 
 const Q = require('q');
 const request = require('request');

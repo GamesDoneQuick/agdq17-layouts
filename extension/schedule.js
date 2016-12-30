@@ -193,7 +193,7 @@ module.exports = function (nodecg) {
 				'https://private.gamesdonequick.com/tracker/search',
 			qs: {
 				type: 'runner',
-				event: 18
+				event: 19
 			},
 			json: true
 		});
@@ -204,7 +204,7 @@ module.exports = function (nodecg) {
 				'https://private.gamesdonequick.com/tracker/search',
 			qs: {
 				type: 'run',
-				event: 18
+				event: 19
 			},
 			json: true
 		});

@@ -1,6 +1,6 @@
 'use strict';
 
-const DONATION_STATS_URL = 'https://gamesdonequick.com/tracker/18?json';
+const DONATION_STATS_URL = 'https://gamesdonequick.com/tracker/19?json';
 const POLL_INTERVAL = 60 * 1000;
 
 const Q = require('q');
