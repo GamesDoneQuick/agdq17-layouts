@@ -85,22 +85,28 @@
 			});
 
 			nodecg.listenFor('adLoadProgress', data => {
-				const adEl = Polymer.dom(this.root).querySelector(`.ad[data-base="${data.base}"]`);
-				if (adEl) {
-					const progressEl = adEl.querySelector('paper-progress');
-					progressEl.value = data.percentLoaded;
+				if (data.percentLoaded >= 100) {
+					this.adLoaded(data.base);
+				} else {
+					const adEl = Polymer.dom(this.root).querySelector(`.ad[data-base="${data.base}"]`);
+					if (adEl) {
+						const progressEl = adEl.querySelector('paper-progress');
+						progressEl.value = data.percentLoaded;
+					}
 				}
 			});
 
-			nodecg.listenFor('adLoaded', base => {
-				const adEl = Polymer.dom(this.root).querySelector(`.ad[data-base="${base}"]`);
-				if (adEl) {
-					adEl.removeAttribute('disabled');
-					const progressEl = adEl.querySelector('paper-progress');
-					progressEl.value = 100;
-					progressEl.updateStyles();
-				}
-			});
+			nodecg.listenFor('adLoaded', this.adLoaded.bind(this));
+		},
+
+		adLoaded(base) {
+			const adEl = Polymer.dom(this.root).querySelector(`.ad[data-base="${base}"]`);
+			if (adEl) {
+				adEl.removeAttribute('disabled');
+				const progressEl = adEl.querySelector('paper-progress');
+				progressEl.value = 100;
+				progressEl.updateStyles();
+			}
 		},
 
 		calcPlayButtonDisabled(_playTimeout, selectedAd) {
