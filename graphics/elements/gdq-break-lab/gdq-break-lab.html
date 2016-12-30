@@ -1,0 +1,131 @@
+<dom-module id="gdq-break-lab">
+	<template>
+		<style>
+			:host {
+				display: block;
+				position: absolute;
+				width: 508px;
+				height: 188px;
+				color: #ffffff;
+				font-family: "SF Pixelate", sans-serif;
+			}
+
+			#bg {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(8, 8, 24, 0.82);
+				transform: scaleY(0.4468);
+				transform-origin: center center;
+			}
+
+			#nowplaying {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				padding: 0 42px;
+				box-sizing: border-box;
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+			}
+
+			#nowplaying-text {
+				text-align: center;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				font-weight: 700;
+				padding: 0 12px;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+
+			#nowplaying-game {
+				font-size: 24px;
+			}
+
+			#nowplaying-title {
+				font-size: 18px;
+			}
+
+			#tweet {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				padding: 16px;
+				box-sizing: border-box;
+				overflow: hidden;
+				@apply(--layout-vertical);
+				@apply(--layout-center-center);
+			}
+
+			#tweet-body {
+				padding: 0 22px;
+				box-sizing: border-box;
+				@apply(--layout-vertical);
+				@apply(--layout-center-center);
+				@apply(--layout-flex);
+			}
+
+			#tweet-body-text {
+				/* hardcode to 5 lines max, any others will be hidden */
+				max-height: 105px;
+				overflow: hidden;
+				text-align: center;
+			}
+
+			#tweet-name {
+				min-width: 288px;
+				height: 34px;
+				border: 4px solid black;
+				border-bottom: 2px solid black;
+				background-color: rgba(71, 95, 125, 0.82);
+				text-align: center;
+
+				/* prep for animation */
+				transform: translateY(100%);
+
+				@apply(--layout-vertical);
+				@apply(--layout-center-center);
+			}
+
+			#tweet-name-text {
+				color: #00aeff;
+				font-size: 21px;
+				font-weight: 700;
+			}
+
+			#fg {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		</style>
+
+		<div id="bg"></div>
+
+		<div id="nowplaying">
+			<img src="img/music-note.png">
+			<div id="nowplaying-text">
+				<div id="nowplaying-game"></div>
+				<div id="nowplaying-title"></div>
+			</div>
+			<img src="img/music-note.png">
+		</div>
+
+		<div id="tweet">
+			<div id="tweet-body">
+				<div id="tweet-body-text"></div>
+			</div>
+			<div id="tweet-name">
+				<div id="tweet-name-text" class="shadow"></div>
+			</div>
+		</div>
+
+		<img id="fg" src="img/lab-fg.png">
+	</template>
+
+	<script src="gdq-break-lab.js"></script>
+</dom-module>

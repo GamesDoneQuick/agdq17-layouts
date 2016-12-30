@@ -11,8 +11,7 @@
 	<link rel="import" href="elements/gdq-break-prizes/gdq-break-prizes.html">
 	<link rel="import" href="elements/gdq-break-schedule/gdq-break-schedule.html">
 	<link rel="import" href="elements/gdq-break-total/gdq-break-total.html">
-	<link rel="import" href="elements/gdq-nowplaying/gdq-nowplaying.html">
-	<link rel="import" href="elements/gdq-twitter/gdq-twitter.html">
+	<link rel="import" href="elements/gdq-break-lab/gdq-break-lab.html">
 	<style is="custom-style">
 		#container {
 			height: 720px;
@@ -98,18 +97,14 @@
 			to { background-position-x: -1596px; } /* <-- width of spritesheet */
 		}
 
+		gdq-break-lab {
+			top: 454px;
+			left: 30px;
+		}
+
 		gdq-nowplaying {
 			top: 154px;
 			left: 0;
-		}
-
-		gdq-prizes {
-			display: none; /* temp */
-
-			width: 365px;
-			height: 321px;
-			right: 6px;
-			bottom: 7px;
 		}
 
 		gdq-twitter {
@@ -214,8 +209,7 @@
 		<div id="sparks"></div>
 		<img id="gdqLogo" src="img/break/gdq-logo.png">
 		<img id="charityLogo" src="img/break/prevent-cancer-logo.png">
-		<gdq-nowplaying></gdq-nowplaying>
-		<gdq-twitter></gdq-twitter>
+		<gdq-break-lab></gdq-break-lab>
 		<gdq-break-total></gdq-break-total>
 		<gdq-break-schedule></gdq-break-schedule>
 
