@@ -314,12 +314,14 @@ module.exports = function (nodecg) {
 						return nodecg.log.error('Error opening propsective port:\n\t', err.message);
 					}
 
-					port.write('handshake\n', error => {
-						if (error) {
-							// We have to just discard this error, because an Arduino programmed in Joypad
-							// mode will show up as an available COM, but can't actually be written to.
-						}
-					});
+					if (canWriteToSerial(port)) {
+						port.write('handshake\n', error => {
+							if (error) {
+								// We have to just discard this error, because an Arduino programmed in Joypad
+								// mode will show up as an available COM, but can't actually be written to.
+							}
+						});
+					}
 				});
 
 				const handshakeTimeout = setTimeout(() => {
@@ -443,11 +445,16 @@ module.exports = function (nodecg) {
 	}
 
 	/**
-	 * Checks if we can write to the serial port.
+	 * Checks if we can write to the given serial port.
+	 * @param {SerialPort} [port] - The serial port to check, defaults to activeSerialPort.
 	 * @returns {boolean} - Whether or not we can write to the port
      */
-	function canWriteToSerial() {
-		return activeSerialPort && !activeSerialPort.closing && activeSerialPort.isOpen();
+	function canWriteToSerial(port) {
+		if (typeof port === 'undefined') {
+			port = activeSerialPort;
+		}
+
+		return port && !port.closing && port.isOpen();
 	}
 
 	/**
