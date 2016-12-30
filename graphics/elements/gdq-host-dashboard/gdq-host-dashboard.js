@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	const METROID_BID_PK = 5140;
+	const METROID_BID_ID = 5140;
 	const EVENT_START_TIMESTAMP = 1483893000000;
 	const total = nodecg.Replicant('total');
 	const currentPrizes = nodecg.Replicant('currentPrizes');
@@ -30,8 +30,12 @@
 			bids: {
 				type: Array
 			},
+			metroidBid: {
+				type: Object,
+				observer: 'metroidBidChanged'
+			},
 			saveTheAnimalsTotal: {
-				type: Object
+				type: Object,
 			},
 			killTheAnimalsTotal: {
 				type: Object
@@ -39,6 +43,38 @@
 			bidFilterString: {
 				type: String,
 				value: ''
+			}
+		},
+
+		metroidBidChanged(newVal) {
+			if (newVal) {
+				const saveOpt = newVal.options.find(opt => opt.name.toLowerCase().indexOf('save') >= 0);
+				const killOpt = newVal.options.find(opt => opt.name.toLowerCase().indexOf('kill') >= 0);
+				this.saveTheAnimalsTotal = {
+					formatted: saveOpt.total,
+					raw: saveOpt.rawTotal
+				};
+				this.killTheAnimalsTotal = {
+					formatted: killOpt.total,
+					raw: killOpt.rawTotal
+				};
+			} else {
+				this.saveTheAnimalsTotal = {
+					formatted: '?',
+					raw: 0
+				};
+				this.killTheAnimalsTotal = {
+					formatted: '?',
+					raw: 0
+				};
+			}
+
+			if (this.saveTheAnimalsTotal > this.killTheAnimalsTotal) {
+				this.$['metroid-save'].setAttribute('ahead', 'true');
+				this.$['metroid-kill'].removeAttribute('ahead');
+			} else {
+				this.$['metroid-save'].removeAttribute('ahead');
+				this.$['metroid-kill'].setAttribute('ahead', 'true');
 			}
 		},
 
@@ -61,7 +97,13 @@
 
 			allBids.on('change', newVal => {
 				this.bids = newVal.slice(0);
-				this.metroidBid = newVal.find(bid => bid.pk === METROID_BID_PK);
+
+				const metroidBid = newVal.find(bid => bid.id === METROID_BID_ID);
+				if (metroidBid) {
+					this.metroidBid = JSON.parse(JSON.stringify(metroidBid));
+				} else {
+					this.metroidBid = null;
+				}
 			});
 
 			checklistComplete.on('change', newVal => {
@@ -158,16 +200,22 @@
 		},
 
 		calcMetroidAheadText(saveOrKill, saveTheAnimalsTotal, killTheAnimalsTotal) {
+			const diff = Math.abs(saveTheAnimalsTotal.raw - killTheAnimalsTotal.raw).toLocaleString('en-US', {
+				maximumFractionDigits: 2,
+				style: 'currency',
+				currency: 'USD'
+			});
+
 			if (saveOrKill === 'save') {
 				if (saveTheAnimalsTotal.raw > killTheAnimalsTotal.raw) {
-					return `Ahead by ${saveTheAnimalsTotal.raw - killTheAnimalsTotal.raw}`;
+					return `Ahead by ${diff}`;
 				} else if (killTheAnimalsTotal.raw > saveTheAnimalsTotal.raw) {
 					return '---';
 				}
 				return 'TIED';
 			} else if (saveOrKill === 'kill') {
 				if (killTheAnimalsTotal.raw > saveTheAnimalsTotal.raw) {
-					return `Ahead by ${saveTheAnimalsTotal.raw - killTheAnimalsTotal.raw}`;
+					return `Ahead by ${diff}`;
 				} else if (saveTheAnimalsTotal.raw > killTheAnimalsTotal.raw) {
 					return '---';
 				}

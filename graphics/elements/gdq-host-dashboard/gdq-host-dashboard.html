@@ -106,9 +106,40 @@
 			#metroid {
 				height: 147px;
 				background-color: #ffffff;
-				padding: 14px;
+				padding: 11px;
 				box-sizing: border-box;
 				margin-bottom: 13px;
+				@apply(--layout-horizontal);
+			}
+
+			#metroid-kill {
+				text-align: right;
+			}
+
+			.metroid-category {
+				width: 50%;
+				font-size: 30px;
+				font-weight: 300;
+				line-height: 43px;
+				text-transform: uppercase;
+				padding: 4px 16px 0 16px;
+				@apply(--layout-vertical);
+			}
+
+			.metroid-category[ahead] {
+				font-size: 30px;
+				font-weight: 900;
+				background-color: rgba(168, 255, 168, 0.55);
+			}
+
+			.metroid-category-name {
+				margin-bottom: -9px;
+			}
+
+			.metroid-category-ahead {
+				font-size: 24px;
+				font-weight: 400;
+				text-transform: none;
 			}
 
 			#bids {
@@ -278,15 +309,19 @@
 
 			<div id="center">
 				<paper-material id="metroid">
-					<div id="metroid-save">
-						<div>SAVE THE ANIMALS</div>
+					<div id="metroid-save" class="metroid-category">
+						<div class="metroid-category-name">SAVE THE ANIMALS</div>
 						<div>[[saveTheAnimalsTotal.formatted]]</div>
-						<div>[[calcMetroidAheadText('save', saveTheAnimalsTotal, killTheAnimalsTotal)]]</div>
+						<div class="metroid-category-ahead">
+							[[calcMetroidAheadText('save', saveTheAnimalsTotal, killTheAnimalsTotal)]]
+						</div>
 					</div>
-					<div id="metroid-kill">
-						<div>SAVE THE ANIMALS</div>
+					<div id="metroid-kill" class="metroid-category">
+						<div class="metroid-category-name">KILL THE ANIMALS</div>
 						<div>[[killTheAnimalsTotal.formatted]]</div>
-						<div>[[calcMetroidAheadText('kill', saveTheAnimalsTotal, killTheAnimalsTotal)]]</div>
+						<div class="metroid-category-ahead">
+							[[calcMetroidAheadText('kill', saveTheAnimalsTotal, killTheAnimalsTotal)]]
+						</div>
 					</div>
 				</paper-material>
 
