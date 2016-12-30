@@ -2,6 +2,7 @@
 
 const equals = require('deep-equal');
 const clone = require('clone');
+const obsWebsocket = require('./obs-websocket');
 
 module.exports = function (nodecg) {
 	// Create defaults array
@@ -78,6 +79,7 @@ module.exports = function (nodecg) {
 
 	return {
 		reset() {
+			obsWebsocket.resetCropping();
 			for (const category in checklist.value) {
 				if (!{}.hasOwnProperty.call(checklist.value, category)) {
 					continue;

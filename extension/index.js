@@ -5,6 +5,14 @@ module.exports = function (nodecg) {
 		nodecg.log.warn('WARNING! useMockData is true, you will not receive real data from the tracker!');
 	}
 
+	// Must be before schedule. Well, I mean I guess it'd be okay if it wasn't, but whatever.
+	try {
+		require('./obs-websocket')(nodecg);
+	} catch (e) {
+		nodecg.log.error('Failed to load "obs-websocket" lib:', e.stack);
+		process.exit(1);
+	}
+
 	try {
 		require('./schedule')(nodecg);
 	} catch (e) {
@@ -72,13 +80,6 @@ module.exports = function (nodecg) {
 		require('./nowplaying')(nodecg);
 	} catch (e) {
 		nodecg.log.error('Failed to load "nowplaying" lib:', e.stack);
-		process.exit(1);
-	}
-
-	try {
-		require('./current-scene')(nodecg);
-	} catch (e) {
-		nodecg.log.error('Failed to load "current-scene" lib:', e.stack);
 		process.exit(1);
 	}
 

@@ -98,6 +98,19 @@
 					"default": 31
 				}
 			}
+		},
+		"obsWebsocket": {
+			"type": "object",
+			"properties": {
+				"username": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				}
+			},
+			"description": "Login information for OBS Websocket, used to communicate with and remotely control OBS Studio.",
+			"required": ["username", "password"]
 		}
 	},
 	"required": ["tracker"]
