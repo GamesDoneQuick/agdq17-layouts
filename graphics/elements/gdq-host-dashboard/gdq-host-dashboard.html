@@ -1,0 +1,342 @@
+<link rel="import" href="../../components/font-roboto/roboto.html">
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/iron-list/iron-list.html">
+<link rel="import" href="../../components/paper-input/paper-input.html">
+<link rel="import" href="../../components/paper-material/paper-material.html">
+<link rel="import" href="gdq-host-dashboard-bid.html">
+
+<dom-module id="gdq-host-dashboard">
+	<template>
+		<style include="iron-flex iron-flex-alignment">
+			:host {
+				position: absolute;
+				top: 0;
+				left: 0;
+				overflow: hidden;
+				width: 1920px;
+				height: 1080px;
+				display: block;
+				font-family: Roboto, sans-serif;
+				color: #000000;
+				padding: 24px 34px 54px 34px;
+				box-sizing: border-box;
+				@apply(--layout-vertical);
+			}
+
+			::-webkit-scrollbar {
+				width: 12px;
+			}
+
+			::-webkit-scrollbar-thumb {
+				border-radius: 6px;
+				background-color: #707070;
+			}
+
+			#header {
+				font-size: 36px;
+				font-weight: 700;
+				line-height: 43px;
+				text-transform: uppercase;
+				margin-bottom: 9px;
+				@apply(--layout-horizontal);
+				@apply(--layout-justified);
+			}
+
+			#left {
+				width: 555px;
+				margin-right: 8px;
+				@apply(--layout-vertical);
+			}
+
+			#total {
+				font-size: 72px;
+				font-weight: 700;
+				line-height: 43px;
+				height: 147px;
+				margin-bottom: 13px;
+				@apply(--layout-vertical);
+				@apply(--layout-center-center);
+			}
+
+			#prizes {
+				padding-top: 11px;
+				flex-grow: 1;
+				@apply(--layout-flex);
+			}
+
+			#prizes-header {
+				height: 49px;
+				background-color: rgba(215, 215, 215, 0.55);
+				font-size: 30px;
+				font-weight: 700;
+				text-transform: uppercase;
+				margin: 0 14px;
+				@apply(--layout-vertical);
+				@apply(--layout-center-center);
+			}
+
+			#prizes-list {
+				height: 717px;
+				padding: 0 14px;
+				margin-top: 13px;
+				margin-right: 11px;
+			}
+
+			.prize {
+				padding-bottom: 14px;
+				font-size: 36px;
+				font-weight: 400;
+				line-height: 43px;
+			}
+
+			.prize:first-of-type {
+				padding-top: 4px;
+			}
+
+			.prize-material {
+				padding: 19px;
+				border: 1px solid #d2d2d2;
+			}
+
+			#center {
+				width: 745px;
+			}
+
+			#metroid {
+				height: 147px;
+				background-color: #ffffff;
+				padding: 14px;
+				box-sizing: border-box;
+				margin-bottom: 13px;
+			}
+
+			#bids {
+				height: 790px;
+				box-sizing: border-box;
+			}
+
+			#bids-filter {
+				padding-top: 16px;
+				padding-left: 12px;
+				padding-right: 24px;
+
+				--paper-input-container-input: {
+					font-size: 24px;
+					font-weight: 400;
+				};
+
+				--paper-input-container-label: {
+					font-size: 24px;
+					font-weight: 400;
+				};
+
+				--paper-input-container-underline: {
+					position: relative;
+					top: 2px;
+					border-bottom: 3px solid #8560a8;
+				};
+
+				--paper-input-container-underline-focus: {
+					top: 2px;
+					border-bottom: 3px solid #C693F2;
+				}
+			}
+
+			#bids-list {
+				height: 694px;
+				padding: 0 14px;
+				margin-top: 13px;
+				margin-right: 11px;
+			}
+
+			#right {
+				padding: 11px;
+				margin-left: 8px;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+
+			#checklistStatus {
+				width: 100%;
+				height: 49px;
+				font-size: 36px;
+				font-weight: 500;
+				text-transform: uppercase;
+				@apply(--layout-vertical);
+				@apply(--layout-center-center);
+			}
+
+			#stopwatch {
+				text-align: center;
+				font-variant-numeric: tabular-nums;
+				-moz-font-feature-settings: "tnum";
+				-webkit-font-feature-settings: "tnum";
+				font-feature-settings: "tnum";
+			}
+
+			#stopwatch-time {
+				font-size: 100px;
+				font-weight: 700;
+			}
+
+			#stopwatch-results {
+				height: 93px;
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+				@apply(--layout-around-justified);
+			}
+
+			.result {
+				width: 100px;
+			}
+
+			.result-time {
+				font-size: 24px;
+				font-weight: 400;
+			}
+
+			.result-name {
+				font-size: 18px;
+				font-weight: 400;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			#currentRun {
+				text-align: center;
+				border-bottom: 1px solid black;
+				padding-bottom: 18px;
+			}
+
+			#currentRun-name {
+				font-size: 36px;
+				font-weight: 500;
+				line-height: 43px;
+				margin-bottom: 12px;
+			}
+
+			#currentRun-runners {
+				font-size: 22px;
+				font-weight: 400;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.upcomingRun {
+				margin-top: 22px;
+			}
+
+			.upcomingRun-name {
+				font-size: 30px;
+				font-weight: 500;
+				line-height: 33px;
+			}
+
+			.upcomingRun-runners {
+				font-size: 22px;
+				font-weight: 400;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.upcomingRun-category {
+				font-size: 22px;
+				font-weight: 400;
+			}
+
+			paper-material {
+				background-color: white;
+			}
+		</style>
+
+		<div id="header">
+			<div>[[currentTime]] -- [[elapsedTime]]</div>
+			<div>AWESOME GAMES DONE QUICK 2017</div>
+		</div>
+
+		<div class="layout horizontal flex">
+			<div id="left">
+				<paper-material id="total">[[total]]</paper-material>
+				<paper-material id="prizes">
+					<div id="prizes-header">PRIZES CURRENTLY AVAILABLE</div>
+					<iron-list id="prizes-list" items="[[prizes]]" as="prize">
+						<template>
+							<div class="prize">
+								<paper-material class="prize-material">
+									<div id="prize-[[prize.id]]">[[prize.description]]</div>
+									<div>[[prize.minimumbid]]</div>
+								</paper-material>
+							</div>
+						</template>
+					</iron-list>
+				</paper-material>
+			</div>
+
+			<div id="center">
+				<paper-material id="metroid">
+					<div id="metroid-save">
+						<div>SAVE THE ANIMALS</div>
+						<div>[[saveTheAnimalsTotal.formatted]]</div>
+						<div>[[calcMetroidAheadText('save', saveTheAnimalsTotal, killTheAnimalsTotal)]]</div>
+					</div>
+					<div id="metroid-kill">
+						<div>SAVE THE ANIMALS</div>
+						<div>[[killTheAnimalsTotal.formatted]]</div>
+						<div>[[calcMetroidAheadText('kill', saveTheAnimalsTotal, killTheAnimalsTotal)]]</div>
+					</div>
+				</paper-material>
+
+				<paper-material id="bids">
+					<paper-input
+						id="bids-filter"
+						label="Filter"
+						placeholder="Type in filter here"
+						value="{{bidFilterString}}">
+					</paper-input>
+					<iron-list id="bids-list" items="[[calcBids(bids, bidFilterString)]]" as="bid" filter="bidsFilter">
+						<template>
+							<gdq-host-dashboard-bid bid="[[bid]]"></gdq-host-dashboard-bid>
+						</template>
+					</iron-list>
+				</paper-material>
+			</div>
+
+			<paper-material id="right">
+				<div id="checklistStatus"></div>
+
+				<div id="stopwatch">
+					<div id="stopwatch-time">[[stopwatchTime]]</div>
+					<div id="stopwatch-results">
+						<template is="dom-repeat" items="[[stopwatchResults]]" as="result" filter="filterNull">
+							<div class="result">
+								<div class="result-time">[[result.formatted]]</div>
+								<div class="result-name">[[calcRunnerName(runners, index)]]</div>
+							</div>
+						</template>
+					</div>
+				</div>
+
+				<div id="currentRun">
+					<div id="currentRun-name"></div>
+					<div id="currentRun-runners">[[calcRunnersString(runners)]]</div>
+				</div>
+
+				<div id="schedule">
+					<template is="dom-repeat" items="[[upcomingRuns]]" as="run">
+						<div class="upcomingRun">
+							<div class="upcomingRun-name">[[run.name]]</div>
+							<div class="upcomingRun-runners">[[calcRunnersString(run.runners)]]</div>
+							<div class="upcomingRun-category">[[run.category]]</div>
+						</div>
+					</template>
+				</div>
+			</paper-material>
+		</div>
+	</template>
+
+	<script src="gdq-host-dashboard.js"></script>
+</dom-module>

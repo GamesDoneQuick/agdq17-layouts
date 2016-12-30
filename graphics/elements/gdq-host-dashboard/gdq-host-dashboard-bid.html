@@ -1,0 +1,68 @@
+<dom-module id="gdq-host-dashboard-bid">
+	<template>
+		<style>
+			:host {
+				display: block;
+				padding-bottom: 14px;
+				font-size: 36px;
+				font-weight: 400;
+				line-height: 43px;
+			}
+
+			:host[failed] #material {
+				/* override [closed] style */
+				background-color: #ffe2e2!important;
+			}
+
+			:host[closed] #material {
+				background-color: #cfffcf;
+			}
+
+			#material {
+				padding: 19px;
+				border: 1px solid #d2d2d2;
+			}
+
+			.option {
+				margin-top: 20px;
+			}
+
+			.option-meter {
+				height: 7px;
+				background-color: #8560a8;
+				margin-top: 6px;
+			}
+
+			.additionalOptions {
+				font-size: 20px;
+				margin-bottom: -16px;
+				text-align: right;
+			}
+		</style>
+
+		<paper-material id="material">
+			<div>[[bid.description]]</div>
+
+			<template is="dom-if" if="[[bidIsChallenge(bid)]]">
+				<div>[[bid.total]]/[[bid.goal]]</div>
+			</template>
+
+			<template is="dom-if" if="[[!bidIsChallenge(bid)]]">
+				<template is="dom-repeat" items="[[limitOptions(bid.options)]]" as="option">
+					<div class="option">
+						<div>[[option.total]] - [[option.name]]</div>
+						<div class="option-meter" style="[[calcOptionMeterStyle(bid, option)]]"></div>
+					</div>
+				</template>
+
+				<template is="dom-if" if="[[bidHasMoreThanThreeOptions(bid)]]">
+					<div class="additionalOptions">
+						[[calcNumAdditionalOptions(bid)]] additional options not shown
+					</div>
+				</template>
+			</template>
+		</paper-material>
+	</template>
+
+	<script src="gdq-host-dashboard-bid.js"></script>
+</dom-module>
