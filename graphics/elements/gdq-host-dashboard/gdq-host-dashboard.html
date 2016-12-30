@@ -346,8 +346,8 @@
 				<div id="stopwatch">
 					<div id="stopwatch-time">[[stopwatchTime]]</div>
 					<div id="stopwatch-results">
-						<template is="dom-repeat" items="[[stopwatchResults]]" as="result" filter="filterNull">
-							<div class="result">
+						<template is="dom-repeat" items="[[stopwatchResults]]" as="result">
+							<div class="result" hidden="[[isNull(result)]]">
 								<div class="result-time">[[result.formatted]]</div>
 								<div class="result-name" title="[[calcRunnerName(runners, index)]]">
 									[[calcRunnerName(runners, index)]]

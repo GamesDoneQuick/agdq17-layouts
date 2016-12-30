@@ -239,13 +239,13 @@
 		calcRunnerName(runners, index) {
 			if (index > this.runners.length - 1) {
 				return '';
-			} else {
-				return this.runners[index].name;
 			}
+
+			return this.runners[index].name;
 		},
 
-		filterNull(item) {
-			return item && item !== null;
+		isNull(data) {
+			return !data || data === null;
 		}
 	});
 })();
