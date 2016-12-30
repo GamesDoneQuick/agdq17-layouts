@@ -242,8 +242,10 @@ module.exports = function (nodecg) {
 				 */
 				if (currentRunAsInSchedule) {
 					[currentRun, nextRun].forEach(activeRun => {
-						const runFromSchedule = formattedSchedule.find(run => run.pk === activeRun.value.pk);
-						activeRun.value = mergeChangesFromTracker(activeRun.value, runFromSchedule);
+						if (activeRun.value && activeRun.value.pk) {
+							const runFromSchedule = formattedSchedule.find(run => run.pk === activeRun.value.pk);
+							activeRun.value = mergeChangesFromTracker(activeRun.value, runFromSchedule);
+						}
 					});
 				} else if (formattedSchedule[currentRun.order - 1]) {
 					_seekToArbitraryRun(formattedSchedule[currentRun.order - 1]);
