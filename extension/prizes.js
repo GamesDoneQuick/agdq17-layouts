@@ -121,6 +121,7 @@ module.exports = function (nodecg) {
 	 */
 	function formatPrize(prize) {
 		return {
+			id: prize.pk,
 			name: prize.fields.name,
 			provided: prize.fields.provider || prize.fields.provided, // new field is "provider", but it used to be called "provided"
 			description: prize.fields.shortdescription || prize.fields.name,
