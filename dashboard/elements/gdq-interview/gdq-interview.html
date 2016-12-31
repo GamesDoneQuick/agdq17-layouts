@@ -1,0 +1,64 @@
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-input/paper-input.html">
+<link rel="import" href="../label-value.html">
+
+<dom-module id="gdq-interview">
+	<template>
+		<style include="iron-flex iron-flex-alignment">
+			:host {
+				display: block;
+				@apply(--layout-vertical)
+			}
+
+			:host > :first-child {
+				margin-top: -12px;
+			}
+
+			#buttons {
+				@apply(--layout-horizontal);
+			}
+
+			#show {
+				margin-right: 4px;
+			}
+
+			#hide {
+				margin-left: 4px;
+				margin-right: 4px;
+				z-index: 1;
+			}
+
+			#auto {
+				margin-left: 4px;
+			}
+
+			#buttons > :first-child {
+				margin-left: 0;
+			}
+
+			#buttons > :last-child {
+				margin-right: 0;
+			}
+
+			paper-button {
+				min-width: 1px;
+				flex-basis: 1px;
+				flex-grow: 1;
+			}
+		</style>
+
+		<paper-input label="Name 1" always-float-label></paper-input>
+		<paper-input label="Name 2" always-float-label></paper-input>
+		<paper-input label="Name 3" always-float-label></paper-input>
+		<paper-input label="Name 4" always-float-label></paper-input>
+
+		<div id="buttons">
+			<paper-button id="show" class="nodecg-success" raised>Show</paper-button>
+			<paper-button id="hide" class="nodecg-danger" raised>Hide</paper-button>
+			<paper-button id="auto" class="nodecg-info" raised>Auto</paper-button>
+		</div>
+	</template>
+
+	<script src="gdq-interview.js"></script>
+</dom-module>
