@@ -51,7 +51,7 @@
 		 * @returns {undefined}
 		 */
 		takeNames() {
-			const paperInputs = Polymer.dom(this.root).querySelectorAll('paper-input');
+			const paperInputs = Polymer.dom(this.root).querySelectorAll('paper-input:not([disabled])');
 			interviewNames.value = paperInputs.map(input => input.value);
 		}
 	});

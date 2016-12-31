@@ -20,10 +20,17 @@
 				if (newVal) {
 					// Set names
 					tl.call(() => {
+						let hostName;
+						let intervieweeNames = interviewNames.value.slice(0);
+						if (intervieweeNames.length === 5) {
+							hostName = intervieweeNames.shift();
+						}
+						intervieweeNames = intervieweeNames.filter(name => Boolean(name));
+
 						this.style.willChange = 'height';
 						this.$.names.style.willChange = 'height';
 						this.$.dropdown.style.willChange = 'transform';
-						this.names = interviewNames.value.filter(name => Boolean(name));
+						this.names = intervieweeNames;
 						this.numNames = this.names.length;
 
 						const greebles = [];
@@ -33,8 +40,15 @@
 						}
 						this.greebles = greebles;
 
+						if (hostName) {
+							this.$['dropdown-middle-text'].innerHTML =
+								`Interviewer:&nbsp;<span style="color: white;">${hostName}</span>`;
+						} else {
+							this.$['dropdown-middle-text'].innerHTML = '#AGDQ2017';
+						}
+
 						Polymer.dom.flush();
-					}, null, null, '+=0.2'); // Give time for interviewNames replicant to update.
+					}, null, null, '+=0.3'); // Give time for interviewNames replicant to update.
 
 					// Fit names
 					tl.call(() => {

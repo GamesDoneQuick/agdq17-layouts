@@ -10,8 +10,6 @@
 				left: 0;
 				width: 100%;
 				font-size: 31px;
-				background-image: url("img/lowerfill.png");
-				background-position: bottom left;
 			}
 
 			#top,
@@ -65,26 +63,52 @@
 			#dropdownContainer {
 				position: absolute;
 				top: 0;
-				left: 455px;
-				width: 371px;
+				width: 100%;
 				height: 100%;
 				z-index: 0;
 				overflow: hidden;
+				display: flex;
+				justify-content: center;
 			}
 
 			#dropdown {
-				line-height: 91px;
+				display: flex;
 				text-align: center;
-				width: 371px;
 				height: 81px;
-				background: url("img/dropdown.png") no-repeat;
 				-webkit-filter: drop-shadow(0 5px 0 rgba(0,0,0,0.25));
 				font-size: 22px;
 				transform: translateY(-100%);
 			}
 
-			#dropdown span {
-				color: #6fcff5!important;
+			#dropdown-middle {
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 0 -30px;
+				margin-top: 5px;
+			}
+
+			#dropdown-middle-bg {
+				position: absolute;
+				width: calc(100% - 60px);
+				height: 100%;
+				left: 30px;
+				top: 0;
+				background: url("img/dropdown-middle.png") repeat-x;
+				z-index: -1;
+			}
+
+			#dropdown-middle-text {
+				margin-top: 11px;
+				color: #6fcff5;
+				text-shadow:
+					-1px -1px 0 #000,
+					1px -1px 0 #000,
+					-1px 1px 0 #000,
+					1px 1px 0 #000,
+					0 0 16px #33809e;
+				-webkit-filter: drop-shadow(0 2px 0 black);
 			}
 
 			/* state */
@@ -99,9 +123,12 @@
 
 		<div id="dropdownContainer">
 			<div id="dropdown">
-				<span class="shadow">
-					#AGDQ2017
-				</span>
+				<img src="img/dropdown-left.png">
+				<div id="dropdown-middle">
+					<div id="dropdown-middle-bg"></div>
+					<div id="dropdown-middle-text"></div>
+				</div>
+				<img src="img/dropdown-right.png">
 			</div>
 		</div>
 

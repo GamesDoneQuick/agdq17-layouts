@@ -25,6 +25,8 @@
     "PreloadJS": "0.6.2",
     "textfit": "^2.3.1",
     "iron-pages": "PolymerElements/iron-pages#^1.0.8",
-    "vaadin-combo-box": "^1.1.5"
+    "vaadin-combo-box": "^1.1.5",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
+    "paper-tooltip": "PolymerElements/paper-tooltip#^1.1.3"
   }
 }

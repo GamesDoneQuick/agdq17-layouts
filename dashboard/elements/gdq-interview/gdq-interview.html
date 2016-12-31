@@ -1,18 +1,33 @@
-<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/paper-input/paper-input.html">
+<link rel="import" href="../../components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../label-value.html">
 
 <dom-module id="gdq-interview">
 	<template>
-		<style include="iron-flex iron-flex-alignment">
+		<style>
 			:host {
 				display: block;
 				@apply(--layout-vertical)
 			}
 
-			:host > :first-child {
-				margin-top: -12px;
+			#toggle {
+				@apply(--layout-horizontal);
+				@apply(--layout-center);
+			}
+
+			#toggle-label {
+				border-bottom: 1px dashed #999;
+				cursor: help;
+			}
+
+			#tooltip {
+				margin: 0 8px;
+				--paper-tooltip: {
+					font-size: 14px;
+				};
 			}
 
 			#buttons {
@@ -47,6 +62,22 @@
 				flex-grow: 1;
 			}
 		</style>
+
+		<div id="toggle">
+			<paper-toggle-button id="toggle-button" checked="{{fivePersonMode}}"></paper-toggle-button>
+			<span id="toggle-label">Five Person Mode</span>
+
+			<paper-tooltip
+				id="tooltip"
+				for="toggle-label"
+				offset="20"
+				animation-delay="0"
+				fit-to-visible-bounds>
+				Enables the "Host" input. The host's name will appear below the 4 other names on the graphic.
+			</paper-tooltip>
+		</div>
+
+		<paper-input label="Host" disabled="[[!fivePersonMode]]" always-float-label></paper-input>
 
 		<paper-input label="Name 1" always-float-label></paper-input>
 		<paper-input label="Name 2" always-float-label></paper-input>
