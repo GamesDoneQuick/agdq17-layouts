@@ -26,7 +26,7 @@ module.exports = function (nodecg) {
 	});
 	let timeout;
 	let interval;
-	nodecg.Replicant('interview:names', {defaultValue: [], persistent: false});
+	nodecg.Replicant('interview:names', {defaultValue: []});
 
 	lowerthirdShowing.on('change', newVal => {
 		if (!newVal) {

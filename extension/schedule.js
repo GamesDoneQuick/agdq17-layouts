@@ -15,6 +15,7 @@ let updateInterval;
 module.exports = function (nodecg) {
 	const checklist = require('./checklist')(nodecg);
 	const scheduleRep = nodecg.Replicant('schedule', {defaultValue: [], persistent: false});
+	const runnersRep = nodecg.Replicant('runners', {defaultValue: [], persistent: false});
 	const currentRun = nodecg.Replicant('currentRun', {defaultValue: {}});
 	const nextRun = nodecg.Replicant('nextRun', {defaultValue: {}});
 
@@ -212,9 +213,15 @@ module.exports = function (nodecg) {
 		return Promise.join(runnersPromise, schedulePromise, (runnersJSON, scheduleJSON) => {
 			const formattedRunners = [];
 			runnersJSON.forEach(obj => {
-				obj.fields.stream = obj.fields.stream.split('/').filter(part => part).pop();
-				formattedRunners[obj.pk] = obj.fields;
+				formattedRunners[obj.pk] = {
+					stream: obj.fields.stream.split('/').filter(part => part).pop(),
+					name: obj.fields.name
+				};
 			});
+
+			if (!equals(formattedRunners, runnersRep.value)) {
+				runnersRep.value = clone(formattedRunners);
+			}
 
 			const formattedSchedule = calcFormattedSchedule(formattedRunners, scheduleJSON);
 

@@ -1,4 +1,5 @@
 <link rel="import" href="../../components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../components/nodecg-typeahead-input/nodecg-typeahead-input.html">
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/paper-input/paper-input.html">
 <link rel="import" href="../../components/paper-toggle-button/paper-toggle-button.html">
@@ -90,12 +91,41 @@
 			</paper-tooltip>
 		</div>
 
-		<paper-input label="Host" disabled="[[!fivePersonMode]]" always-float-label></paper-input>
+		<nodecg-typeahead-input
+			label="Host"
+			always-float-label
+			max-suggestions="3"
+			candidates="[[_typeaheadCandidates]]"
+			disabled="[[!fivePersonMode]]">
+		</nodecg-typeahead-input>
 
-		<paper-input label="Name 1" always-float-label></paper-input>
-		<paper-input label="Name 2" always-float-label></paper-input>
-		<paper-input label="Name 3" always-float-label></paper-input>
-		<paper-input label="Name 4" always-float-label></paper-input>
+		<nodecg-typeahead-input
+			label="Name 1"
+			always-float-label
+			max-suggestions="3"
+			candidates="[[_typeaheadCandidates]]">
+		</nodecg-typeahead-input>
+
+		<nodecg-typeahead-input
+			label="Name 2"
+			always-float-label
+			max-suggestions="3"
+			candidates="[[_typeaheadCandidates]]">
+		</nodecg-typeahead-input>
+
+		<nodecg-typeahead-input
+			label="Name 3"
+			always-float-label
+			max-suggestions="3"
+			candidates="[[_typeaheadCandidates]]">
+		</nodecg-typeahead-input>
+
+		<nodecg-typeahead-input
+			label="Name 4"
+			always-float-label
+			max-suggestions="3"
+			candidates="[[_typeaheadCandidates]]">
+		</nodecg-typeahead-input>
 
 		<div id="buttons">
 			<div id="show-wrapper">

@@ -5,6 +5,7 @@
 	const lowerthirdShowing = nodecg.Replicant('interview:lowerthirdShowing');
 	const questionShowing = nodecg.Replicant('interview:questionShowing');
 	const timeRemaining = nodecg.Replicant('interview:lowerthirdTimeRemaining');
+	const runners = nodecg.Replicant('runners');
 
 	Polymer({
 		is: 'gdq-interview',
@@ -16,10 +17,20 @@
 			questionShowing: {
 				type: Boolean,
 				reflectToAttribute: true
+			},
+			_typeaheadCandidates: {
+				type: Array,
+				value() {
+					return [];
+				}
 			}
 		},
 
 		ready() {
+			runners.on('change', newVal => {
+				this._typeaheadCandidates = newVal.filter(runner => runner).map(runner => runner.name);
+			});
+
 			this.$.show.addEventListener('click', () => {
 				this.takeNames();
 				lowerthirdShowing.value = true;
@@ -58,6 +69,26 @@
 					this.$.auto.innerText = 'Auto';
 				}
 			});
+
+			interviewNames.on('change', newVal => {
+				const typeaheads = Polymer.dom(this.root).querySelectorAll('nodecg-typeahead-input');
+
+				if (!newVal || newVal.length <= 0) {
+					typeaheads.forEach(typeahead => {
+						typeahead.value = '';
+					});
+					return;
+				}
+
+				if (newVal.length === 5) {
+					typeaheads[0].value = newVal[0];
+				}
+
+				const lastFour = newVal.slice(-4);
+				lastFour.forEach((name, index) => {
+					typeaheads[index + 1].value = name;
+				});
+			});
 		},
 
 		calcStartDisabled(lowerthirdShowing, questionShowing) {
@@ -65,11 +96,11 @@
 		},
 
 		/**
-		 * Takes the names currently entered into the paper-inputs.
+		 * Takes the names currently entered into the nodecg-typeahead-inputs.
 		 * @returns {undefined}
 		 */
 		takeNames() {
-			const paperInputs = Polymer.dom(this.root).querySelectorAll('paper-input:not([disabled])');
+			const paperInputs = Polymer.dom(this.root).querySelectorAll('nodecg-typeahead-input:not([disabled])');
 			interviewNames.value = paperInputs.map(input => input.value);
 		}
 	});
