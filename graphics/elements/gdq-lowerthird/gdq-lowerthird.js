@@ -2,6 +2,7 @@
 	'use strict';
 
 	const interviewNames = nodecg.Replicant('interview:names');
+	const lowerthirdShowing = nodecg.Replicant('interview:lowerthirdShowing');
 
 	Polymer({
 		is: 'gdq-lowerthird',
@@ -21,7 +22,7 @@
 		},
 
 		ready() {
-			nodecg.Replicant('interview:lowerthirdShowing').on('change', newVal => {
+			lowerthirdShowing.on('change', newVal => {
 				if (newVal) {
 					this.show();
 				} else {
@@ -69,15 +70,17 @@
 			tl.call(() => {
 				const padding = this.numNames === 4 ? 24 : 36;
 				const nameDivs = Array.from(this.querySelectorAll('.name'));
-				const maxNameWidth = nameDivs[0].parentNode.clientWidth - padding;
-				nameDivs.forEach(nameDiv => {
-					const nameWidth = nameDiv.scrollWidth;
-					if (nameWidth > maxNameWidth) {
-						TweenLite.set(nameDiv, {scaleX: maxNameWidth / nameWidth});
-					} else {
-						TweenLite.set(nameDiv, {scaleX: 1});
-					}
-				});
+				if (nameDivs.length > 0) {
+					const maxNameWidth = nameDivs[0].parentNode.clientWidth - padding;
+					nameDivs.forEach(nameDiv => {
+						const nameWidth = nameDiv.scrollWidth;
+						if (nameWidth > maxNameWidth) {
+							TweenLite.set(nameDiv, {scaleX: maxNameWidth / nameWidth});
+						} else {
+							TweenLite.set(nameDiv, {scaleX: 1});
+						}
+					});
+				}
 			});
 
 			tl.to(this, 1, {
