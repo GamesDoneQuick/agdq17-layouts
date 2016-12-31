@@ -18,15 +18,15 @@ module.exports = function (nodecg) {
 
 	const database = firebase.database();
 
-	const lowerthirdShowing = nodecg.Replicant('interviewLowerthirdShowing', {defaultValue: false, persistent: false});
-	const lowerthirdPulsing = nodecg.Replicant('interviewLowerthirdPulsing', {defaultValue: false, persistent: false});
-	const lowerthirdPulseTimeRemaining = nodecg.Replicant('interviewLowerthirdTimeRemaining', {
+	const lowerthirdShowing = nodecg.Replicant('interview:lowerthirdShowing', {defaultValue: false, persistent: false});
+	const lowerthirdPulsing = nodecg.Replicant('interview:lowerthirdPulsing', {defaultValue: false, persistent: false});
+	const lowerthirdPulseTimeRemaining = nodecg.Replicant('interview:lowerthirdTimeRemaining', {
 		defaultValue: 0,
 		persistent: false
 	});
 	let timeout;
 	let interval;
-	nodecg.Replicant('interviewNames', {defaultValue: [], persistent: false});
+	nodecg.Replicant('interview:names', {defaultValue: [], persistent: false});
 
 	lowerthirdShowing.on('change', newVal => {
 		if (!newVal) {

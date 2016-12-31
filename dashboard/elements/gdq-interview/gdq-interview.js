@@ -1,9 +1,9 @@
 (function () {
 	'use strict';
 
-	const interviewNames = nodecg.Replicant('interviewNames');
-	const showing = nodecg.Replicant('interviewLowerthirdShowing');
-	const timeRemaining = nodecg.Replicant('interviewLowerthirdTimeRemaining');
+	const interviewNames = nodecg.Replicant('interview:names');
+	const showing = nodecg.Replicant('interview:lowerthirdShowing');
+	const timeRemaining = nodecg.Replicant('interview:lowerthirdTimeRemaining');
 
 	Polymer({
 		is: 'gdq-interview',

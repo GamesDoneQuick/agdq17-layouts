@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	const interviewNames = nodecg.Replicant('interviewNames');
+	const interviewNames = nodecg.Replicant('interview:names');
 
 	Polymer({
 		is: 'gdq-lowerthird',
@@ -21,7 +21,7 @@
 		},
 
 		ready() {
-			nodecg.Replicant('interviewLowerthirdShowing').on('change', newVal => {
+			nodecg.Replicant('interview:lowerthirdShowing').on('change', newVal => {
 				if (newVal) {
 					this.show();
 				} else {
@@ -29,7 +29,7 @@
 				}
 			});
 		},
-		
+
 		show() {
 			const tl = this.tl;
 
