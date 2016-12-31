@@ -28,7 +28,11 @@
 
 		ready() {
 			runners.on('change', newVal => {
-				this._typeaheadCandidates = newVal.filter(runner => runner).map(runner => runner.name);
+				if (newVal && newVal.length > 0) {
+					this._typeaheadCandidates = newVal.filter(runner => runner).map(runner => runner.name);
+				} else {
+					this._typeaheadCandidates = [];
+				}
 			});
 
 			this.$.show.addEventListener('click', () => {
