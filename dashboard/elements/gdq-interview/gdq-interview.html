@@ -23,7 +23,8 @@
 				cursor: help;
 			}
 
-			#tooltip {
+			#fivePersonTooltip,
+			#lowerthirdDisabledTooltip {
 				margin: 0 8px;
 				--paper-tooltip: {
 					font-size: 14px;
@@ -34,8 +35,29 @@
 				@apply(--layout-horizontal);
 			}
 
-			#show {
+			#show-wrapper,
+			#hide,
+			#auto {
+				min-width: 1px;
+				flex-grow: 1;
+				flex-basis: 33.334%;
+			}
+
+			#show-wrapper {
 				margin-right: 4px;
+			}
+
+			#show {
+				width: 100%;
+				margin: 0;
+			}
+
+			:host[question-showing] #show-wrapper {
+				cursor: help;
+			}
+
+			:host[question-showing] #show-label {
+				border-bottom: 1px dashed #999;
 			}
 
 			#hide {
@@ -46,20 +68,11 @@
 
 			#auto {
 				margin-left: 4px;
-			}
-
-			#buttons > :first-child {
-				margin-left: 0;
-			}
-
-			#buttons > :last-child {
 				margin-right: 0;
 			}
 
 			paper-button {
 				min-width: 1px;
-				flex-basis: 1px;
-				flex-grow: 1;
 			}
 		</style>
 
@@ -68,7 +81,7 @@
 			<span id="toggle-label">Five Person Mode</span>
 
 			<paper-tooltip
-				id="tooltip"
+				id="fivePersonTooltip"
 				for="toggle-label"
 				offset="20"
 				animation-delay="0"
@@ -85,9 +98,29 @@
 		<paper-input label="Name 4" always-float-label></paper-input>
 
 		<div id="buttons">
-			<paper-button id="show" class="nodecg-success" raised>Show</paper-button>
+			<div id="show-wrapper">
+				<paper-button
+					id="show"
+					class="nodecg-success"
+					raised
+					disabled="[[calcStartDisabled(lowerthirdShowing, questionShowing)]]">
+					<span id="show-label">Show</span>
+				</paper-button>
+			</div>
+
 			<paper-button id="hide" class="nodecg-danger" raised>Hide</paper-button>
 			<paper-button id="auto" class="nodecg-info" raised>Auto</paper-button>
+
+			<paper-tooltip
+				id="lowerthirdDisabledTooltip"
+				for="show-wrapper"
+				position="top"
+				offset="-10"
+				animation-delay="0"
+				fit-to-visible-bounds
+				hidden="[[!questionShowing]]">
+				Interview lowerthird is disabled while a question is being displayed.
+			</paper-tooltip>
 		</div>
 	</template>
 

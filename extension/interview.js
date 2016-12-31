@@ -71,6 +71,13 @@ module.exports = function (nodecg) {
 	const questionTweetsRep = nodecg.Replicant('interview:questionTweets');
 	const questionShowing = nodecg.Replicant('interview:questionShowing');
 
+	questionShowing.on('change', newVal => {
+		// Hide the interview lowerthird when a question starts showing.
+		if (newVal) {
+			lowerthirdShowing.value = false;
+		}
+	});
+
 	questionSortMap.on('change', (newVal, oldVal) => {
 		if (!oldVal || newVal[0] !== oldVal[0]) {
 			questionShowing.value = false;

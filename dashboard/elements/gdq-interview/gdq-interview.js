@@ -2,20 +2,31 @@
 	'use strict';
 
 	const interviewNames = nodecg.Replicant('interview:names');
-	const showing = nodecg.Replicant('interview:lowerthirdShowing');
+	const lowerthirdShowing = nodecg.Replicant('interview:lowerthirdShowing');
+	const questionShowing = nodecg.Replicant('interview:questionShowing');
 	const timeRemaining = nodecg.Replicant('interview:lowerthirdTimeRemaining');
 
 	Polymer({
 		is: 'gdq-interview',
 
+		properties: {
+			lowerthirdShowing: {
+				type: Boolean
+			},
+			questionShowing: {
+				type: Boolean,
+				reflectToAttribute: true
+			}
+		},
+
 		ready() {
 			this.$.show.addEventListener('click', () => {
 				this.takeNames();
-				showing.value = true;
+				lowerthirdShowing.value = true;
 			});
 
 			this.$.hide.addEventListener('click', () => {
-				showing.value = false;
+				lowerthirdShowing.value = false;
 			});
 
 			this.$.auto.addEventListener('click', () => {
@@ -23,27 +34,34 @@
 				nodecg.sendMessage('pulseInterviewLowerthird', 10);
 			});
 
-			showing.on('change', newVal => {
+			lowerthirdShowing.on('change', newVal => {
+				this.lowerthirdShowing = newVal;
 				if (newVal) {
-					this.$.show.setAttribute('disabled', 'true');
 					this.$.hide.removeAttribute('disabled');
 					this.$.auto.setAttribute('disabled', 'true');
 					this.$.auto.innerText = timeRemaining.value;
 				} else {
-					this.$.show.removeAttribute('disabled');
 					this.$.hide.setAttribute('disabled', 'true');
 					this.$.auto.removeAttribute('disabled');
 					this.$.auto.innerText = 'Auto';
 				}
 			});
 
+			questionShowing.on('change', newVal => {
+				this.questionShowing = newVal;
+			});
+
 			timeRemaining.on('change', newVal => {
-				if (showing.value) {
+				if (lowerthirdShowing.value) {
 					this.$.auto.innerText = newVal;
 				} else {
 					this.$.auto.innerText = 'Auto';
 				}
 			});
+		},
+
+		calcStartDisabled(lowerthirdShowing, questionShowing) {
+			return lowerthirdShowing || questionShowing;
 		},
 
 		/**
