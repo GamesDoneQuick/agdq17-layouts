@@ -65,7 +65,7 @@
 			tl: {
 				type: TimelineLite,
 				value() {
-					return new TimelineLite();
+					return new TimelineLite({autoRemoveChildren: true});
 				},
 				readOnly: true
 			},
