@@ -69,6 +69,14 @@ module.exports = function (nodecg) {
 
 	const questionSortMap = nodecg.Replicant('interview:questionSortMap');
 	const questionTweetsRep = nodecg.Replicant('interview:questionTweets');
+	const questionShowing = nodecg.Replicant('interview:questionShowing');
+
+	questionSortMap.on('change', (newVal, oldVal) => {
+		if (!oldVal || newVal[0] !== oldVal[0]) {
+			questionShowing.value = false;
+		}
+	});
+
 	let _repliesRef;
 	let _repliesListener;
 	database.ref('/active_tweet_id').on('value', snapshot => {
