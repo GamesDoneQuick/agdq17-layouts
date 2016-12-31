@@ -37,17 +37,23 @@
 				overflow: hidden;
 				text-overflow: ellipsis;
 				font-weight: 700;
-				padding: 0 12px;
+				margin: 0 12px;
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
 
 			#nowplaying-game {
 				font-size: 24px;
+				will-change: transform;
 			}
 
 			#nowplaying-title {
 				font-size: 18px;
+				will-change: transform;
+			}
+
+			.scroller {
+				display: inline-block;
 			}
 
 			#tweet {
