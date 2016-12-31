@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="import" href="components/iron-flex-layout/iron-flex-layout-classes.html">
-    <link rel="import" href="components/paper-button/paper-button.html">
-    <link rel="import" href="components/nodecg-toggle/nodecg-toggle.html">
-    <link rel="import" href="components/nodecg-toast/nodecg-toast.html">
-    <link rel="stylesheet" href="shared-panel-styles.css">
-    <style is="custom-style" include="iron-flex iron-flex-alignment">
-        #total {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
+	<meta charset="UTF-8">
+	<link rel="import" href="components/iron-flex-layout/iron-flex-layout-classes.html">
+	<link rel="import" href="components/paper-button/paper-button.html">
+	<link rel="import" href="components/nodecg-toggle/nodecg-toggle.html">
+	<link rel="import" href="components/nodecg-toast/nodecg-toast.html">
+	<link rel="stylesheet" href="shared-panel-styles.css">
+	<style is="custom-style" include="iron-flex iron-flex-alignment">
+		#total {
+			text-align: center;
+			margin-top: 0;
+			margin-bottom: 8px;
+		}
 
-        #update {
-            margin-right: 4px;
-        }
+		#update {
+			margin-left: 0;
+			margin-right: 4px;
+		}
 
-        #edit {
-            margin-left: 4px;
-        }
-    </style>
+		#edit {
+			margin-left: 4px;
+			margin-right: 0;
+		}
+	</style>
 </head>
 <body>
-    <nodecg-toast id="toast"></nodecg-toast>
+	<nodecg-toast id="toast"></nodecg-toast>
 
-    <h2 id="total">?</h2>
+	<h2 id="total">?</h2>
 
-    <div class="layout horizontal" style="margin-bottom: 8px;">
-        <paper-button id="update" class="flex" raised>Force Update</paper-button>
-        <paper-button id="edit" class="nodecg-configure" nodecg-dialog="edit-total" raised>Edit...</paper-button>
-    </div>
+	<div class="layout horizontal" style="margin-bottom: 16px;">
+		<paper-button id="update" class="flex" raised>Force Update</paper-button>
+		<paper-button id="edit" class="nodecg-configure" nodecg-dialog="edit-total" raised>Edit...</paper-button>
+	</div>
 
-    <nodecg-toggle replicant-name="autoUpdateTotal">Automatic Updates</nodecg-toggle>
+	<nodecg-toggle replicant-name="autoUpdateTotal">Automatic Updates</nodecg-toggle>
 
-    <script src="total.js"></script>
+	<script src="total.js"></script>
 </body>
 </html>
