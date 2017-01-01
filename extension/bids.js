@@ -18,38 +18,17 @@ module.exports = function (nodecg) {
 	const currentBids = nodecg.Replicant('currentBids', {defaultValue: []});
 	const allBids = nodecg.Replicant('allBids', {defaultValue: []});
 
-	// Get initial data
-	update();
-
 	// Get latest bid data every POLL_INTERVAL milliseconds
 	nodecg.log.info('Polling bids every %d seconds...', POLL_INTERVAL / 1000);
-	let updateInterval = setInterval(update.bind(this), POLL_INTERVAL);
-
-	// Dashboard can invoke manual updates
-	nodecg.listenFor('updateBids', (data, cb) => {
-		nodecg.log.info('Manual bid update button pressed, invoking update...');
-		clearInterval(updateInterval);
-		updateInterval = setInterval(update.bind(this), POLL_INTERVAL);
-		update()
-			.spread((updatedCurrent, updatedAll) => {
-				const updatedEither = updatedCurrent || updatedAll;
-				if (updatedEither) {
-					nodecg.log.info('Bids successfully updated');
-				} else {
-					nodecg.log.info('Bids unchanged, not updated');
-				}
-
-				cb(null, updatedEither);
-			}, error => {
-				cb(error);
-			});
-	});
+	update();
 
 	/**
 	 * Grabs the latest bids from the Tracker.
 	 * @returns {Promise} - A Q.all promise.
 	 */
 	function update() {
+		nodecg.sendMessage('bids:updating');
+
 		const currentPromise = Q.defer();
 		request(CURRENT_BIDS_URL, (err, res, body) => {
 			handleResponse(err, res, body, currentPromise, {
@@ -69,7 +48,10 @@ module.exports = function (nodecg) {
 		return Q.all([
 			currentPromise.promise,
 			allPromise.promise
-		]);
+		]).then(() => {
+			setTimeout(update, POLL_INTERVAL);
+			nodecg.sendMessage('bids:updated');
+		});
 	}
 
 	/**

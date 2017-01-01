@@ -131,6 +131,25 @@
 			schedule.on('change', () => {
 				this.recalcUpcomingRuns();
 			});
+
+			nodecg.listenFor('bids:updating', () => {
+				console.log('updating...');
+				this.$['bids-cooldown'].indeterminate = true;
+			});
+
+			nodecg.listenFor('bids:updated', () => {
+				console.log('updated!');
+
+				const $cooldown = this.$['bids-cooldown'];
+				$cooldown.indeterminate = false;
+				$cooldown.classList.remove('transiting');
+				$cooldown.value = 100;
+
+				this.async(() => {
+					$cooldown.classList.add('transiting');
+					$cooldown.value = 0;
+				}, 16.7 * 3);
+			});
 		},
 
 		recalcUpcomingRuns() {

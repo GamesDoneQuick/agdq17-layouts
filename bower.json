@@ -20,7 +20,7 @@
     "paper-input": "PolymerElements/paper-input#^1.1.11",
     "paper-item": "PolymerElements/paper-item#^1.2.1",
     "paper-listbox": "PolymerElements/paper-listbox#^1.1.2",
-    "paper-progress": "PolymerElements/paper-progress#^1.0.9",
+    "paper-progress": "PolymerElements/paper-progress#^1.0.11",
     "paper-styles": "PolymerElements/paper-styles#^1.1.4",
     "PreloadJS": "0.6.2",
     "textfit": "^2.3.1",
