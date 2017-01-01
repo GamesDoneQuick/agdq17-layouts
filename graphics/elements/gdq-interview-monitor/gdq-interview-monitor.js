@@ -163,7 +163,7 @@
 			TweenLite.to(this.$['total-amount'], duration, {
 				rawValue: newVal.raw,
 				ease: Power2.easeOut,
-				onUpdate: function () {
+				onUpdate() {
 					this.$['total-amount'].textContent = this.$['total-amount'].rawValue.toLocaleString('en-US', {
 						maximumFractionDigits: 0
 					});

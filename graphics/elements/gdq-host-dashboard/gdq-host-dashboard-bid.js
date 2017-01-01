@@ -45,7 +45,7 @@
 				return '';
 			}
 
-			const percent = Math.floor((option.rawTotal / bid.options[0].rawTotal) * 100) ;
+			const percent = Math.floor((option.rawTotal / bid.options[0].rawTotal) * 100);
 			return `width: ${percent}%;`;
 		},
 
