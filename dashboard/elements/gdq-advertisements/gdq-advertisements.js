@@ -49,7 +49,7 @@
 			return null;
 		},
 
-		ready() {
+		attached() {
 			adPageOpen.on('change', newVal => {
 				if (newVal) {
 					/* When the dashboard first loads, the layout might already be open and have all ads preloaded.
