@@ -62,7 +62,7 @@ module.exports = function (nodecg) {
 			data.sources.some(source => {
 				const lowercaseSourceName = source.name.toLowerCase();
 				if (lowercaseSourceName.indexOf('layout') === 0) {
-					currentScene.value = lowercaseSourceName.replace(/ /g, '_');
+					currentScene.value = lowercaseSourceName.replace(/ /g, '_').replace('layout_', '');
 					return true;
 				}
 
