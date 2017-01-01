@@ -4,9 +4,6 @@ const OBSWebSocket = require('obs-websocket-js').OBSWebSocket;
 
 module.exports = function (nodecg) {
 	const currentScene = nodecg.Replicant('currentScene', {defaultValue: ''});
-	currentScene.on('change', newVal => {
-		nodecg.log.info(newVal);
-	});
 
 	if (!nodecg.bundleConfig.obsWebsocket) {
 		nodecg.log.error('"obsWebsocket" is not defined in cfg/agdq17-layouts.json! ' +
