@@ -17,7 +17,6 @@ module.exports = function (nodecg) {
 			{name: 'Check Tech Notes', complete: false},
 			{name: 'Stream Layout', complete: false},
 			{name: 'Runner Info/Position', complete: false},
-			{name: 'Game Deinterlacing', complete: false},
 			{name: 'Camera', complete: false}
 		],
 		otherDuties: [
