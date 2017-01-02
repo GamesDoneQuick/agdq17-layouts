@@ -1,13 +1,8 @@
 'use strict';
 
 const DONATION_STATS_URL = 'https://gamesdonequick.com/tracker/19?json';
-const POLL_INTERVAL = 60 * 1000;
-
-const Q = require('q');
 const request = require('request');
-const numeral = require('numeral');
-
-let updateInterval;
+const formatDollars = require('../util/format-dollars');
 
 module.exports = function (nodecg) {
 	const total = nodecg.Replicant('total', {
@@ -21,34 +16,59 @@ module.exports = function (nodecg) {
 	autoUpdateTotal.on('change', newVal => {
 		if (newVal) {
 			nodecg.log.info('Automatic updating of donation total enabled');
-			updateTotal(true);
+			manuallyUpdateTotal(true);
 		} else {
 			nodecg.log.warn('Automatic updating of donation total DISABLED');
-			clearInterval(updateInterval);
 		}
 	});
+
+	if (nodecg.bundleConfig && nodecg.bundleConfig.donationSocketUrl) {
+		const socket = require('socket.io-client')(nodecg.bundleConfig.donationSocketUrl);
+		socket.on('connect', () => {
+			nodecg.log.info('Connected to donation socket', nodecg.bundleConfig.donationSocketUrl);
+		});
+
+		socket.on('connect_error', err => {
+			nodecg.log.error('Donation socket connect_error:', err);
+		});
+
+		// Get initial data, then listen for donations.
+		updateTotal().then(() => {
+			socket.on('donation', data => {
+				const donation = formatDonation(data);
+				nodecg.sendMessage('donation', donation);
+
+				if (autoUpdateTotal.value) {
+					total.value = {
+						raw: donation.rawNewTotal,
+						formatted: donation.newTotal
+					};
+				}
+			});
+		});
+
+		socket.on('disconnect', () => {
+			nodecg.log.error('Disconnected from donation socket, can not receive donations!');
+		});
+
+		socket.on('error', err => {
+			nodecg.log.error('Donation socket error:', err);
+		});
+	} else {
+		nodecg.log.error(`cfg/${nodecg.bundleName}.json is missing the "donationSocketUrl" property.` +
+			'\n\tThis means that we cannot receive new incoming PayPal donations from the tracker,' +
+			'\n\tand that donation notifications will not be displayed as a result. The total also will not update.');
+	}
 
 	nodecg.listenFor('setTotal', raw => {
 		total.value = {
 			raw: parseFloat(raw),
-			formatted: numeral(raw).format('$0,0')
+			formatted: formatDollars(raw, {cents: false})
 		};
 	});
 
-	// Get initial data
-	update();
-
-	if (autoUpdateTotal.value) {
-		// Get latest prize data every POLL_INTERVAL milliseconds
-		nodecg.log.info('Polling donation total every %d seconds...', POLL_INTERVAL / 1000);
-		clearInterval(updateInterval);
-		updateInterval = setInterval(update, POLL_INTERVAL);
-	} else {
-		nodecg.log.info('Automatic update of total is disabled, will not poll until enabled');
-	}
-
 	// Dashboard can invoke manual updates
-	nodecg.listenFor('updateTotal', updateTotal);
+	nodecg.listenFor('updateTotal', manuallyUpdateTotal);
 
 	/**
 	 * Handles manual "updateTotal" requests.
@@ -56,65 +76,87 @@ module.exports = function (nodecg) {
 	 * @param {Function} [cb] - The callback to invoke after the total has been updated.
 	 * @returns {undefined}
 	 */
-	function updateTotal(silent, cb) {
+	function manuallyUpdateTotal(silent, cb) {
 		if (!silent) {
 			nodecg.log.info('Manual donation total update button pressed, invoking update...');
 		}
 
-		clearInterval(updateInterval);
-		updateInterval = setInterval(update, POLL_INTERVAL);
-		update()
-			.then(updated => {
-				if (updated) {
-					nodecg.log.info('Donation total successfully updated');
-				} else {
-					nodecg.log.info('Donation total unchanged, not updated');
-				}
+		updateTotal().then(updated => {
+			if (updated) {
+				nodecg.sendMessage('total:manuallyUpdated', total.value);
+				nodecg.log.info('Donation total successfully updated');
+			} else {
+				nodecg.log.info('Donation total unchanged, not updated');
+			}
 
-				cb(null, updated);
-			}, error => {
-				cb(error);
-			});
+			cb(null, updated);
+		}).catch(error => {
+			cb(error);
+		});
 	}
 
 	/**
 	 * Updates the "total" replicant with the latest value from the GDQ Tracker API.
 	 * @returns {Promise} - A promise.
 	 */
-	function update() {
-		const deferred = Q.defer();
-		request(DONATION_STATS_URL, (error, response, body) => {
-			if (!error && response.statusCode === 200) {
-				let stats;
-				try {
-					stats = JSON.parse(body);
-				} catch (e) {
-					nodecg.log.error('Could not parse total, response not valid JSON:\n\t', body);
-					return;
-				}
+	function updateTotal() {
+		return new Promise((resolve, reject) => {
+			request(DONATION_STATS_URL, (error, response, body) => {
+				if (!error && response.statusCode === 200) {
+					let stats;
+					try {
+						stats = JSON.parse(body);
+					} catch (e) {
+						nodecg.log.error('Could not parse total, response not valid JSON:\n\t', body);
+						return;
+					}
 
-				const freshTotal = parseFloat(stats.agg.amount || 0);
+					const freshTotal = parseFloat(stats.agg.amount || 0);
 
-				if (freshTotal === total.value.raw) {
-					deferred.resolve(false);
+					if (freshTotal === total.value.raw) {
+						resolve(false);
+					} else {
+						total.value = {
+							raw: freshTotal,
+							formatted: formatDollars(freshTotal, {cents: false})
+						};
+						resolve(true);
+					}
 				} else {
-					total.value = {
-						raw: freshTotal,
-						formatted: numeral(freshTotal).format('$0,0')
-					};
-					deferred.resolve(true);
+					let msg = 'Could not get donation total, unknown error';
+					if (error) {
+						msg = `Could not get donation total:\n${error.message}`;
+					} else if (response) {
+						msg = `Could not get donation total, response code ${response.statusCode}`;
+					}
+					nodecg.log.error(msg);
+					reject(msg);
 				}
-			} else {
-				let msg = 'Could not get donation total, unknown error';
-				if (error) {
-					msg = `Could not get donation total:\n${error.message}`;
-				} else if (response) {
-					msg = `Could not get donation total, response code ${response.statusCode}`;
-				}
-				nodecg.log.error(msg);
-				deferred.reject(msg);
-			}
+			});
 		});
-		return deferred.promise;
+	}
+
+	/**
+	 * Formats each donation coming in from the socket repeater, which in turn is receiving them
+	 * from a Postback URL on the tracker.
+	 * @param {Number} rawAmount - The numeric amount of the donation.
+	 * @param {Number} rawNewTotal - The new numeric donation total, including this donation.
+	 * @returns {{amount: String, rawAmount: Number, newTotal: String, rawNewTotal: Number}} - A formatted donation.
+	 */
+	function formatDonation({rawAmount, rawNewTotal}) {
+		// Format amount
+		let amount = formatDollars(rawAmount);
+
+		// If a whole dollar, get rid of cents
+		if (amount.endsWith('.00')) {
+			amount = amount.substr(0, amount.length - 3);
+		}
+
+		return {
+			amount,
+			rawAmount,
+			newTotal: formatDollars(rawNewTotal, {cents: false}),
+			rawNewTotal
+		};
 	}
 };

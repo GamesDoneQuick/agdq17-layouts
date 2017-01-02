@@ -59,9 +59,18 @@
 		},
 
 		totalChanged(newVal) {
+			if (!this._totalInitialized) {
+				this._totalInitialized = true;
+				this.$.totalTextAmount.rawValue = newVal.raw;
+				this.$.totalTextAmount.textContent = newVal.raw.toLocaleString('en-US', {
+					maximumFractionDigits: 0
+				});
+				return;
+			}
+
 			const TIME_PER_DOLLAR = 0.03;
 			const delta = newVal.raw - this.$.totalTextAmount.rawValue;
-			const duration = Math.min(delta * TIME_PER_DOLLAR, 5);
+			const duration = Math.min(delta * TIME_PER_DOLLAR, 3);
 			let strLen = this.$.totalTextAmount.textContent.length;
 			TweenLite.to(this.$.totalTextAmount, duration, {
 				rawValue: newVal.raw,

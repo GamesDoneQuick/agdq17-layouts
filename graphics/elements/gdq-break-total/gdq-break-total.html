@@ -3,16 +3,19 @@
 		<style>
 			:host {
 				position: absolute;
-				display: block;
 				width: 518px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 			}
 
 			#total {
+				position: relative;
 				display: flex;
 				align-items: baseline;
 				justify-content: center;
 				color: #fffefe;
-				font-family: Montserrat;
+				font-family: Montserrat, sans-serif;
 				font-weight: 700;
 			}
 
@@ -23,11 +26,19 @@
 			#total-amount {
 				font-size: 65px;
 			}
+
+			.donationText {
+				position: absolute;
+				color: #73ff00;
+				font-family: SF Pixelate, sans-serif;
+				font-size: 32px;
+				transform: translateX(-50%);
+			}
 		</style>
 
-		<div id="total" class="shadow">
-			<div id="total-currency">$</div>
-			<div id="total-amount" class="tabular-nums"></div>
+		<div id="total">
+			<div id="total-currency" class="shadow">$</div>
+			<div id="total-amount" class="shadow tabular-nums"></div>
 		</div>
 	</template>
 
