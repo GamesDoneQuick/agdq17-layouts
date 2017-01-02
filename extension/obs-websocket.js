@@ -14,8 +14,10 @@ module.exports = function (nodecg) {
 	}
 
 	const ws = new OBSWebSocket();
+	let notifiedConnectionFailed = false;
 
 	ws.onConnectionOpened = function () {
+		notifiedConnectionFailed = false;
 		nodecg.log.info('[obs-websocket] Connected.');
 	};
 
@@ -30,7 +32,10 @@ module.exports = function (nodecg) {
 	};
 
 	ws.onConnectionFailed = function () {
-		nodecg.log.warn('[obs-websocket] Connection failed, retrying in 5 seconds.');
+		if (!notifiedConnectionFailed) {
+			notifiedConnectionFailed = true;
+			nodecg.log.warn('[obs-websocket] Connection failed, will keep retrying every 5 seconds');
+		}
 		setTimeout(connectToOBS, 5000);
 	};
 
