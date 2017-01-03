@@ -31,7 +31,6 @@
 			const amountInCents = Math.round(rawAmount * 100);
 			const newTotalInCents = Math.round(rawNewTotal * 100);
 			if (this.totalInCents + amountInCents === newTotalInCents) {
-				console.log('exact match! playing donationText');
 				this.donationText(amount);
 			} else {
 				console.log('off by %s, not playing donationText', (this.totalInCents + amountInCents) - newTotalInCents);
