@@ -76,7 +76,7 @@ module.exports = function (nodecg) {
 	 * @param {Function} [cb] - The callback to invoke after the total has been updated.
 	 * @returns {undefined}
 	 */
-	function manuallyUpdateTotal(silent, cb) {
+	function manuallyUpdateTotal(silent, cb = function () {}) {
 		if (!silent) {
 			nodecg.log.info('Manual donation total update button pressed, invoking update...');
 		}
