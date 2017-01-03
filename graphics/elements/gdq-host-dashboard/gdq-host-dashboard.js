@@ -263,8 +263,8 @@
 			return this.runners[index].name;
 		},
 
-		isNull(data) {
-			return !data || data === null;
+		isValidResult(result, index, runners) {
+			return result && result !== null && runners[index] && runners[index].name;
 		}
 	});
 })();
