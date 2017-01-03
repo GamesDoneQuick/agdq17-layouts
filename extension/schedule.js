@@ -46,7 +46,7 @@ module.exports = function (nodecg) {
 							return nodecg.log.error(response.body.error, response.body.message);
 						}
 					}).catch(err => {
-						nodecg.log.error(err);
+						nodecg.log.error('Failed updating Twitch title and game:\n\t', err);
 					});
 				}
 			});
