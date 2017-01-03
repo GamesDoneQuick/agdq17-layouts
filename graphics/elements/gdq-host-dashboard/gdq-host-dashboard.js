@@ -133,13 +133,10 @@
 			});
 
 			nodecg.listenFor('bids:updating', () => {
-				console.log('updating...');
 				this.$['bids-cooldown'].indeterminate = true;
 			});
 
 			nodecg.listenFor('bids:updated', () => {
-				console.log('updated!');
-
 				const $cooldown = this.$['bids-cooldown'];
 				$cooldown.indeterminate = false;
 				$cooldown.classList.remove('transiting');
