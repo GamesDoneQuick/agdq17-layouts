@@ -132,10 +132,6 @@
 				loadImage(this.$['prize-image-next'], prize.image).then(() => {
 					this.tl.resume();
 				}).catch(error => {
-					if (window.Rollbar) {
-						window.Rollbar.error(error);
-					}
-
 					nodecg.log.error(error);
 					this.$['prize-image-next'].src = '';
 					this.tl.resume();

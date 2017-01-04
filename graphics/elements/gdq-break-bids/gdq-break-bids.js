@@ -342,10 +342,6 @@
 
 				default: {
 					const errorMsg = `Unexpected bid type "${bid.type}" (ID: ${bid.id})`;
-					if (window.Rollbar) {
-						window.Rollbar.error(errorMsg);
-					}
-
 					nodecg.log.error(errorMsg);
 				}
 			}
