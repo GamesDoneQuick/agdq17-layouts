@@ -90,7 +90,7 @@ module.exports = function (nodecg) {
 		});
 
 		userStream.on('connection aborted', () => {
-			nodecg.log.error('[twitter] Connection aborted!');
+			nodecg.log.warn('[twitter] Connection aborted!');
 		});
 
 		userStream.on('connection error network', error => {
