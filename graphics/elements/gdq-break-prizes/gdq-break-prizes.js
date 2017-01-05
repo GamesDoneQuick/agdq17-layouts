@@ -21,7 +21,7 @@
 			}
 
 			target.src = src;
-			if (target.loaded) {
+			if (target.loaded || !src) {
 				resolve();
 			} else {
 				const listeners = {
