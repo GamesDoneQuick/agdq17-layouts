@@ -88,11 +88,12 @@ module.exports = function (nodecg) {
 
 	if (nodecg.bundleConfig.footpedal.enabled) {
 		const gamepad = require('gamepad');
-
 		gamepad.init();
 
 		// Poll for events
 		setInterval(gamepad.processEvents, 16);
+		// Scan for new gamepads as a slower rate
+		setInterval(gamepad.detectDevices, 500);
 
 		// Listen for buttonId down event from our target gamepad.
 		gamepad.on('down', (id, num) => {
