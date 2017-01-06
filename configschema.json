@@ -102,7 +102,7 @@
 		"obsWebsocket": {
 			"type": "object",
 			"properties": {
-				"username": {
+				"address": {
 					"type": "string"
 				},
 				"password": {
@@ -110,7 +110,8 @@
 				}
 			},
 			"description": "Login information for OBS Websocket, used to communicate with and remotely control OBS Studio.",
-			"required": ["username", "password"]
+			"required": ["address", "password"],
+			"additionalProperties": false
 		}
 	},
 	"required": ["tracker"]

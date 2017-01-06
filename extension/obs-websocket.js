@@ -49,7 +49,7 @@ module.exports = function (nodecg) {
 	 * @returns {undefined}
 	 */
 	function connectToOBS() {
-		ws.connect(nodecg.bundleConfig.obsWebsocket.url, nodecg.bundleConfig.obsWebsocket.password);
+		ws.connect(nodecg.bundleConfig.obsWebsocket.address, nodecg.bundleConfig.obsWebsocket.password);
 	}
 
 	/**
