@@ -110,7 +110,7 @@
 				}
 			},
 			"description": "Login information for OBS Websocket, used to communicate with and remotely control OBS Studio.",
-			"required": ["address", "password"],
+			"required": ["address"],
 			"additionalProperties": false
 		}
 	},
