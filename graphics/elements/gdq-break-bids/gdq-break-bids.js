@@ -372,6 +372,12 @@
 					return;
 				}
 
+				// We cant handle choice-many bids that have less than 3 options, which is totally valid
+				// but we didn't think about. Just don't show them.
+				if (bid.type === 'choice-many' && bid.options.length < 3) {
+					return;
+				}
+
 				// If we have already have our three bids determined, we still need to check
 				// if any of the remaining bids are for the same speedrun as the third bid.
 				// This ensures that we are never displaying a partial list of bids for a given speedrun.
