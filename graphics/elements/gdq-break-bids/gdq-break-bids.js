@@ -118,7 +118,7 @@
 						el.style.width = 0;
 					});
 					qsa('.choice-row-label').forEach((el, index) => {
-						el.innerHTML = bid.options[index].shortdescription || bid.options[index].name;
+						el.innerHTML = bid.options[index].description || bid.options[index].name;
 					});
 					qsa('.choice-row-amount').forEach((el, index) => {
 						el.innerHTML = bid.options[index].total;
