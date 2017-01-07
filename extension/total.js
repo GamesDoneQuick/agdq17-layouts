@@ -35,6 +35,10 @@ module.exports = function (nodecg) {
 		// Get initial data, then listen for donations.
 		updateTotal().then(() => {
 			socket.on('donation', data => {
+				if (!data || !data.rawAmount) {
+					return;
+				}
+
 				const donation = formatDonation(data);
 				nodecg.sendMessage('donation', donation);
 
