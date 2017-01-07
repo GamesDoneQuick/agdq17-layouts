@@ -147,9 +147,9 @@ module.exports = function (nodecg) {
 	 * @param {Number} rawNewTotal - The new numeric donation total, including this donation.
 	 * @returns {{amount: String, rawAmount: Number, newTotal: String, rawNewTotal: Number}} - A formatted donation.
 	 */
-	function formatDonation({rawAmount, rawNewTotal}) {
+	function formatDonation({rawAmount, newTotal}) {
 		rawAmount = parseFloat(rawAmount);
-		rawNewTotal = parseFloat(rawNewTotal);
+		const rawNewTotal = parseFloat(newTotal);
 
 		// Format amount
 		let amount = formatDollars(rawAmount);
