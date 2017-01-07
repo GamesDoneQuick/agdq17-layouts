@@ -224,6 +224,10 @@
 				},
 				onStartScope: this
 			});
+
+			if (index === 0 && prizesArray.length === 1) {
+				this.tl.set(this.$.disclaimer.style, {opacity: 0});
+			}
 		},
 
 		preloadFirstImage() {
