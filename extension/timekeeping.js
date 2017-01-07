@@ -312,7 +312,7 @@ module.exports = function (nodecg) {
 					baudRate: 9600
 				}, err => {
 					if (err) {
-						return nodecg.log.error('Error opening propsective port:\n\t', err.message);
+						return nodecg.log.warn('Error opening propsective port:\n\t', err.message);
 					}
 
 					if (canWriteToSerial(port)) {

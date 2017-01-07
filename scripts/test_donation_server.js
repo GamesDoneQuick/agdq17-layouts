@@ -11,8 +11,8 @@ function generateAndEmitDonation() {
 	totalInCents += rawAmountInCents;
 
 	const data = {
-		rawAmount: rawAmountInCents / 100,
-		rawNewTotal: totalInCents / 100
+		rawAmount: String(rawAmountInCents / 100),
+		newTotal: String(totalInCents / 100)
 	};
 
 	io.emit('donation', data);
