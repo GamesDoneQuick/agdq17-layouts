@@ -32,7 +32,7 @@
 		},
 
 		ready() {
-			const timerTL = new TimelineLite();
+			const timerTL = new TimelineLite({autoRemoveChildren: true});
 
 			stopwatch.on('change', (newVal, oldVal) => {
 				this.time = newVal.formatted;
