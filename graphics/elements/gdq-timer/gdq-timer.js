@@ -32,12 +32,13 @@
 		},
 
 		ready() {
+			const timerTL = new TimelineLite();
+
 			stopwatch.on('change', (newVal, oldVal) => {
 				this.time = newVal.formatted;
 
 				if (oldVal) {
 					if (newVal.state === 'running' && oldVal.state !== 'running') {
-						const timerTL = new TimelineLite();
 						timerTL.from(this.$.startFlash, 1, {
 							opacity: 1,
 							ease: Power2.easeIn
@@ -52,6 +53,11 @@
 				} else {
 					this.paused = false;
 					this.finished = false;
+				}
+
+				if (newVal.state !== 'running') {
+					timerTL.clear();
+					this.$.startFlash.style.opacity = 0;
 				}
 			});
 		}
