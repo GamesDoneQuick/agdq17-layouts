@@ -20,6 +20,8 @@
 			}
 
 			#total-currency {
+				position: relative;
+				top: -5px;
 				font-size: 42px;
 			}
 
@@ -34,11 +36,21 @@
 				font-size: 32px;
 				transform: translateX(-50%);
 			}
+
+			.shadow-total {
+				color: white;
+				text-shadow:
+					-2px -2px 0 #000,
+					2px -2px 0 #000,
+					-2px 2px 0 #000,
+					2px 2px 0 #000;
+				-webkit-filter: drop-shadow(0 2px 0 black);
+			}
 		</style>
 
 		<div id="total">
-			<div id="total-currency" class="shadow">$</div>
-			<div id="total-amount" class="shadow tabular-nums"></div>
+			<div id="total-currency" class="shadow-total">$</div>
+			<div id="total-amount" class="shadow-total tabular-nums"></div>
 		</div>
 	</template>
 
