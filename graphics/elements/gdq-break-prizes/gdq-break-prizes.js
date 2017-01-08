@@ -191,10 +191,8 @@
 			}, null, null, '+=0.1');
 
 			this.tl.call(() => {
-				if (this.$['prize-minbid'].split) {
-					this.$['prize-minbid'].split.revert();
-				}
-				this.$['prize-minbid-amount'].innerText = prize.minimumbid;
+				Polymer.dom(this.$['prize-minbid']).innerHTML =
+					`Minimum&nbsp;bid:&nbsp;<div id="prize-minbid-amount">${prize.minimumbid}</div>`;
 				this._typeAnim(this.$['prize-minbid']);
 			}, null, null, '+=0.1');
 
