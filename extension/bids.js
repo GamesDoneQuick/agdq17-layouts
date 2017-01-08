@@ -48,9 +48,9 @@ module.exports = function (nodecg) {
 		return Q.all([
 			currentPromise.promise,
 			allPromise.promise
-		]).then(() => {
-			setTimeout(update, POLL_INTERVAL);
+		]).fin(() => {
 			nodecg.sendMessage('bids:updated');
+			setTimeout(update, POLL_INTERVAL);
 		});
 	}
 
