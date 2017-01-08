@@ -104,7 +104,11 @@
 		 * @returns {undefined}
 		 */
 		takeNames() {
-			const paperInputs = Polymer.dom(this.root).querySelectorAll('nodecg-typeahead-input:not([disabled])');
+			let paperInputs = Polymer.dom(this.root).querySelectorAll('nodecg-typeahead-input');
+			if (!this.fivePersonMode) {
+				paperInputs = paperInputs.slice(-4);
+			}
+
 			interviewNames.value = paperInputs.map(input => input.value);
 		}
 	});
