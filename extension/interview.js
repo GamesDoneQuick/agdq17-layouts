@@ -129,7 +129,7 @@ module.exports = function (nodecg) {
 
 	nodecg.listenFor('interview:updateQuestionSortMap', updateQuestionSortMap);
 
-	nodecg.listenFor('interview:markQuestionAsDone', id => {
+	nodecg.listenFor('interview:markQuestionAsDone', (id, cb = function () {}) => {
 		if (!_repliesRef) {
 			return;
 		}
@@ -144,6 +144,11 @@ module.exports = function (nodecg) {
 			}
 
 			return tweet;
+		}).then(() => {
+			cb();
+		}).catch(error => {
+			nodecg.log.error('[interview]', error);
+			cb(error);
 		});
 	});
 

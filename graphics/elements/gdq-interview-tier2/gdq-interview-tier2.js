@@ -149,7 +149,14 @@
 
 		showNextQuestion() {
 			this.hideQuestion();
-			nodecg.sendMessage('interview:markQuestionAsDone', this.onScreenTweet.id_str);
+			this.$.showNext.disabled = true;
+			nodecg.sendMessage('interview:markQuestionAsDone', this.onScreenTweet.id_str, error => {
+				this.$.showNext.disabled = false;
+				if (error) {
+					this.$.errorToast.text = 'Failed to load next interview question.';
+					this.$.errorToast.show();
+				}
+			});
 		},
 
 		_handleSortList() {
