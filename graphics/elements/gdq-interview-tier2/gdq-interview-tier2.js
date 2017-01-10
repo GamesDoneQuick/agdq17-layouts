@@ -206,6 +206,18 @@
 			}
 
 			return aMapIndex - bMapIndex;
+		},
+
+		reject(event) {
+			const button = event.target.closest('paper-button');
+			button.disabled = true;
+			nodecg.sendMessage('interview:markQuestionAsDone', event.model.reply.id_str, error => {
+				button.disabled = false;
+				if (error) {
+					this.$.errorToast.text = 'Failed to reject interview question.';
+					this.$.errorToast.show();
+				}
+			});
 		}
 
 		/* Disabled for now. Can't get drag sort and button sort to work simultaneously.

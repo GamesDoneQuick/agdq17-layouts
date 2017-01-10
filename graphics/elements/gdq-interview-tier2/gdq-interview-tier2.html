@@ -3,6 +3,7 @@
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../components/paper-material/paper-material.html">
+<link rel="import" href="../../components/paper-toast/paper-toast.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
 <link rel="import" href="../gdq-tweet/gdq-tweet.html">
 
@@ -102,12 +103,9 @@
 			}
 
 			.tweet-buttons {
-				width: 106px;
+				width: 52px;
 				@apply(--layout-horizontal);
 				@apply(--layout-center-center);
-
-				/*  Disabled for now. Can't get drag sort and button sort to work simultaneously. */
-				display: none;
 			}
 
 			.tweet-buttons paper-button {
@@ -123,14 +121,20 @@
 				@apply(--layout-center-center);
 			}
 
+			.tweet-buttons-reject {
+				--paper-button: {
+					background-color: #9e0b0f;
+				};
+			}
+
 			.bg-color-transition {
 				transition: background-color 1600ms cubic-bezier(0.455, 0.03, 0.515, 0.955);;
 			}
 
 			iron-icon {
 				position: absolute;
-				--iron-icon-height: 60px;
-				--iron-icon-width: 60px;
+				--iron-icon-height: 46px;
+				--iron-icon-width: 46px;
 			}
 
 			paper-button {
@@ -169,13 +173,25 @@
 
 		<div class="header">APPROVED QUESTIONS</div>
 		<sortable-list id="list" sortable=".tweet" on-sort-list="_handleSortList">
-			<template id="repeat" is="dom-repeat" items="[[calcListReplies(replies, _sortMapVal)]]" as="reply" sort="mapSort">
+			<template
+				id="repeat"
+				is="dom-repeat"
+				items="[[calcListReplies(replies, _sortMapVal)]]"
+				as="reply"
+				sort="mapSort">
 				<div class="tweet" tweet-id="[[reply.id_str]]">
 					<paper-material class="tweet-material bg-color-transition" elevation="1">
 						<gdq-tweet class="tweet-content" tweet="[[reply]]"></gdq-tweet>
 
-						<!--<div class="tweet-buttons">
+						<div class="tweet-buttons">
 							<paper-button
+								class="tweet-buttons-reject"
+								raised
+								on-tap="reject"
+								alt="Reject">
+								<iron-icon icon="delete-forever"></iron-icon>
+							</paper-button>
+							<!--<paper-button
 								raised
 								on-tap="promote"
 								alt="Promote"
@@ -189,8 +205,8 @@
 								alt="Demote"
 								disabled="[[calcDemoteDisabled(reply, _sortMapVal)]]">
 								<iron-icon icon="arrow-drop-down"></iron-icon>
-							</paper-button>
-						</div>-->
+							</paper-button>-->
+						</div>
 					</paper-material>
 				</div>
 			</template>
