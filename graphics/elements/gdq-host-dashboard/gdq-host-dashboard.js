@@ -85,7 +85,7 @@
 				};
 			}
 
-			if (this.saveTheAnimalsTotal > this.killTheAnimalsTotal) {
+			if (this.saveTheAnimalsTotal.raw > this.killTheAnimalsTotal.raw) {
 				this.$['metroid-save'].setAttribute('ahead', 'true');
 				this.$['metroid-kill'].removeAttribute('ahead');
 			} else {
