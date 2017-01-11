@@ -63,6 +63,10 @@
 			}
 
 			return bid.options.length - 3;
+		},
+
+		calcBidName(description) {
+			return description.replace('||', ' -- ');
 		}
 	});
 })();

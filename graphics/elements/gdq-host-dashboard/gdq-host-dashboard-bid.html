@@ -41,7 +41,7 @@
 		</style>
 
 		<paper-material id="material">
-			<div>[[bid.description]]</div>
+			<div>[[calcBidName(bid.description)]]</div>
 
 			<template is="dom-if" if="[[bidIsChallenge(bid)]]">
 				<div>[[bid.total]]/[[bid.goal]]</div>
