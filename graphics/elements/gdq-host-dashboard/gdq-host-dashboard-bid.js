@@ -10,7 +10,7 @@
 			},
 			failed: {
 				type: Boolean,
-				computed: 'computeFailed(bid)',
+				computed: 'computeFailed(closed, bid)',
 				reflectToAttribute: true
 			},
 			closed: {
@@ -20,12 +20,12 @@
 			}
 		},
 
-		computeFailed(bid) {
-			return bid.closed && bid.rawTotal < bid.rawGoal;
+		computeFailed(closed, bid) {
+			return closed && bid.rawTotal < bid.rawGoal;
 		},
 
 		computeClosed(bid) {
-			return bid.closed;
+			return bid.state.toLowerCase() === 'closed';
 		},
 
 		bidIsChallenge(bid) {
