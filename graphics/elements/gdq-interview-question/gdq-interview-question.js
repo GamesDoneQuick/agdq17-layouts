@@ -51,7 +51,7 @@
 					return;
 				}
 
-				this.$.question.innerHTML = this.onScreenTweet.text;
+				this.$['question-text'].innerHTML = this.onScreenTweet.text;
 				this.$.username.innerText = `@${this.onScreenTweet.user.screen_name}`;
 				this.style.willChange = 'transform';
 			}, null, null, '+=0.3'); // Give time for question replicants to update.
