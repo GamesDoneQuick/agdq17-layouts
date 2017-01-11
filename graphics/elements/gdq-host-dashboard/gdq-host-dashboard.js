@@ -216,7 +216,7 @@
 
 			if (eventHasStarted) {
 				if (hours > 0) {
-					timeString = `${hours} HOURS`;
+					timeString = `${(days * 24) + hours} HOURS`;
 				} else {
 					timeString = `${minutes} MINUTES`;
 				}
