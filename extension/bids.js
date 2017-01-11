@@ -93,6 +93,7 @@ module.exports = function (nodecg) {
 						rawTotal: parseFloat(bid.fields.total),
 						state: bid.fields.state,
 						speedrun: bid.fields.speedrun__name,
+						speedrunEndtime: Date.parse(bid.fields.speedrun__endtime),
 						public: bid.fields.public
 					};
 
@@ -135,7 +136,7 @@ module.exports = function (nodecg) {
 
 			// Ah, but now we have to sort all these child bids by how much they have raised so far!
 			// While we're at it, map all the parent bids back onto an array and set their "type".
-			const bidsArray = [];
+			let bidsArray = [];
 			for (const id in parentBidsById) {
 				if (!{}.hasOwnProperty.call(parentBidsById, id)) {
 					continue;
@@ -173,6 +174,10 @@ module.exports = function (nodecg) {
 					return 0;
 				});
 			}
+
+			bidsArray = bidsArray.sort((a, b) => {
+				return a.speedrunEndtime - b.speedrunEndtime;
+			});
 
 			// After all that, deep-compare our newly-calculated parentBidsById object against the existing value.
 			// Only assign the replicant if it's actually different.
