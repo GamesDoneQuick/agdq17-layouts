@@ -10,6 +10,7 @@
 	const stopwatch = nodecg.Replicant('stopwatch');
 	const currentRun = nodecg.Replicant('currentRun');
 	const schedule = nodecg.Replicant('schedule');
+	const runOrderMap = nodecg.Replicant('runOrderMap');
 
 	Polymer({
 		is: 'gdq-host-dashboard',
@@ -17,6 +18,9 @@
 		properties: {
 			currentTime: {
 				type: String
+			},
+			currentRun: {
+				type: Object
 			},
 			elapsedTime: {
 				type: String
@@ -27,7 +31,7 @@
 			prizes: {
 				type: Array
 			},
-			bids: {
+			relevantBids: {
 				type: Array
 			},
 			metroidBid: {
@@ -44,6 +48,18 @@
 				type: String,
 				value: ''
 			}
+		},
+
+		recalcRelevantBids() {
+			if (!allBids.value || !currentRun.value || !runOrderMap.value) {
+				return;
+			}
+
+			this.relevantBids = allBids.value.filter(bid => {
+				return runOrderMap.value[bid.speedrun] >= currentRun.value.order;
+			}).sort((a, b) => {
+				return runOrderMap.value[a.speedrun] - runOrderMap.value[b.speedrun];
+			});
 		},
 
 		metroidBidChanged(newVal) {
@@ -96,7 +112,7 @@
 			});
 
 			allBids.on('change', newVal => {
-				this.bids = newVal.slice(0);
+				this.recalcRelevantBids();
 
 				const metroidBid = newVal.find(bid => bid.id === METROID_BID_ID);
 				if (metroidBid) {
@@ -120,6 +136,7 @@
 				this.$['currentRun-name'].innerHTML = newVal.name.replace('\\n', '<br/>').trim();
 				this.runners = newVal.runners.slice(0);
 				this.recalcUpcomingRuns();
+				this.recalcRelevantBids();
 			});
 
 			stopwatch.on('change', newVal => {
@@ -130,6 +147,10 @@
 
 			schedule.on('change', () => {
 				this.recalcUpcomingRuns();
+			});
+
+			runOrderMap.on('change', () => {
+				this.recalcRelevantBids();
 			});
 
 			nodecg.listenFor('bids:updating', () => {

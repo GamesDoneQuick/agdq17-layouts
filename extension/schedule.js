@@ -16,6 +16,7 @@ module.exports = function (nodecg) {
 	const checklist = require('./checklist')(nodecg);
 	const scheduleRep = nodecg.Replicant('schedule', {defaultValue: [], persistent: false});
 	const runnersRep = nodecg.Replicant('runners', {defaultValue: [], persistent: false});
+	const runOrderMap = nodecg.Replicant('runOrderMap', {defaultValue: {}, persistent: false});
 	const currentRun = nodecg.Replicant('currentRun', {defaultValue: {}});
 	const nextRun = nodecg.Replicant('nextRun', {defaultValue: {}});
 
@@ -231,6 +232,12 @@ module.exports = function (nodecg) {
 			}
 
 			scheduleRep.value = formattedSchedule;
+
+			const newRunOrderMap = {};
+			formattedSchedule.forEach(run => {
+				newRunOrderMap[run.name] = run.order;
+			});
+			runOrderMap.value = newRunOrderMap;
 
 			/* If no currentRun is set or if the order of the current run is greater than
 			 * the length of the schedule, set current run to the first run.

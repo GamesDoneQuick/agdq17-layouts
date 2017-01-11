@@ -349,7 +349,7 @@
 						placeholder="Type in filter here"
 						value="{{bidFilterString}}">
 					</paper-input>
-					<iron-list id="bids-list" items="[[calcBids(bids, bidFilterString)]]" as="bid" filter="bidsFilter">
+					<iron-list id="bids-list" items="[[calcBids(relevantBids, bidFilterString)]]" as="bid" filter="bidsFilter">
 						<template>
 							<gdq-host-dashboard-bid bid="[[bid]]"></gdq-host-dashboard-bid>
 						</template>
