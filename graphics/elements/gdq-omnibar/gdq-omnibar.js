@@ -430,7 +430,7 @@
 				const prizesToDisplay = currentNormalPrizes.slice(0);
 				this.tl.to({}, 0.3, {
 					onStart: this.showLabel.bind(this),
-					onStartParams: ['RAFFLE PRIZES', '21px']
+					onStartParams: ['PRIZES', '32px']
 				});
 
 				if (currentGrandPrizes.length) {
