@@ -31,6 +31,8 @@
 
 			this.$.name.innerHTML = this.name;
 
+			// Avoids some issues that can arise on the first time that fitText is run.
+			// Currently unsure why these issues happen.
 			if (this.initialized) {
 				this.fitText();
 			} else {
