@@ -65,26 +65,14 @@
 			},
 			"required": ["userId", "consumerKey", "consumerSecret", "accessTokenKey", "accessTokenSecret"]
 		},
-		"serialCOMName": {
-			"type": "string",
-			"description": "The COMName of the serial port to communicate timekeeping info with. Used with TestRunner's timerbox."
+		"enableTimerSerial": {
+			"type": "boolean",
+			"description": "If true, automatically tries to find and communicate with TestRunner's timer display box.",
+			"default": false
 		},
 		"streamTitle": {
 			"type": "string",
 			"description": "The template used to set the title of the stream whenever the current run changes."
-		},
-		"tracker": {
-			"type": "object",
-			"properties": {
-				"username": {
-					"type": "string"
-				},
-				"password": {
-					"type": "string"
-				}
-			},
-			"description": "Login information for the private areas of the tracker API.",
-			"required": ["username", "password"]
 		},
 		"footpedal": {
 			"type": "object",
@@ -113,6 +101,5 @@
 			"required": ["address"],
 			"additionalProperties": false
 		}
-	},
-	"required": ["tracker"]
+	}
 }
