@@ -8,7 +8,6 @@
   ],
   "dependencies": {
     "bluebird": "^3.4.0",
-    "cheerio": "^0.20.0",
     "clone": "^1.0.2",
     "deep-diff": "^0.3.4",
     "deep-equal": "^1.0.1",
