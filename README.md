@@ -30,7 +30,7 @@ To reiterate, please don't just download and use this bundle as-is. Build someth
 `sgdq17-layouts` breaks from previous GDQ layout bundles in that it listens for donations in realtime,
 rather than polling the donation tracker for a new donation total once a minute. To facilitate testing,
 a small script that sends mock donations has been created.
-1. Add `"donationSocketUrl": "http://localhost:22341",` to your `nodecg/cfg/agdq17-layouts.json`
+1. Add `"donationSocketUrl": "http://localhost:22341"` to your `nodecg/cfg/agdq17-layouts.json`
 2. From the `nodecg/bundles/agdq17-layouts` folder, run `npm run mock-donations`
 3. Run NodeCG
 
