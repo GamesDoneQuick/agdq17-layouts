@@ -89,6 +89,7 @@ Example config:
 		"password": "your_password"
 	},
 	"firebase": {
+		"databaseURL": "https://your-firebase-app.firebaseio.com",
 		"paste": "your",
 		"firebase": "credentials",
 		"into": "here"
