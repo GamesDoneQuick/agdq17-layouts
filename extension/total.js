@@ -24,11 +24,22 @@ module.exports = function (nodecg) {
 
 	if (nodecg.bundleConfig && nodecg.bundleConfig.donationSocketUrl) {
 		const socket = require('socket.io-client')(nodecg.bundleConfig.donationSocketUrl);
+		let loggedXhrPollError = false;
+
 		socket.on('connect', () => {
 			nodecg.log.info('Connected to donation socket', nodecg.bundleConfig.donationSocketUrl);
+			loggedXhrPollError = false;
 		});
 
 		socket.on('connect_error', err => {
+			if (err.message = 'xhr poll error') {
+				if (loggedXhrPollError) {
+					return;
+				}
+
+				loggedXhrPollError = true;
+			}
+
 			nodecg.log.error('Donation socket connect_error:', err);
 		});
 
