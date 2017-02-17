@@ -6,7 +6,7 @@ module.exports = function (nodecg) {
 	const currentScene = nodecg.Replicant('currentScene', {defaultValue: ''});
 
 	// Start with a stub that we'll replace if we have all the config we need.
-	module.exports.resetCropping = function (){};
+	module.exports.resetCropping = function () {};
 
 	if (!nodecg.bundleConfig.obsWebsocket.address) {
 		nodecg.log.error('"obsWebsocket" is not defined in cfg/agdq17-layouts.json! ' +

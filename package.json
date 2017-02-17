@@ -18,7 +18,7 @@
     "lodash.merge": "^4.4.0",
     "numeral": "^1.5.3",
     "object-path": "^0.11.3",
-    "obs-websocket-js": "0.2.0",
+    "obs-websocket-js": "^0.3.3",
     "osc": "^2.1.0",
     "q": "^1.4.1",
     "request": "^2.67.0",
