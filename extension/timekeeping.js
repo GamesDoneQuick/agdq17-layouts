@@ -93,6 +93,7 @@ module.exports = function (nodecg) {
 		// Poll for events
 		setInterval(gamepad.processEvents, 16);
 		// Scan for new gamepads as a slower rate
+		// TODO: this breaks USB audio devices lmao
 		setInterval(gamepad.detectDevices, 500);
 
 		// Listen for buttonId down event from our target gamepad.

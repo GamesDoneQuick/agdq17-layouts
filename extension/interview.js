@@ -1,18 +1,15 @@
 'use strict';
 
-const fs = require('fs');
-
 module.exports = function (nodecg) {
-	if (!fs.existsSync('bundles/agdq17-layouts/firebase-credentials.json')) {
-		nodecg.log.error('"firebase-credentials.json" was not found at nodecg/bundles/agdq17-layouts! ' +
-			'The interview question system will be disabled.');
+	if (Object.keys(nodecg.bundleConfig.firebase).length === 0) {
+		nodecg.log.error('"firebase" is not defined in cfg/agdq17-layouts.json! ' +
+			'The interview question system (Lightning Round) will be disabled.');
 		return;
 	}
 
 	const firebase = require('firebase-admin');
-	const serviceAccount = require('../firebase-credentials.json');
 	firebase.initializeApp({
-		credential: firebase.credential.cert(serviceAccount),
+		credential: firebase.credential.cert(nodecg.bundleConfig.firebase),
 		databaseURL: 'https://lightning-round.firebaseio.com'
 	});
 
