@@ -32,7 +32,7 @@ module.exports = function (nodecg) {
 		});
 
 		socket.on('connect_error', err => {
-			if (err.message = 'xhr poll error') {
+			if (err.message === 'xhr poll error') {
 				if (loggedXhrPollError) {
 					return;
 				}
