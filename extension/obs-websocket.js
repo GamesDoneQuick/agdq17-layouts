@@ -5,7 +5,7 @@ const OBSWebSocket = require('obs-websocket-js').OBSWebSocket;
 module.exports = function (nodecg) {
 	const currentScene = nodecg.Replicant('currentScene', {defaultValue: ''});
 
-	if (!nodecg.bundleConfig.obsWebsocket) {
+	if (!nodecg.bundleConfig.obsWebsocket.address) {
 		nodecg.log.error('"obsWebsocket" is not defined in cfg/agdq17-layouts.json! ' +
 			'OBS Studio integration will be disabled.');
 		return {

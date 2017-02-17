@@ -26,7 +26,7 @@ module.exports = function (nodecg) {
 		persistent: false
 	});
 
-	if (!nodecg.bundleConfig.osc || Object.keys(nodecg.bundleConfig.osc).length === 0) {
+	if (!nodecg.bundleConfig.osc.address) {
 		nodecg.log.error('"osc" is not defined in cfg/agdq17-layouts.json! ' +
 			'Behringer X32 OSC integration will be disabled.');
 		return;

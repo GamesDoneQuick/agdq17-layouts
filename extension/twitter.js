@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = function (nodecg) {
-	if (Object.keys(nodecg.bundleConfig.twitter).length === 0) {
+	if (!nodecg.bundleConfig.twitter.userId) {
 		nodecg.log.error('"twitter" is not defined in cfg/agdq17-layouts.json! ' +
 			'Twitter integration will be disabled.');
 		return;
