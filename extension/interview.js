@@ -10,7 +10,7 @@ module.exports = function (nodecg) {
 	const firebase = require('firebase-admin');
 	firebase.initializeApp({
 		credential: firebase.credential.cert(nodecg.bundleConfig.firebase),
-		databaseURL: 'https://lightning-round.firebaseio.com'
+		databaseURL: nodecg.bundleConfig.firebase.databaseURL
 	});
 
 	const database = firebase.database();
