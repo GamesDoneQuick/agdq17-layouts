@@ -3,6 +3,11 @@ The on-stream graphics used during Awesome Games Done Quick 2017.
 
 This is a [NodeCG](http://github.com/nodecg/nodecg) 0.8 bundle. You will need to have NodeCG 0.8 installed to run it.
 
+## Video Breakdown
+[![screenshot](https://i.imgur.com/aVCCgYZ.png)
+A twelve-part video series explaining the structure and function of this NodeCG bundle. 
+The final videos in the series also walk through the setup process.](https://www.youtube.com/watch?v=vBAZXchbI3U&list=PLTEhlYdONYxv1wk2FsIpEz92X3x2E7bSx)
+
 ## Installation
 - Install to `nodecg/bundles/agdq17-layouts`.
 - Install `bower` if you have not already (`npm install -g bower`)
@@ -27,17 +32,18 @@ learning tool and base to build from, rather than just taking and using it whole
 To reiterate, please don't just download and use this bundle as-is. Build something new from it.
 
 ### Running a mock donation server.
-`sgdq17-layouts` breaks from previous GDQ layout bundles in that it listens for donations in realtime,
+`agdq17-layouts` breaks from previous GDQ layout bundles in that it listens for donations in realtime,
 rather than polling the donation tracker for a new donation total once a minute. To facilitate testing,
-a small script that sends mock donations has been created.
+we provide a small script that sends mock donations:
+
 1. Add `"donationSocketUrl": "http://localhost:22341"` to your `nodecg/cfg/agdq17-layouts.json`
 2. From the `nodecg/bundles/agdq17-layouts` folder, run `npm run mock-donations`
-3. Run NodeCG
+3. Run NodeCG (`nodecg start` or `node index.js` from the `nodecg` folder)
 
 ### Lightning Round
-Lightning Round is a new system we made for AGDQ 2017 for gathering interview questions from Twitter. It exists in two parts:
-one part running "in the cloud" as a Firebase app, and one part running locally as part of this NodeCG bundle. For more
-information, [watch this video]().
+[Lightning Round](https://github.com/GamesDoneQuick/lightning-round) is a new system we made for AGDQ 2017 for gathering interview questions from Twitter. It exists in two parts: one part running "in the cloud" as a Firebase app, and one part running locally as part of this NodeCG bundle. For more information, watch these videos:
+- [Lightning Round Overview](https://www.youtube.com/watch?v=-qzIfS7KxCQ&index=4&list=PLTEhlYdONYxv1wk2FsIpEz92X3x2E7bSx)
+- [Lightning Round Setup Guide](https://www.youtube.com/watch?v=Uz_99-bJzyc&index=12&list=PLTEhlYdONYxv1wk2FsIpEz92X3x2E7bSx)
 
 [id]: configuration
 ## Configuration
