@@ -1,6 +1,6 @@
 {
   "name": "agdq17-layouts",
-  "description": "The on-stream graphics used during Summer Games Done Quick 2016.",
+  "description": "The on-stream graphics used during Awesome Games Done Quick 2017.",
   "version": "1.0.0",
   "contributors": [
     "Alex Van Camp <email@alexvan.camp>",
@@ -40,7 +40,7 @@
   "homepage": "http://gamesdonequick.com/",
   "license": "Apache-2.0",
   "nodecg": {
-    "compatibleRange": "~0.8.5",
+    "compatibleRange": "~0.8.6",
     "dashboardPanels": [
       {
         "name": "schedule",
