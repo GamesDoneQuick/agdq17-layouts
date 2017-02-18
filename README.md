@@ -21,8 +21,7 @@ Please note that you **must manually run `npm install` for this bundle**. NodeCG
 compile this bundle's npm dependencies. This is an issue we hope to address in the future.
 
 **Please note that by default, the break screen graphic will not work.** This is because this graphic uses
-a paid library called [SplitText](https://greensock.com/SplitText), which we cannot redistribute. If you wish to use 
-the break screen, you will need to pay for access to SplitText and save a copy to `graphics/imports/SplitText.min.js`.
+a paid library called [SplitText](https://greensock.com/SplitText), which we cannot redistribute. If you wish to use the break screen with its current implementation, you will need to pay for access to SplitText and save a copy to `graphics/imports/SplitText.min.js`.
 
 ## Usage
 This bundle is not intended to be used verbatim. Some of the assets have been replaced with placeholders, and
